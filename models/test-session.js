@@ -53,7 +53,6 @@ export class TestSession {
       percentage: total ? Math.round((correct / total) * 100) : 0,
       score,
       questionOrder: this.test.preguntas.map((question) => String(question.id)),
-      completedAt: new Date().toISOString(),
     };
   }
 }

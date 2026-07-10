@@ -1,4 +1,4 @@
-import { escapeHtml, formatDate, formatDisplayTitle } from "../utils/text.js";
+import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { metadata } from "./layout.js";
 
 export function renderResults(root, test, result, { backHref, backLabel }) {
@@ -38,14 +38,22 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
                 <span aria-hidden="true">i</span>
               </summary>
               <div class="scoring-info-content">
-                <p class="scoring-info-title">¿Cómo se calcula la nota?</p>
-                <p>Cada respuesta influye así:</p>
-                <ul>
-                  <li><span class="scoring-value">+1</span> por cada respuesta correcta.</li>
-                  <li><span class="scoring-value">−⅓</span> por cada respuesta incorrecta.</li>
-                  <li><span class="scoring-value">0</span> por cada pregunta en blanco.</li>
+                <p class="scoring-info-title">Cálculo de la nota</p>
+                <ul class="scoring-rules">
+                  <li class="scoring-rule-correct">
+                    <span class="scoring-value"><span class="scoring-operator">+</span>1</span>
+                    <span>Respuesta correcta</span>
+                  </li>
+                  <li class="scoring-rule-incorrect">
+                    <span class="scoring-value"><span class="scoring-operator">−</span>⅓</span>
+                    <span>Respuesta incorrecta</span>
+                  </li>
+                  <li class="scoring-rule-blank">
+                    <span class="scoring-value">0</span>
+                    <span>Pregunta en blanco</span>
+                  </li>
                 </ul>
-                <p class="scoring-info-result">Has acertado el ${result.percentage}% de las preguntas.</p>
+                <p class="scoring-info-result">Aciertos en este intento: <span>${result.percentage}%</span></p>
               </div>
             </details>
           </div>
@@ -58,11 +66,10 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
         </div>
       </div>
 
-      <p class="completed-date">Finalizado el ${escapeHtml(formatDate(result.completedAt))}</p>
       <div class="result-actions">
         <a class="button button-primary" href="#/revision/${encodeURIComponent(test.id)}">Revisar respuestas</a>
         <button class="button button-secondary" type="button" data-action="repeat">Repetir test</button>
-        <a class="button button-quiet" href="${backHref}">Volver a los recursos</a>
+        <a class="button button-secondary" href="${backHref}">Volver a los recursos</a>
       </div>
     </section>
   `;

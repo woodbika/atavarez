@@ -34,11 +34,3 @@ export function formatDisplayTitle(value) {
       token.toLocaleUpperCase("es"),
     );
 }
-
-export function formatDate(isoDate) {
-  if (!isoDate) return "";
-  return new Intl.DateTimeFormat("es-ES", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(isoDate));
-}

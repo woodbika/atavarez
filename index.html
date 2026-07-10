@@ -18,6 +18,11 @@
             <label class="sr-only" for="resource-search">Buscar recursos</label>
             <input id="resource-search" type="search" placeholder="Buscar recursos" autocomplete="off">
           </form>
+          <div id="test-font-controls" class="test-font-controls" role="group" aria-label="Tamaño del texto del test" hidden>
+            <button type="button" data-font-action="decrease" aria-label="Reducir el tamaño del texto" title="Reducir el tamaño del texto">A−</button>
+            <button type="button" data-font-action="increase" aria-label="Aumentar el tamaño del texto" title="Aumentar el tamaño del texto">A+</button>
+            <span class="sr-only test-font-status" role="status">Tamaño de texto medio</span>
+          </div>
           <button id="focus-toggle" class="focus-toggle" type="button" aria-pressed="false" aria-label="Activar modo concentración" title="Activar modo concentración" hidden>
             <svg class="focus-icon focus-icon-enter" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M8 21H4a1 1 0 0 1-1-1v-4M16 21h4a1 1 0 0 0 1-1v-4"></path>

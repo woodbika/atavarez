@@ -16,6 +16,9 @@ export class AppController {
     this.headerSearchLabel = this.headerSearch.querySelector("label");
     this.focusToggle = document.querySelector("#focus-toggle");
     this.focusToggleLabel = this.focusToggle.querySelector(".focus-toggle-label");
+    this.testFontControls = document.querySelector("#test-font-controls");
+    this.testFontStatus = this.testFontControls.querySelector(".test-font-status");
+    this.testFontLevel = 1;
     this.focusBackdrop = document.querySelector("#focus-backdrop");
     this.focusTransitionTimer = null;
     this.onRouteChange = this.onRouteChange.bind(this);
@@ -35,6 +38,11 @@ export class AppController {
         document.body.classList.contains("focus-mode") &&
         !document.body.classList.contains("focus-mode-exiting");
       if (canDismissFromBackdrop && isActive) this.setFocusMode(false);
+    });
+    this.testFontControls.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-font-action]")?.dataset.fontAction;
+      if (!action) return;
+      this.setTestFontLevel(this.testFontLevel + (action === "increase" ? 1 : -1));
     });
     window.addEventListener("hashchange", this.onRouteChange);
     this.onRouteChange();
@@ -56,7 +64,11 @@ export class AppController {
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
     const isTestRoute = section === "test" && Boolean(id);
     this.focusToggle.hidden = !isTestRoute;
-    if (!isTestRoute) this.setFocusMode(false, { immediate: true });
+    this.testFontControls.hidden = !isTestRoute;
+    if (!isTestRoute) {
+      this.setFocusMode(false, { immediate: true });
+      this.setTestFontLevel(1);
+    }
     const keepsCurrentResult =
       (section === "resultados" || section === "revision") &&
       this.currentResult?.testId === id;
@@ -129,6 +141,18 @@ export class AppController {
     this.focusTransitionTimer = window.setTimeout(finishTransition, 200);
   }
 
+  setTestFontLevel(level) {
+    const levels = ["small", "medium", "large"];
+    const levelLabels = ["pequeño", "medio", "grande"];
+    this.testFontLevel = Math.min(Math.max(level, 0), levels.length - 1);
+    document.body.dataset.testFontSize = levels[this.testFontLevel];
+    this.testFontControls.querySelector('[data-font-action="decrease"]').disabled =
+      this.testFontLevel === 0;
+    this.testFontControls.querySelector('[data-font-action="increase"]').disabled =
+      this.testFontLevel === levels.length - 1;
+    this.testFontStatus.textContent = `Tamaño de texto ${levelLabels[this.testFontLevel]}`;
+  }
+
   showOppositions() {
     this.session = null;
     renderOppositions(this.root, this.repository.getOppositions());
@@ -192,6 +216,7 @@ export class AppController {
     const test = this.repository.getTestById(id);
     if (!test) {
       this.focusToggle.hidden = true;
+      this.testFontControls.hidden = true;
       this.setFocusMode(false, { immediate: true });
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
