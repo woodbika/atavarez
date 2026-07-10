@@ -15,7 +15,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Estado temporal en memoria: al recargar se descartan progreso y resultados.
 - Rutas con hash compatibles con GitHub Pages y recarga directa.
 - Navegación por teclado, foco visible, HTML semántico y soporte de `prefers-reduced-motion`.
-- Modo claro y oscuro sin persistencia, respetando inicialmente la preferencia del sistema.
+- Modo claro por defecto y modo oscuro opcional, sin persistencia entre recargas.
 
 ## Estructura
 
