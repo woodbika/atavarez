@@ -12,7 +12,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Indicador de progreso y confirmación al finalizar con preguntas pendientes.
 - Resultados con aciertos, errores, preguntas sin responder, porcentaje y puntuación sobre 10 (+1 por acierto, −⅓ por error y 0 en blanco).
 - Revisión completa con respuesta propia, solución y estado textual de cada pregunta.
-- Estado temporal en memoria: al recargar se descartan progreso y resultados.
+- Sin historial ni progreso guardado: al salir de un test se descarta el intento.
 - Rutas con hash compatibles con GitHub Pages y recarga directa.
 - Navegación por teclado, foco visible, HTML semántico y soporte de `prefers-reduced-motion`.
 - Modo claro por defecto y modo oscuro opcional, sin persistencia entre recargas.
@@ -30,7 +30,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 │   └── tests/                # Bancos de preguntas agrupados por tema
 │       └── tema-01/          # Recursos del tema 01
 │           └── tests-ivot/   # Tests cuyo autor es IVOT
-├── models/                   # Portal y estado temporal de sesión
+├── models/                   # Portal y lógica del intento activo
 ├── views/                    # Oposiciones, temas, recursos y cuestionarios
 ├── styles/main.css           # Sistema visual responsive
 ├── utils/                    # Utilidades compartidas
@@ -82,7 +82,7 @@ Todos los recursos usan rutas relativas y la navegación usa hashes, por lo que 
 - JavaScript moderno con ES Modules, sin framework ni compilación.
 - Registro estático explícito: GitHub Pages no puede descubrir archivos del repositorio en tiempo de ejecución.
 - Hash routing para no depender de redirecciones del servidor.
-- El progreso y los resultados se mantienen solo en memoria. La aplicación elimina la antigua clave `opotest:v1` y no escribe datos en `localStorage`.
+- No se guarda progreso, historial ni resultados. El resultado calculado solo está disponible en las pantallas de resultado y revisión del intento recién finalizado.
 - Los datos de preguntas, opciones y soluciones se importan directamente y no se modifican.
 
 ## Licencia

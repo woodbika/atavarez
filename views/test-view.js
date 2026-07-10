@@ -5,7 +5,8 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
   const { test, currentQuestion: question, currentIndex } = session;
   const total = test.preguntas.length;
   const selected = session.selectedAnswer(question.id);
-  const progress = ((currentIndex + 1) / total) * 100;
+  const answeredCount = session.answeredCount();
+  const progress = total ? (answeredCount / total) * 100 : 0;
 
   root.innerHTML = `
     <a class="back-link test-back-link" href="${backHref}" data-action="leave">← ${escapeHtml(backLabel)}</a>
@@ -19,11 +20,36 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
       <div class="progress-block">
         <div class="progress-label">
           <span>Pregunta ${currentIndex + 1} de ${total}</span>
-          <span>${session.answeredCount()} respondidas</span>
+          <span>${answeredCount} respondidas</span>
         </div>
-        <div class="progress-track" role="progressbar" aria-label="Progreso del test" aria-valuemin="1" aria-valuemax="${total}" aria-valuenow="${currentIndex + 1}">
+        <div class="progress-track" role="progressbar" aria-label="Preguntas respondidas" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${answeredCount}">
           <span style="width: ${progress}%"></span>
         </div>
+        <nav class="question-map" aria-label="Navegar por las preguntas">
+          <span class="question-map-label">Preguntas</span>
+          <div class="question-map-scroll">
+            ${test.preguntas
+              .map((item, index) => {
+                const answered = Boolean(session.selectedAnswer(item.id));
+                const current = index === currentIndex;
+                const state = answered ? "respondida" : "sin responder";
+                return `
+                  <button
+                    class="question-pill ${answered ? "is-answered" : ""} ${current ? "is-current" : ""}"
+                    type="button"
+                    data-question-index="${index}"
+                    aria-label="Pregunta ${index + 1}, ${state}"
+                    ${current ? 'aria-current="step"' : ""}
+                    ${current ? "" : 'tabindex="-1"'}
+                  >
+                    <span>${index + 1}</span>
+                    ${answered ? '<span class="question-pill-status" aria-hidden="true">✓</span>' : ""}
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
+        </nav>
       </div>
 
       <form id="question-form" class="question-card" tabindex="-1">
@@ -47,13 +73,11 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
 
       <nav class="test-navigation" aria-label="Navegación entre preguntas">
         <button class="button button-secondary" type="button" data-action="previous" ${currentIndex === 0 ? "disabled" : ""}>Anterior</button>
-        ${
-          currentIndex < total - 1
-            ? '<button class="button button-primary" type="button" data-action="next">Siguiente</button>'
-            : '<button class="button button-primary" type="button" data-action="finish">Ver resultados</button>'
-        }
+        <div class="test-navigation-end">
+          <button class="button button-secondary" type="button" data-action="next" ${currentIndex === total - 1 ? "disabled" : ""}>Siguiente</button>
+          <button class="button button-primary" type="button" data-action="finish">Finalizar test</button>
+        </div>
       </nav>
-      ${currentIndex < total - 1 ? '<button class="finish-link" type="button" data-action="finish">Finalizar test</button>' : ""}
     </section>
 
     <dialog id="incomplete-dialog" class="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">

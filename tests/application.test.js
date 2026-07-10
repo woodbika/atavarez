@@ -4,7 +4,6 @@ import assert from "node:assert/strict";
 import { resources } from "../data/resources.js";
 import { tests } from "../data/tests.js";
 import { ResourceRepository } from "../models/resource-repository.js";
-import { SessionStore } from "../models/session-store.js";
 import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
 
@@ -47,14 +46,18 @@ test("la evaluación distingue aciertos, errores y preguntas sin responder", () 
   assert.equal(result.score, 2.22);
 });
 
-test("la sesión restaura respuestas y posición y permite navegar", () => {
+test("la sesión mantiene respuestas durante el intento y permite navegar", () => {
   const source = tests[0];
   const question = source.preguntas[1];
-  const saved = { currentIndex: 1, answers: { [question.id]: question.opciones[0].id } };
-  const session = new TestSession(source, saved);
+  const session = new TestSession(source);
 
+  session.currentIndex = 1;
+  session.selectAnswer(question.opciones[0].id);
   assert.equal(session.currentIndex, 1);
   assert.equal(session.selectedAnswer(question.id), question.opciones[0].id);
+  session.clearCurrentAnswer();
+  assert.equal(session.selectedAnswer(question.id), null);
+  session.selectAnswer(question.opciones[0].id);
   session.currentIndex += 1;
   assert.equal(session.currentQuestion, source.preguntas[2]);
 });
@@ -83,18 +86,6 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
       .searchResources(themeResources, "CAPÍTULO V")
       .every((item) => item.classification.partes.includes("CAPÍTULO V")),
   );
-});
-
-test("el progreso y los resultados existen solo durante la sesión actual", () => {
-  const store = new SessionStore();
-  const result = { correct: 2 };
-
-  store.saveProgress("test-1", { currentIndex: 2, answers: {} });
-  store.saveResult("test-1", result);
-
-  assert.equal(store.getResult("test-1"), result);
-  assert.equal(store.getProgress("test-1"), null);
-  assert.equal(new SessionStore().getResult("test-1"), null);
 });
 
 test("los títulos en mayúsculas se presentan como frase sin perder siglas", () => {

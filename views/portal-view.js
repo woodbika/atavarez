@@ -98,7 +98,7 @@ export function renderThemes(root, opposition, themes) {
 
 export function renderResources(
   root,
-  { opposition, theme, resources, progressById },
+  { opposition, theme, resources },
 ) {
   root.innerHTML = `
     <nav class="breadcrumbs" aria-label="Migas de pan">
@@ -147,13 +147,9 @@ export function renderResources(
       .map((resource) => {
         const test = resource.data;
         const isComplete = resource.variant === "complete";
-        const progress = progressById[resource.id];
-        const answered = progress ? Object.keys(progress.answers ?? {}).length : 0;
         const href = resource.type === "test" ? `#/test/${encodeURIComponent(resource.id)}` : resource.href;
         const actionLabel = resource.type === "test"
-          ? progress
-            ? "Continuar test"
-            : "Empezar test"
+          ? "Empezar test"
           : resource.actionLabel ?? "Abrir recurso";
         return `
           <article class="resource-card ${isComplete ? "resource-card-complete" : ""}">
@@ -165,13 +161,12 @@ export function renderResources(
             ${isComplete
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
               : `<p class="parts"><span class="parts-label">Incluye</span> ${(resource.classification.partes ?? []).map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`}
-            ${progress ? `<p class="saved-note">En curso · ${answered} de ${test.preguntas.length} respondidas${isComplete ? ` · Orden ${progress.orderMode === "aleatorio" ? "aleatorio" : "natural"}` : ""}</p>` : ""}
             ${isComplete
               ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
                   <span>Elige el orden</span>
                   <div class="order-actions">
-                    <a class="resource-action ${progress?.orderMode === "natural" ? "is-current" : ""}" href="${escapeHtml(href)}/natural">Orden natural</a>
-                    <a class="resource-action ${progress?.orderMode === "aleatorio" ? "is-current" : ""}" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
+                    <a class="resource-action" href="${escapeHtml(href)}/natural">Orden natural</a>
+                    <a class="resource-action" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
                   </div>
                 </div>`
               : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}

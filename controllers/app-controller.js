@@ -6,11 +6,11 @@ import { renderReview } from "../views/review-view.js";
 import { renderTest } from "../views/test-view.js";
 
 export class AppController {
-  constructor({ root, repository, store }) {
+  constructor({ root, repository }) {
     this.root = root;
     this.repository = repository;
-    this.store = store;
     this.session = null;
+    this.currentResult = null;
     this.headerSearch = document.querySelector("#header-search");
     this.headerSearchInput = document.querySelector("#resource-search");
     this.headerSearchLabel = this.headerSearch.querySelector("label");
@@ -37,6 +37,10 @@ export class AppController {
   onRouteChange() {
     this.hideHeaderSearch();
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
+    const keepsCurrentResult =
+      (section === "resultados" || section === "revision") &&
+      this.currentResult?.testId === id;
+    if (!keepsCurrentResult) this.currentResult = null;
     if (!section) this.showOppositions();
     else if (section === "oposiciones" && id && !subsection) this.showThemes(id);
     else if (section === "oposiciones" && id && subsection === "temas" && subId) {
@@ -88,17 +92,11 @@ export class AppController {
     if (!theme) return renderNotFound(this.root, "El tema solicitado no existe.");
 
     const resources = this.repository.getResources(oppositionId, themeNumber);
-    const progressById = {};
-    resources.forEach((resource) => {
-      if (resource.type !== "test") return;
-      progressById[resource.id] = this.store.getProgress(resource.id);
-    });
 
     const view = renderResources(this.root, {
       opposition,
       theme,
       resources,
-      progressById,
     });
 
     let query = "";
@@ -133,22 +131,13 @@ export class AppController {
     const test = this.repository.getTestById(id);
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     const isComplete = resource.variant === "complete";
-    const savedProgress = this.store.getProgress(id);
     const orderMode = isComplete && requestedOrder === "aleatorio"
       ? "aleatorio"
-      : isComplete && !requestedOrder && savedProgress?.orderMode
-        ? savedProgress.orderMode
-        : "natural";
+      : "natural";
 
     if (!this.session || this.session.test.id !== id || this.sessionOrder !== orderMode) {
-      const canResume = savedProgress?.orderMode === orderMode ||
-        (!savedProgress?.orderMode && orderMode === "natural");
-      const orderedTest = this.orderTestQuestions(
-        test,
-        orderMode,
-        canResume ? savedProgress?.questionOrder : null,
-      );
-      this.session = new TestSession(orderedTest, canResume ? savedProgress : null);
+      const orderedTest = this.orderTestQuestions(test, orderMode);
+      this.session = new TestSession(orderedTest);
       this.sessionOrder = orderMode;
     }
     this.renderCurrentQuestion();
@@ -188,13 +177,24 @@ export class AppController {
     });
     const form = this.root.querySelector("#question-form");
 
+    form.addEventListener("click", (event) => {
+      if (event.target.name !== "answer") return;
+      const selected = this.session.selectedAnswer(this.session.currentQuestion.id);
+      if (selected !== event.target.value) return;
+      this.session.clearCurrentAnswer();
+      event.target.checked = false;
+      event.target.closest(".option").classList.remove("is-selected");
+      this.updateAnsweredLabel();
+      this.updateCurrentQuestionPill();
+    });
+
     form.addEventListener("change", (event) => {
       if (event.target.name !== "answer") return;
       this.session.selectAnswer(event.target.value);
-      this.saveSession();
       form.querySelectorAll(".option").forEach((option) => option.classList.remove("is-selected"));
       event.target.closest(".option").classList.add("is-selected");
       this.updateAnsweredLabel();
+      this.updateCurrentQuestionPill();
     });
 
     this.root.querySelectorAll("[data-action]").forEach((control) => {
@@ -203,11 +203,83 @@ export class AppController {
         this.handleTestAction(control.dataset.action, control);
       });
     });
+
+    this.root.querySelectorAll("[data-question-index]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this.navigateToQuestion(Number(button.dataset.questionIndex));
+      });
+      button.addEventListener("keydown", (event) => {
+        const total = this.session.test.preguntas.length;
+        const current = this.session.currentIndex;
+        const targetByKey = {
+          ArrowLeft: Math.max(0, current - 1),
+          ArrowRight: Math.min(total - 1, current + 1),
+          Home: 0,
+          End: total - 1,
+        };
+        if (!(event.key in targetByKey)) return;
+        event.preventDefault();
+        this.navigateToQuestion(targetByKey[event.key], true);
+      });
+    });
+
+    this.centerCurrentQuestionPill();
+  }
+
+  navigateToQuestion(index, keepMapFocus = false) {
+    this.session.currentIndex = index;
+    this.renderCurrentQuestion();
+    const focusTarget = keepMapFocus
+      ? this.root.querySelector(".question-pill.is-current")
+      : this.root.querySelector(".question-card");
+    focusTarget?.focus({ preventScroll: true });
   }
 
   updateAnsweredLabel() {
+    const answeredCount = this.session.answeredCount();
     const labels = this.root.querySelectorAll(".progress-label span");
-    if (labels[1]) labels[1].textContent = `${this.session.answeredCount()} respondidas`;
+    if (labels[1]) labels[1].textContent = `${answeredCount} respondidas`;
+    const progressbar = this.root.querySelector(".progress-track");
+    const progressValue = progressbar?.querySelector("span");
+    const total = this.session.test.preguntas.length;
+    if (progressbar) progressbar.setAttribute("aria-valuenow", String(answeredCount));
+    if (progressValue) {
+      progressValue.style.width = `${total ? (answeredCount / total) * 100 : 0}%`;
+    }
+  }
+
+  updateCurrentQuestionPill() {
+    const pill = this.root.querySelector(
+      `[data-question-index="${this.session.currentIndex}"]`,
+    );
+    if (!pill) return;
+    const answered = Boolean(
+      this.session.selectedAnswer(this.session.currentQuestion.id),
+    );
+    pill.classList.toggle("is-answered", answered);
+    pill.setAttribute(
+      "aria-label",
+      `Pregunta ${this.session.currentIndex + 1}, ${answered ? "respondida" : "sin responder"}`,
+    );
+    const existingStatus = pill.querySelector(".question-pill-status");
+    if (!answered) {
+      existingStatus?.remove();
+      return;
+    }
+    if (existingStatus) return;
+    const status = document.createElement("span");
+    status.className = "question-pill-status";
+    status.setAttribute("aria-hidden", "true");
+    status.textContent = "✓";
+    pill.append(status);
+  }
+
+  centerCurrentQuestionPill() {
+    const container = this.root.querySelector(".question-map-scroll");
+    const pill = container?.querySelector(".question-pill.is-current");
+    if (!container || !pill) return;
+    const top = pill.offsetTop - container.clientHeight / 2 + pill.offsetHeight / 2;
+    container.scrollTop = Math.max(0, top);
   }
 
   handleTestAction(action, control) {
@@ -215,17 +287,8 @@ export class AppController {
     if (action === "previous" && this.session.currentIndex > 0) this.session.currentIndex -= 1;
     if (action === "next" && this.session.currentIndex < this.session.test.preguntas.length - 1) this.session.currentIndex += 1;
     if (action === "finish") return this.finishTest();
-    this.saveSession();
     this.renderCurrentQuestion();
     this.root.querySelector(".question-card")?.focus({ preventScroll: true });
-  }
-
-  saveSession() {
-    this.store.saveProgress(this.session.test.id, {
-      ...this.session.toProgress(),
-      orderMode: this.sessionOrder,
-      questionOrder: this.session.test.preguntas.map((question) => String(question.id)),
-    });
   }
 
   finishTest() {
@@ -249,15 +312,15 @@ export class AppController {
   completeTest() {
     const result = this.session.calculateResult();
     result.orderMode = this.sessionOrder;
-    this.store.saveResult(this.session.test.id, result);
+    this.currentResult = result;
     location.hash = `#/resultados/${encodeURIComponent(this.session.test.id)}`;
   }
 
   confirmLeaveTest(destination) {
     const unanswered = this.session.unansweredCount();
     const message = unanswered
-      ? `${unanswered === 1 ? "Queda 1 pregunta" : `Quedan ${unanswered} preguntas`} sin responder. Tus respuestas se conservarán solo mientras no recargues la página.`
-      : "Vas a salir del test. Tus respuestas se conservarán solo mientras no recargues la página.";
+      ? `${unanswered === 1 ? "Queda 1 pregunta" : `Quedan ${unanswered} preguntas`} sin responder. Al salir se descartarán todas tus respuestas.`
+      : "Al salir se descartarán todas tus respuestas.";
 
     this.openConfirmation({
       title: "¿Volver a los recursos?",
@@ -286,14 +349,14 @@ export class AppController {
 
   showResults(id) {
     const test = this.repository.getTestById(id);
-    const result = this.store.getResult(id);
+    const result = this.currentResult?.testId === id ? this.currentResult : null;
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para consultarlo.");
 
     this.session = null;
     renderResults(this.root, test, result, this.resourceContext(test));
     this.root.querySelector('[data-action="repeat"]').addEventListener("click", () => {
-      this.store.clearProgress(id);
+      this.currentResult = null;
       this.session = null;
       const orderPath = result.orderMode === "aleatorio" ? "/aleatorio" : "/natural";
       location.hash = `#/test/${encodeURIComponent(id)}${orderPath}`;
@@ -302,7 +365,7 @@ export class AppController {
 
   showReview(id) {
     const test = this.repository.getTestById(id);
-    const result = this.store.getResult(id);
+    const result = this.currentResult?.testId === id ? this.currentResult : null;
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
     this.session = null;

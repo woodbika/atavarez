@@ -1,11 +1,8 @@
 export class TestSession {
-  constructor(test, savedProgress = null) {
+  constructor(test) {
     this.test = test;
-    this.answers = { ...(savedProgress?.answers ?? {}) };
-    this.currentIndex = Math.min(
-      Math.max(Number(savedProgress?.currentIndex) || 0, 0),
-      test.preguntas.length - 1,
-    );
+    this.answers = {};
+    this.currentIndex = 0;
   }
 
   get currentQuestion() {
@@ -14,6 +11,10 @@ export class TestSession {
 
   selectAnswer(optionId) {
     this.answers[String(this.currentQuestion.id)] = optionId;
+  }
+
+  clearCurrentAnswer() {
+    delete this.answers[String(this.currentQuestion.id)];
   }
 
   selectedAnswer(questionId) {
@@ -26,10 +27,6 @@ export class TestSession {
 
   unansweredCount() {
     return this.test.preguntas.length - this.answeredCount();
-  }
-
-  toProgress() {
-    return { answers: this.answers, currentIndex: this.currentIndex };
   }
 
   calculateResult() {
