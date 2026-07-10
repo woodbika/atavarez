@@ -64,11 +64,16 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   const [opposition] = repository.getOppositions();
   const [theme] = repository.getThemes(opposition.id);
   const themeResources = repository.getResources(opposition.id, theme.numero);
+  const completeTest = themeResources.find((resource) => resource.variant === "complete");
 
   assert.equal(repository.getOppositions().length, 1);
   assert.equal(opposition.themeCount, 1);
-  assert.equal(theme.resourceCount, 6);
-  assert.equal(themeResources.length, 6);
+  assert.equal(theme.resourceCount, 7);
+  assert.equal(themeResources.length, 7);
+  assert.equal(completeTest.data.preguntas.length, 121);
+  assert.equal(new Set(completeTest.data.preguntas.map((question) => question.id)).size, 121);
+  assert.deepEqual(completeTest.orderModes, ["natural", "aleatorio"]);
+  assert.equal(completeTest.defaultOrder, "natural");
   assert.equal(repository.searchThemes([theme], "tema 01").length, 1);
   assert.equal(repository.searchThemes([theme], "constitucion").length, 1);
   assert.ok(repository.searchResources(themeResources, "constitucion").length > 0);

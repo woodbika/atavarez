@@ -41,7 +41,7 @@ export class AppController {
     else if (section === "oposiciones" && id && !subsection) this.showThemes(id);
     else if (section === "oposiciones" && id && subsection === "temas" && subId) {
       this.showResources(id, subId);
-    } else if (section === "test" && id) this.showTest(id);
+    } else if (section === "test" && id) this.showTest(id, subsection);
     else if (section === "resultados" && id) this.showResults(id);
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
@@ -106,14 +106,46 @@ export class AppController {
     });
   }
 
-  showTest(id) {
+  showTest(id, requestedOrder = "") {
+    const resource = this.repository.getById(id);
     const test = this.repository.getTestById(id);
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
+    const isComplete = resource.variant === "complete";
+    const savedProgress = this.store.getProgress(id);
+    const orderMode = isComplete && requestedOrder === "aleatorio"
+      ? "aleatorio"
+      : isComplete && !requestedOrder && savedProgress?.orderMode
+        ? savedProgress.orderMode
+        : "natural";
 
-    if (!this.session || this.session.test.id !== id) {
-      this.session = new TestSession(test, this.store.getProgress(id));
+    if (!this.session || this.session.test.id !== id || this.sessionOrder !== orderMode) {
+      const canResume = savedProgress?.orderMode === orderMode ||
+        (!savedProgress?.orderMode && orderMode === "natural");
+      const orderedTest = this.orderTestQuestions(
+        test,
+        orderMode,
+        canResume ? savedProgress?.questionOrder : null,
+      );
+      this.session = new TestSession(orderedTest, canResume ? savedProgress : null);
+      this.sessionOrder = orderMode;
     }
     this.renderCurrentQuestion();
+  }
+
+  orderTestQuestions(test, orderMode, savedOrder = null) {
+    let preguntas = [...test.preguntas];
+    if (savedOrder?.length) {
+      const positions = new Map(savedOrder.map((id, index) => [String(id), index]));
+      preguntas.sort(
+        (a, b) => (positions.get(String(a.id)) ?? Infinity) - (positions.get(String(b.id)) ?? Infinity),
+      );
+    } else if (orderMode === "aleatorio") {
+      for (let index = preguntas.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [preguntas[index], preguntas[randomIndex]] = [preguntas[randomIndex], preguntas[index]];
+      }
+    }
+    return { ...test, preguntas };
   }
 
   resourceContext(test) {
@@ -126,7 +158,12 @@ export class AppController {
   }
 
   renderCurrentQuestion() {
-    renderTest(this.root, this.session, this.resourceContext(this.session.test));
+    const resource = this.repository.getById(this.session.test.id);
+    renderTest(this.root, this.session, {
+      ...this.resourceContext(this.session.test),
+      orderMode: this.sessionOrder,
+      showOrder: resource?.variant === "complete",
+    });
     const form = this.root.querySelector("#question-form");
 
     form.addEventListener("change", (event) => {
@@ -162,7 +199,11 @@ export class AppController {
   }
 
   saveSession() {
-    this.store.saveProgress(this.session.test.id, this.session.toProgress());
+    this.store.saveProgress(this.session.test.id, {
+      ...this.session.toProgress(),
+      orderMode: this.sessionOrder,
+      questionOrder: this.session.test.preguntas.map((question) => String(question.id)),
+    });
   }
 
   finishTest() {
@@ -185,6 +226,7 @@ export class AppController {
 
   completeTest() {
     const result = this.session.calculateResult();
+    result.orderMode = this.sessionOrder;
     this.store.saveResult(this.session.test.id, result);
     location.hash = `#/resultados/${encodeURIComponent(this.session.test.id)}`;
   }
@@ -230,8 +272,9 @@ export class AppController {
     renderResults(this.root, test, result, this.resourceContext(test));
     this.root.querySelector('[data-action="repeat"]').addEventListener("click", () => {
       this.store.clearProgress(id);
-      this.session = new TestSession(test);
-      location.hash = `#/test/${encodeURIComponent(id)}`;
+      this.session = null;
+      const orderPath = result.orderMode === "aleatorio" ? "/aleatorio" : "/natural";
+      location.hash = `#/test/${encodeURIComponent(id)}${orderPath}`;
     });
   }
 
@@ -241,6 +284,7 @@ export class AppController {
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
     this.session = null;
-    renderReview(this.root, test, result, this.resourceContext(test));
+    const orderedTest = this.orderTestQuestions(test, result.orderMode, result.questionOrder);
+    renderReview(this.root, orderedTest, result, this.resourceContext(test));
   }
 }

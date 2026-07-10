@@ -1,7 +1,7 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { metadata } from "./layout.js";
 
-export function renderTest(root, session, { backHref, backLabel }) {
+export function renderTest(root, session, { backHref, backLabel, orderMode, showOrder }) {
   const { test, currentQuestion: question, currentIndex } = session;
   const total = test.preguntas.length;
   const selected = session.selectedAnswer(question.id);
@@ -11,7 +11,7 @@ export function renderTest(root, session, { backHref, backLabel }) {
     <a class="back-link test-back-link" href="${backHref}" data-action="leave">← ${escapeHtml(backLabel)}</a>
     <section class="test-shell" aria-labelledby="test-title">
       <header class="test-heading">
-        <p class="eyebrow">Tema ${escapeHtml(test.clasificacion.tema.numero)}</p>
+        <p class="eyebrow">Tema ${escapeHtml(test.clasificacion.tema.numero)}${showOrder ? ` · Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}` : ""}</p>
         <h1 id="test-title">${escapeHtml(formatDisplayTitle(test.titulo))}</h1>
         ${metadata(test)}
       </header>

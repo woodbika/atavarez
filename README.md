@@ -6,6 +6,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 
 - Navegación jerárquica por tarjetas: oposiciones, temas y recursos.
 - Recursos tipados para admitir tests y otros materiales progresivamente.
+- Test completo generado automáticamente por tema, con orden natural o aleatorio.
 - Búsqueda de recursos integrada en la cabecera de cada tema.
 - Una pregunta por pantalla, navegación anterior/siguiente y cambio de respuestas.
 - Indicador de progreso y confirmación al finalizar con preguntas pendientes.

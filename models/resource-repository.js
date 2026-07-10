@@ -19,13 +19,74 @@ function oppositionId(classification) {
 
 export class ResourceRepository {
   constructor(resources) {
-    this.resources = [...resources].sort((a, b) => {
+    const combinedResources = this.buildCombinedResources(resources);
+    this.resources = [...combinedResources, ...resources].sort((a, b) => {
       const byTheme = String(a.classification.tema.numero).localeCompare(
         String(b.classification.tema.numero),
         "es",
         { numeric: true },
       );
-      return byTheme || a.title.localeCompare(b.title, "es");
+      const byVariant = Number(a.variant !== "complete") - Number(b.variant !== "complete");
+      return byTheme || byVariant || a.title.localeCompare(b.title, "es");
+    });
+  }
+
+  buildCombinedResources(resources) {
+    const groups = new Map();
+    resources
+      .filter((resource) => resource.type === "test")
+      .forEach((resource) => {
+        const themeNumber = String(resource.classification.tema.numero);
+        const key = `${oppositionId(resource.classification)}:${themeNumber}`;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(resource);
+      });
+
+    return [...groups.values()].map((themeResources) => {
+      const first = themeResources[0];
+      const themeNumber = String(first.classification.tema.numero);
+      const id = `test-completo-${oppositionId(first.classification)}-tema-${themeNumber}`;
+      const preguntas = themeResources.flatMap((resource) =>
+        resource.data.preguntas.map((question) => ({
+          ...question,
+          id: `${resource.id}:${question.id}`,
+        })),
+      );
+      const partes = [...new Set(
+        themeResources.flatMap((resource) => resource.classification.partes ?? []),
+      )];
+      const classification = {
+        ...first.classification,
+        partes,
+      };
+      const autor = {
+        id: "recopilacion-tema",
+        nombre: "Recopilación del tema",
+      };
+      const test = {
+        schemaVersion: 1,
+        id,
+        autor,
+        titulo: `Todas las preguntas del tema ${themeNumber}`,
+        clasificacion: classification,
+        fuente: {
+          tipo: "recopilacion",
+          tests: themeResources.map((resource) => resource.id),
+        },
+        preguntas,
+      };
+
+      return {
+        id,
+        type: "test",
+        variant: "complete",
+        title: test.titulo,
+        author: autor,
+        classification,
+        orderModes: ["natural", "aleatorio"],
+        defaultOrder: "natural",
+        data: test,
+      };
     });
   }
 

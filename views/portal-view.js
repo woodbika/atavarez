@@ -139,6 +139,7 @@ export function renderResources(
     list.innerHTML = filteredResources
       .map((resource) => {
         const test = resource.data;
+        const isComplete = resource.variant === "complete";
         const progress = progressById[resource.id];
         const answered = progress ? Object.keys(progress.answers ?? {}).length : 0;
         const href = resource.type === "test" ? `#/test/${encodeURIComponent(resource.id)}` : resource.href;
@@ -148,17 +149,25 @@ export function renderResources(
             : "Empezar test"
           : resource.actionLabel ?? "Abrir recurso";
         return `
-          <article class="resource-card">
+          <article class="resource-card ${isComplete ? "resource-card-complete" : ""}">
             <div class="card-topline">
-              <span class="resource-type">${resource.type === "test" ? "Test" : escapeHtml(resource.type)}</span>
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""}">${isComplete ? "Test completo" : resource.type === "test" ? "Test" : escapeHtml(resource.type)}</span>
               ${resource.type === "test" ? `<span class="question-count">${test.preguntas.length} preguntas</span>` : ""}
             </div>
             <h3>${escapeHtml(formatDisplayTitle(resource.title))}</h3>
-            <p class="parts"><span class="parts-label">Incluye</span> ${(resource.classification.partes ?? []).map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>
-            ${progress ? `<p class="saved-note">En curso · ${answered} de ${test.preguntas.length} respondidas</p>` : ""}
-            <a class="button ${progress ? "button-primary" : "button-secondary"}" href="${escapeHtml(href)}">
-              ${escapeHtml(actionLabel)}
-            </a>
+            ${isComplete
+              ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
+              : `<p class="parts"><span class="parts-label">Incluye</span> ${(resource.classification.partes ?? []).map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`}
+            ${progress ? `<p class="saved-note">En curso · ${answered} de ${test.preguntas.length} respondidas${isComplete ? ` · Orden ${progress.orderMode === "aleatorio" ? "aleatorio" : "natural"}` : ""}</p>` : ""}
+            ${isComplete
+              ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
+                  <span>Elige el orden</span>
+                  <div class="order-actions">
+                    <a class="order-choice ${progress?.orderMode === "natural" ? "is-current" : ""}" href="${escapeHtml(href)}/natural">Orden natural</a>
+                    <a class="order-choice ${progress?.orderMode === "aleatorio" ? "is-current" : ""}" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
+                  </div>
+                </div>`
+              : `<a class="button ${progress ? "button-primary" : "button-secondary"}" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
           </article>
         `;
       })
