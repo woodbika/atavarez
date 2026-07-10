@@ -101,8 +101,30 @@ export class AppController {
       progressById,
     });
 
-    this.showHeaderSearch("Buscar recursos", (query) => {
-      view.updateList(this.repository.searchResources(resources, query));
+    let query = "";
+    let onlyIvotTests = false;
+    const filterButton = this.root.querySelector("#ivot-tests-filter");
+    const applyResourceFilters = () => {
+      const matchingResources = this.repository.searchResources(resources, query);
+      view.updateList(
+        onlyIvotTests
+          ? matchingResources.filter(
+              (resource) => resource.type === "test" && resource.author?.id === "ivot",
+            )
+          : matchingResources,
+      );
+    };
+
+    filterButton.addEventListener("click", () => {
+      onlyIvotTests = !onlyIvotTests;
+      filterButton.setAttribute("aria-pressed", String(onlyIvotTests));
+      filterButton.classList.toggle("is-active", onlyIvotTests);
+      applyResourceFilters();
+    });
+
+    this.showHeaderSearch("Buscar recursos", (searchQuery) => {
+      query = searchQuery;
+      applyResourceFilters();
     });
   }
 

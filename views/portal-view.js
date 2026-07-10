@@ -122,6 +122,13 @@ export function renderResources(
         <p id="results-count" class="result-count" aria-live="polite"></p>
       </div>
 
+      <div class="resource-filter-bar" role="group" aria-label="Filtrar por tipo de recurso">
+        <span>Filtrar por</span>
+        <div class="resource-filter-list">
+          <button id="ivot-tests-filter" class="filter-button" type="button" aria-pressed="false">Tests IVOT</button>
+        </div>
+      </div>
+
       <div id="resource-list" class="resource-grid"></div>
     </section>
   `;
