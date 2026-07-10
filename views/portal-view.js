@@ -7,7 +7,7 @@ function plural(count, singular, pluralForm) {
 export function renderOppositions(root, oppositions) {
   root.innerHTML = `
     <section class="hero hero-compact" aria-labelledby="oppositions-title">
-      <p class="eyebrow">Punto de entrada</p>
+      <p class="eyebrow">Inicio</p>
       <h1 id="oppositions-title">Oposiciones disponibles</h1>
       <p class="hero-copy">Elige una oposición para consultar sus temas y acceder a los recursos disponibles.</p>
     </section>

@@ -7,6 +7,7 @@
   --line: #e1e7e4;
   --brand: #315e52;
   --brand-hover: #274d43;
+  --on-brand: #ffffff;
   --accent-soft: #f5f0e3;
   --correct: #34745a;
   --correct-soft: #edf6f1;
@@ -14,6 +15,23 @@
   --incorrect-soft: #faf0ef;
   --radius: 11px;
   --shell: 1040px;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #c8d0cc;
+  --muted: #929e99;
+  --paper: #1b211f;
+  --surface: #242b29;
+  --line: #37413d;
+  --brand: #83aa9b;
+  --brand-hover: #94b9ab;
+  --on-brand: #18211e;
+  --accent-soft: #353328;
+  --correct: #86b69c;
+  --correct-soft: #26372f;
+  --incorrect: #d29490;
+  --incorrect-soft: #3b2b2a;
 }
 
 *,
@@ -94,6 +112,15 @@ select {
   min-height: 60px;
 }
 
+.header-actions {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -104,7 +131,9 @@ select {
 }
 
 .header-search {
-  width: min(300px, 48vw);
+  width: min(280px, 100%);
+  min-width: 0;
+  flex: 0 1 280px;
 }
 
 .header-search[hidden] {
@@ -113,6 +142,7 @@ select {
 
 .header-search input {
   width: 100%;
+  min-width: 0;
   min-height: 38px;
   padding: 7px 12px;
   border: 1px solid #cbd5d1;
@@ -124,6 +154,48 @@ select {
 
 .header-search input::placeholder {
   color: var(--muted);
+}
+
+.theme-toggle {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #cbd5d1;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.theme-icon {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.theme-icon-sun {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-sun {
+  display: block;
 }
 
 .main-content {
@@ -300,7 +372,7 @@ h3 {
   place-items: center;
   border-radius: 50%;
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   font-size: 0.84rem;
   font-weight: 700;
 }
@@ -449,7 +521,7 @@ h3 {
 .order-choice.is-current {
   border-color: var(--brand);
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
 }
 
 .parts-label {
@@ -502,7 +574,7 @@ h3 {
 
 .button-primary {
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
 }
 
 .button-primary:hover {
@@ -712,7 +784,7 @@ h3 {
 .is-selected .option-letter {
   border-color: var(--brand);
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
 }
 
 .test-navigation {
@@ -1125,6 +1197,151 @@ h3 {
   color: var(--muted);
 }
 
+html[data-theme="dark"] .site-header {
+  background: rgba(31, 38, 35, 0.95);
+}
+
+html[data-theme="dark"] .header-search input,
+html[data-theme="dark"] .theme-toggle {
+  border-color: #46524d;
+  background: #202724;
+}
+
+html[data-theme="dark"] :focus-visible,
+html[data-theme="dark"] .option:has(input:focus-visible) {
+  outline-color: #c4a466;
+}
+
+html[data-theme="dark"] .navigation-card:hover,
+html[data-theme="dark"] .resource-card:hover,
+html[data-theme="dark"] .navigation-card:focus-within,
+html[data-theme="dark"] .resource-card:focus-within {
+  border-color: #56665f;
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.14);
+}
+
+html[data-theme="dark"] .resource-card-complete {
+  border-color: #476057;
+  background: #202d28;
+  box-shadow: inset 3px 0 0 #668c7d;
+}
+
+html[data-theme="dark"] .resource-card-complete:hover,
+html[data-theme="dark"] .resource-card-complete:focus-within {
+  border-color: #69877b;
+  box-shadow:
+    inset 3px 0 0 #789f90,
+    0 7px 18px rgba(0, 0, 0, 0.14);
+}
+
+html[data-theme="dark"] .resource-type {
+  color: #c9b984;
+}
+
+html[data-theme="dark"] .resource-type-complete {
+  background: #30443c;
+  color: #abcabd;
+}
+
+html[data-theme="dark"] .card-details div,
+html[data-theme="dark"] .stats-grid div {
+  background: #2b3330;
+}
+
+html[data-theme="dark"] .order-choice {
+  border-color: #52635c;
+  background: rgba(38, 48, 44, 0.84);
+}
+
+html[data-theme="dark"] .order-choice:hover,
+html[data-theme="dark"] .order-choice:focus-visible,
+html[data-theme="dark"] .order-choice.is-current {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+html[data-theme="dark"] .parts-label {
+  color: #87938e;
+}
+
+html[data-theme="dark"] .button-secondary {
+  border-color: #53625c;
+  background: var(--surface);
+}
+
+html[data-theme="dark"] .button-secondary:hover,
+html[data-theme="dark"] .button-quiet:hover {
+  background: #2d3733;
+}
+
+html[data-theme="dark"] .meta-list li + li::before {
+  color: #68756f;
+}
+
+html[data-theme="dark"] .progress-track {
+  background: #3a4540;
+}
+
+html[data-theme="dark"] .option:hover {
+  border-color: #62776e;
+  background: #29322f;
+}
+
+html[data-theme="dark"] .option.is-selected {
+  background: #2b3c35;
+}
+
+html[data-theme="dark"] .option-letter {
+  border-color: #607069;
+}
+
+html[data-theme="dark"] .score-ring-bg {
+  stroke: #3b4641;
+}
+
+html[data-theme="dark"] .stats-grid .stat-correct {
+  background: var(--correct-soft);
+}
+
+html[data-theme="dark"] .stats-grid .stat-incorrect {
+  background: var(--incorrect-soft);
+}
+
+html[data-theme="dark"] .scoring-info summary {
+  border-color: #53615b;
+}
+
+html[data-theme="dark"] .confirm-dialog {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.34);
+}
+
+html[data-theme="dark"] .confirm-dialog::backdrop {
+  background: rgba(8, 11, 10, 0.58);
+}
+
+html[data-theme="dark"] .status {
+  background: #303936;
+}
+
+html[data-theme="dark"] .status-correct {
+  background: var(--correct-soft);
+  color: var(--correct);
+}
+
+html[data-theme="dark"] .status-incorrect {
+  background: var(--incorrect-soft);
+  color: var(--incorrect);
+}
+
+html[data-theme="dark"] .review-option.answer-correct {
+  border-color: #456554;
+}
+
+html[data-theme="dark"] .review-option.answer-incorrect {
+  border-color: #704947;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1167,6 +1384,18 @@ h3 {
 @media (max-width: 520px) {
   .shell {
     width: min(calc(100% - 28px), var(--shell));
+  }
+
+  .header-inner {
+    gap: 10px;
+  }
+
+  .brand {
+    font-size: 0.8rem;
+  }
+
+  .header-actions {
+    gap: 6px;
   }
 
   .section-heading {
