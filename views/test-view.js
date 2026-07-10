@@ -7,9 +7,6 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
   const selected = session.selectedAnswer(question.id);
   const liveAnswerLocked = session.isLiveAnswerLocked(question.id);
   const selectedIsCorrect = selected === question.respuestaCorrecta;
-  const correctAnswer = question.opciones.find(
-    (answer) => answer.id === question.respuestaCorrecta,
-  );
   const answeredCount = session.answeredCount();
   const progress = total ? (answeredCount / total) * 100 : 0;
 
@@ -77,6 +74,13 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
                 .map((answer) => {
                   const isSelected = selected === answer.id;
                   const isCorrectAnswer = answer.id === question.respuestaCorrecta;
+                  const liveIcon = liveAnswerLocked
+                    ? isCorrectAnswer
+                      ? '<span class="option-live-icon is-correct" role="img" aria-label="Respuesta correcta">✓</span>'
+                      : isSelected
+                        ? '<span class="option-live-icon is-incorrect" role="img" aria-label="Respuesta elegida, incorrecta">×</span>'
+                        : ""
+                    : "";
                   const liveState = liveAnswerLocked
                     ? isSelected
                       ? selectedIsCorrect
@@ -91,17 +95,13 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
                       <input type="radio" name="answer" value="${escapeHtml(answer.id)}" ${isSelected ? "checked" : ""} ${liveAnswerLocked ? "disabled" : ""}>
                       <span class="option-letter" aria-hidden="true">${escapeHtml(answer.id)}</span>
                       <span>${escapeHtml(answer.texto)}</span>
+                      ${liveIcon}
                     </label>
                   `;
                 })
                 .join("")}
             </div>
-            ${liveAnswerLocked ? `
-              <div class="live-feedback ${selectedIsCorrect ? "is-correct" : "is-incorrect"}" role="status" tabindex="-1">
-                <span class="live-feedback-title">${selectedIsCorrect ? "Respuesta correcta" : "Respuesta incorrecta"}</span>
-                ${selectedIsCorrect || !correctAnswer ? "" : `<span>La respuesta correcta es ${escapeHtml(String(correctAnswer.id).toLocaleUpperCase("es"))}. ${escapeHtml(correctAnswer.texto)}</span>`}
-              </div>
-            ` : ""}
+            ${liveAnswerLocked ? `<span class="sr-only" role="status">${selectedIsCorrect ? "Respuesta correcta" : "Respuesta incorrecta"}</span>` : ""}
           </fieldset>
         </form>
 

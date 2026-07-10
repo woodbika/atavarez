@@ -290,7 +290,7 @@ export class AppController {
       if (!this.session.selectAnswer(event.target.value)) return;
       if (this.session.isLiveAnswerLocked(this.session.currentQuestion.id)) {
         this.renderCurrentQuestion();
-        this.root.querySelector(".live-feedback")?.focus({ preventScroll: true });
+        this.root.querySelector(".question-card")?.focus({ preventScroll: true });
         return;
       }
       form.querySelectorAll(".option").forEach((option) => option.classList.remove("is-selected"));
