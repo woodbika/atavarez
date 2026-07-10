@@ -14,11 +14,28 @@ export class AppController {
     this.headerSearch = document.querySelector("#header-search");
     this.headerSearchInput = document.querySelector("#resource-search");
     this.headerSearchLabel = this.headerSearch.querySelector("label");
+    this.focusToggle = document.querySelector("#focus-toggle");
+    this.focusToggleLabel = this.focusToggle.querySelector(".focus-toggle-label");
+    this.focusBackdrop = document.querySelector("#focus-backdrop");
+    this.focusTransitionTimer = null;
     this.onRouteChange = this.onRouteChange.bind(this);
   }
 
   start() {
     this.headerSearch.addEventListener("submit", (event) => event.preventDefault());
+    this.focusToggle.addEventListener("click", () => {
+      const isActive =
+        document.body.classList.contains("focus-mode") &&
+        !document.body.classList.contains("focus-mode-exiting");
+      this.setFocusMode(!isActive);
+    });
+    this.focusBackdrop.addEventListener("click", () => {
+      const canDismissFromBackdrop = window.matchMedia("(min-width: 901px)").matches;
+      const isActive =
+        document.body.classList.contains("focus-mode") &&
+        !document.body.classList.contains("focus-mode-exiting");
+      if (canDismissFromBackdrop && isActive) this.setFocusMode(false);
+    });
     window.addEventListener("hashchange", this.onRouteChange);
     this.onRouteChange();
   }
@@ -37,6 +54,9 @@ export class AppController {
   onRouteChange() {
     this.hideHeaderSearch();
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
+    const isTestRoute = section === "test" && Boolean(id);
+    this.focusToggle.hidden = !isTestRoute;
+    if (!isTestRoute) this.setFocusMode(false, { immediate: true });
     const keepsCurrentResult =
       (section === "resultados" || section === "revision") &&
       this.currentResult?.testId === id;
@@ -66,6 +86,47 @@ export class AppController {
     this.headerSearchLabel.textContent = label;
     this.headerSearchInput.placeholder = label;
     this.headerSearchInput.oninput = () => onSearch(this.headerSearchInput.value);
+  }
+
+  setFocusMode(active, { immediate = false } = {}) {
+    window.clearTimeout(this.focusTransitionTimer);
+    this.focusTransitionTimer = null;
+    const label = active ? "Salir del modo concentración" : "Activar modo concentración";
+    this.focusToggle.setAttribute("aria-pressed", String(active));
+    this.focusToggle.setAttribute("aria-label", label);
+    this.focusToggle.setAttribute("title", label);
+    this.focusToggleLabel.textContent = label;
+    if (active) {
+      document.body.classList.remove("focus-mode-exiting");
+      document.body.classList.add("focus-mode", "focus-mode-entering");
+      this.focusTransitionTimer = window.setTimeout(() => {
+        document.body.classList.remove("focus-mode-entering");
+        this.focusTransitionTimer = null;
+      }, 220);
+      this.root.querySelector(".question-card")?.focus({ preventScroll: true });
+      return;
+    }
+
+    const finishTransition = () => {
+      document.body.classList.remove(
+        "focus-mode",
+        "focus-mode-entering",
+        "focus-mode-exiting",
+      );
+      this.focusTransitionTimer = null;
+    };
+
+    if (
+      immediate ||
+      !document.body.classList.contains("focus-mode") ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      finishTransition();
+      return;
+    }
+
+    document.body.classList.add("focus-mode-exiting");
+    this.focusTransitionTimer = window.setTimeout(finishTransition, 200);
   }
 
   showOppositions() {
@@ -129,7 +190,11 @@ export class AppController {
   showTest(id, requestedOrder = "") {
     const resource = this.repository.getById(id);
     const test = this.repository.getTestById(id);
-    if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
+    if (!test) {
+      this.focusToggle.hidden = true;
+      this.setFocusMode(false, { immediate: true });
+      return renderNotFound(this.root, "El test solicitado no existe.");
+    }
     const isComplete = resource.variant === "complete";
     const orderMode = isComplete && requestedOrder === "aleatorio"
       ? "aleatorio"

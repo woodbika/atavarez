@@ -52,32 +52,37 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
         </nav>
       </div>
 
-      <form id="question-form" class="question-card" tabindex="-1">
-        <fieldset>
-          <legend><span class="sr-only">Pregunta ${currentIndex + 1}: </span>${escapeHtml(question.enunciado)}</legend>
-          <div class="options-list">
-            ${question.opciones
-              .map(
-                (answer) => `
-                  <label class="option ${selected === answer.id ? "is-selected" : ""}">
-                    <input type="radio" name="answer" value="${escapeHtml(answer.id)}" ${selected === answer.id ? "checked" : ""}>
-                    <span class="option-letter" aria-hidden="true">${escapeHtml(answer.id)}</span>
-                    <span>${escapeHtml(answer.texto)}</span>
-                  </label>
-                `,
-              )
-              .join("")}
-          </div>
-        </fieldset>
-      </form>
+      <div class="focus-content">
+        <form id="question-form" class="question-card" tabindex="-1">
+          <fieldset>
+            <legend>
+              <span class="question-number">Pregunta ${currentIndex + 1}</span>
+              <span>${escapeHtml(question.enunciado)}</span>
+            </legend>
+            <div class="options-list">
+              ${question.opciones
+                .map(
+                  (answer) => `
+                    <label class="option ${selected === answer.id ? "is-selected" : ""}">
+                      <input type="radio" name="answer" value="${escapeHtml(answer.id)}" ${selected === answer.id ? "checked" : ""}>
+                      <span class="option-letter" aria-hidden="true">${escapeHtml(answer.id)}</span>
+                      <span>${escapeHtml(answer.texto)}</span>
+                    </label>
+                  `,
+                )
+                .join("")}
+            </div>
+          </fieldset>
+        </form>
 
-      <nav class="test-navigation" aria-label="Navegación entre preguntas">
-        <button class="button button-secondary" type="button" data-action="previous" ${currentIndex === 0 ? "disabled" : ""}>Anterior</button>
-        <div class="test-navigation-end">
-          <button class="button button-secondary" type="button" data-action="next" ${currentIndex === total - 1 ? "disabled" : ""}>Siguiente</button>
-          <button class="button button-primary" type="button" data-action="finish">Finalizar test</button>
-        </div>
-      </nav>
+        <nav class="test-navigation" aria-label="Navegación entre preguntas">
+          <button class="button button-secondary" type="button" data-action="previous" ${currentIndex === 0 ? "disabled" : ""}>Anterior</button>
+          <div class="test-navigation-end">
+            <button class="button button-secondary" type="button" data-action="next" ${currentIndex === total - 1 ? "disabled" : ""}>Siguiente</button>
+            <button class="button button-primary" type="button" data-action="finish">Finalizar test</button>
+          </div>
+        </nav>
+      </div>
     </section>
 
     <dialog id="incomplete-dialog" class="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
