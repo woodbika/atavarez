@@ -163,11 +163,11 @@ export function renderResources(
               ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
                   <span>Elige el orden</span>
                   <div class="order-actions">
-                    <a class="order-choice ${progress?.orderMode === "natural" ? "is-current" : ""}" href="${escapeHtml(href)}/natural">Orden natural</a>
-                    <a class="order-choice ${progress?.orderMode === "aleatorio" ? "is-current" : ""}" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
+                    <a class="resource-action ${progress?.orderMode === "natural" ? "is-current" : ""}" href="${escapeHtml(href)}/natural">Orden natural</a>
+                    <a class="resource-action ${progress?.orderMode === "aleatorio" ? "is-current" : ""}" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
                   </div>
                 </div>`
-              : `<a class="button ${progress ? "button-primary" : "button-secondary"}" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
+              : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
           </article>
         `;
       })

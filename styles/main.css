@@ -431,6 +431,7 @@ h3 {
 }
 
 .card-details div {
+  min-width: 0;
   padding: 8px;
   border-radius: 9px;
   background: #f3f5f4;
@@ -446,6 +447,7 @@ h3 {
   margin: 2px 0 0;
   font-size: 0.86rem;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .card-summary {
@@ -499,7 +501,7 @@ h3 {
   gap: 7px;
 }
 
-.order-choice {
+.resource-action {
   display: flex;
   min-height: 38px;
   align-items: center;
@@ -516,12 +518,17 @@ h3 {
   text-decoration: none;
 }
 
-.order-choice:hover,
-.order-choice:focus-visible,
-.order-choice.is-current {
+.resource-action:hover,
+.resource-action:focus-visible {
   border-color: var(--brand);
-  background: var(--brand);
-  color: var(--on-brand);
+  background: #edf1ef;
+  color: var(--brand);
+}
+
+.resource-action.is-current {
+  border-color: var(--brand);
+  background: #edf1ef;
+  color: var(--brand);
 }
 
 .parts-label {
@@ -536,7 +543,7 @@ h3 {
   font-weight: 650;
 }
 
-.resource-card .button {
+.resource-card > .resource-action {
   align-self: flex-start;
   margin-top: auto;
 }
@@ -1248,17 +1255,22 @@ html[data-theme="dark"] .stats-grid div {
   background: #2b3330;
 }
 
-html[data-theme="dark"] .order-choice {
+html[data-theme="dark"] .resource-action {
   border-color: #52635c;
   background: rgba(38, 48, 44, 0.84);
 }
 
-html[data-theme="dark"] .order-choice:hover,
-html[data-theme="dark"] .order-choice:focus-visible,
-html[data-theme="dark"] .order-choice.is-current {
+html[data-theme="dark"] .resource-action:hover,
+html[data-theme="dark"] .resource-action:focus-visible {
   border-color: var(--brand);
-  background: var(--brand);
-  color: var(--on-brand);
+  background: #2d3733;
+  color: var(--brand);
+}
+
+html[data-theme="dark"] .resource-action.is-current {
+  border-color: var(--brand);
+  background: #2d3733;
+  color: var(--brand);
 }
 
 html[data-theme="dark"] .parts-label {
@@ -1353,6 +1365,17 @@ html[data-theme="dark"] .review-option.answer-incorrect {
   border: 0;
 }
 
+@media (max-width: 900px) {
+  .navigation-grid,
+  .resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card-details {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 780px) {
   .main-content {
     padding-block: 32px 58px;
@@ -1364,11 +1387,6 @@ html[data-theme="dark"] .review-option.answer-incorrect {
 
   .score-layout {
     grid-template-columns: 1fr;
-  }
-
-  .navigation-grid,
-  .resource-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .navigation-card,
