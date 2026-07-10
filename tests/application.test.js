@@ -62,6 +62,34 @@ test("la sesión mantiene respuestas durante el intento y permite navegar", () =
   assert.equal(session.currentQuestion, source.preguntas[2]);
 });
 
+test("la respuesta en vivo corrige y bloquea la pregunta respondida", () => {
+  const source = tests[0];
+  const sample = { ...source, preguntas: source.preguntas.slice(0, 2) };
+  const session = new TestSession(sample);
+  const firstQuestion = sample.preguntas[0];
+  const incorrectAnswer = firstQuestion.opciones.find(
+    (option) => option.id !== firstQuestion.respuestaCorrecta,
+  ).id;
+
+  session.setLiveResponseEnabled(true);
+  assert.equal(session.selectAnswer(incorrectAnswer), true);
+  assert.equal(session.isLiveAnswerLocked(firstQuestion.id), true);
+  assert.equal(session.selectAnswer(firstQuestion.respuestaCorrecta), false);
+  assert.equal(session.clearCurrentAnswer(), false);
+  assert.equal(session.selectedAnswer(firstQuestion.id), incorrectAnswer);
+
+  session.currentIndex = 1;
+  assert.equal(session.isLiveAnswerLocked(sample.preguntas[1].id), false);
+  session.setLiveResponseEnabled(false);
+  session.selectAnswer(sample.preguntas[1].opciones[0].id);
+  assert.equal(session.isLiveAnswerLocked(sample.preguntas[1].id), false);
+  session.setLiveResponseEnabled(true);
+  assert.equal(session.isLiveAnswerLocked(sample.preguntas[1].id), true);
+  session.setLiveResponseEnabled(false);
+  session.currentIndex = 0;
+  assert.equal(session.isLiveAnswerLocked(firstQuestion.id), true);
+});
+
 test("el portal agrupa oposiciones, temas y recursos", () => {
   const repository = new ResourceRepository(resources);
   const [opposition] = repository.getOppositions();

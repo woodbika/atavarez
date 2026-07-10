@@ -3,6 +3,8 @@ export class TestSession {
     this.test = test;
     this.answers = {};
     this.currentIndex = 0;
+    this.liveResponseEnabled = false;
+    this.liveLockedQuestions = new Set();
   }
 
   get currentQuestion() {
@@ -10,15 +12,35 @@ export class TestSession {
   }
 
   selectAnswer(optionId) {
-    this.answers[String(this.currentQuestion.id)] = optionId;
+    const questionId = String(this.currentQuestion.id);
+    if (this.liveLockedQuestions.has(questionId)) return false;
+    this.answers[questionId] = optionId;
+    if (this.liveResponseEnabled) this.liveLockedQuestions.add(questionId);
+    return true;
   }
 
   clearCurrentAnswer() {
-    delete this.answers[String(this.currentQuestion.id)];
+    const questionId = String(this.currentQuestion.id);
+    if (this.liveLockedQuestions.has(questionId)) return false;
+    delete this.answers[questionId];
+    return true;
   }
 
   selectedAnswer(questionId) {
     return this.answers[String(questionId)] ?? null;
+  }
+
+  setLiveResponseEnabled(enabled) {
+    this.liveResponseEnabled = enabled;
+    if (enabled) {
+      Object.keys(this.answers).forEach((questionId) => {
+        this.liveLockedQuestions.add(questionId);
+      });
+    }
+  }
+
+  isLiveAnswerLocked(questionId) {
+    return this.liveLockedQuestions.has(String(questionId));
   }
 
   answeredCount() {

@@ -5,6 +5,11 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
   const { test, currentQuestion: question, currentIndex } = session;
   const total = test.preguntas.length;
   const selected = session.selectedAnswer(question.id);
+  const liveAnswerLocked = session.isLiveAnswerLocked(question.id);
+  const selectedIsCorrect = selected === question.respuestaCorrecta;
+  const correctAnswer = question.opciones.find(
+    (answer) => answer.id === question.respuestaCorrecta,
+  );
   const answeredCount = session.answeredCount();
   const progress = total ? (answeredCount / total) * 100 : 0;
 
@@ -43,7 +48,6 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
                     ${current ? "" : 'tabindex="-1"'}
                   >
                     <span>${index + 1}</span>
-                    ${answered ? '<span class="question-pill-status" aria-hidden="true">✓</span>' : ""}
                   </button>
                 `;
               })
@@ -54,6 +58,15 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
 
       <div class="focus-content">
         <form id="question-form" class="question-card" tabindex="-1">
+          <div class="live-answer-setting">
+            <label class="live-answer-toggle" title="Corrige cada respuesta al momento y bloquea esa pregunta">
+              <span>Respuesta en vivo</span>
+              <input id="live-answer-toggle" type="checkbox" ${session.liveResponseEnabled ? "checked" : ""} aria-describedby="live-answer-help">
+              <span class="live-answer-control" aria-hidden="true"></span>
+            </label>
+            <span id="live-answer-help" class="sr-only">Al responder se mostrará el resultado y ya no se podrá cambiar esa pregunta.</span>
+          </div>
+
           <fieldset>
             <legend>
               <span class="question-number">Pregunta ${currentIndex + 1}</span>
@@ -61,17 +74,34 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
             </legend>
             <div class="options-list">
               ${question.opciones
-                .map(
-                  (answer) => `
-                    <label class="option ${selected === answer.id ? "is-selected" : ""}">
-                      <input type="radio" name="answer" value="${escapeHtml(answer.id)}" ${selected === answer.id ? "checked" : ""}>
+                .map((answer) => {
+                  const isSelected = selected === answer.id;
+                  const isCorrectAnswer = answer.id === question.respuestaCorrecta;
+                  const liveState = liveAnswerLocked
+                    ? isSelected
+                      ? selectedIsCorrect
+                        ? "is-live-correct"
+                        : "is-live-incorrect"
+                      : isCorrectAnswer
+                        ? "is-live-solution"
+                        : ""
+                    : "";
+                  return `
+                    <label class="option ${isSelected ? "is-selected" : ""} ${liveState} ${liveAnswerLocked ? "is-locked" : ""}">
+                      <input type="radio" name="answer" value="${escapeHtml(answer.id)}" ${isSelected ? "checked" : ""} ${liveAnswerLocked ? "disabled" : ""}>
                       <span class="option-letter" aria-hidden="true">${escapeHtml(answer.id)}</span>
                       <span>${escapeHtml(answer.texto)}</span>
                     </label>
-                  `,
-                )
+                  `;
+                })
                 .join("")}
             </div>
+            ${liveAnswerLocked ? `
+              <div class="live-feedback ${selectedIsCorrect ? "is-correct" : "is-incorrect"}" role="status" tabindex="-1">
+                <span class="live-feedback-title">${selectedIsCorrect ? "Respuesta correcta" : "Respuesta incorrecta"}</span>
+                ${selectedIsCorrect || !correctAnswer ? "" : `<span>La respuesta correcta es ${escapeHtml(String(correctAnswer.id).toLocaleUpperCase("es"))}. ${escapeHtml(correctAnswer.texto)}</span>`}
+              </div>
+            ` : ""}
           </fieldset>
         </form>
 

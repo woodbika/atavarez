@@ -266,12 +266,19 @@ export class AppController {
       showOrder: resource?.variant === "complete",
     });
     const form = this.root.querySelector("#question-form");
+    const liveAnswerToggle = this.root.querySelector("#live-answer-toggle");
+
+    liveAnswerToggle.addEventListener("change", (event) => {
+      this.session.setLiveResponseEnabled(event.target.checked);
+      this.renderCurrentQuestion();
+      this.root.querySelector("#live-answer-toggle")?.focus({ preventScroll: true });
+    });
 
     form.addEventListener("click", (event) => {
       if (event.target.name !== "answer") return;
       const selected = this.session.selectedAnswer(this.session.currentQuestion.id);
       if (selected !== event.target.value) return;
-      this.session.clearCurrentAnswer();
+      if (!this.session.clearCurrentAnswer()) return;
       event.target.checked = false;
       event.target.closest(".option").classList.remove("is-selected");
       this.updateAnsweredLabel();
@@ -280,7 +287,12 @@ export class AppController {
 
     form.addEventListener("change", (event) => {
       if (event.target.name !== "answer") return;
-      this.session.selectAnswer(event.target.value);
+      if (!this.session.selectAnswer(event.target.value)) return;
+      if (this.session.isLiveAnswerLocked(this.session.currentQuestion.id)) {
+        this.renderCurrentQuestion();
+        this.root.querySelector(".live-feedback")?.focus({ preventScroll: true });
+        return;
+      }
       form.querySelectorAll(".option").forEach((option) => option.classList.remove("is-selected"));
       event.target.closest(".option").classList.add("is-selected");
       this.updateAnsweredLabel();
@@ -351,17 +363,6 @@ export class AppController {
       "aria-label",
       `Pregunta ${this.session.currentIndex + 1}, ${answered ? "respondida" : "sin responder"}`,
     );
-    const existingStatus = pill.querySelector(".question-pill-status");
-    if (!answered) {
-      existingStatus?.remove();
-      return;
-    }
-    if (existingStatus) return;
-    const status = document.createElement("span");
-    status.className = "question-pill-status";
-    status.setAttribute("aria-hidden", "true");
-    status.textContent = "✓";
-    pill.append(status);
   }
 
   centerCurrentQuestionPill() {

@@ -11,6 +11,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Una pregunta por pantalla, navegación anterior/siguiente y cambio de respuestas.
 - Modo concentración para centrar la pregunta y sus controles sobre un fondo suavemente difuminado.
 - Ajuste temporal del tamaño del texto de las preguntas y respuestas.
+- Corrección opcional en vivo, con respuesta inmediata y bloqueo de cada pregunta evaluada.
 - Indicador de progreso y confirmación al finalizar con preguntas pendientes.
 - Resultados con aciertos, errores, preguntas sin responder, porcentaje y puntuación sobre 10 (+1 por acierto, −⅓ por error y 0 en blanco).
 - Revisión completa con respuesta propia, solución y estado textual de cada pregunta.
