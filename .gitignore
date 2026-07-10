@@ -1,0 +1,31 @@
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Configuración local de editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencias y resultados de herramientas opcionales
+node_modules/
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Variables y configuración local sensible
+.env
+.env.*
+!.env.example
+
+# Archivos temporales
+*.tmp
+*.temp
+*~
