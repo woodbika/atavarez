@@ -21,6 +21,7 @@ export class AppController {
     this.testFontLevel = 1;
     this.focusBackdrop = document.querySelector("#focus-backdrop");
     this.focusTransitionTimer = null;
+    this.reviewScrollHandler = null;
     this.onRouteChange = this.onRouteChange.bind(this);
   }
 
@@ -60,6 +61,11 @@ export class AppController {
   }
 
   onRouteChange() {
+    if (this.reviewScrollHandler) {
+      window.removeEventListener("scroll", this.reviewScrollHandler);
+      window.removeEventListener("resize", this.reviewScrollHandler);
+      this.reviewScrollHandler = null;
+    }
     this.hideHeaderSearch();
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
     const isTestRoute = section === "test" && Boolean(id);
@@ -462,5 +468,47 @@ export class AppController {
     this.session = null;
     const orderedTest = this.orderTestQuestions(test, result.orderMode, result.questionOrder);
     renderReview(this.root, orderedTest, result, this.resourceContext(test));
+    const filterButtons = [...this.root.querySelectorAll("[data-review-filter]")];
+    const reviewRows = [...this.root.querySelectorAll("[data-review-state]")];
+    const reviewList = this.root.querySelector(".review-list");
+    const emptyState = this.root.querySelector("#review-empty");
+    const filterStatus = this.root.querySelector("#review-filter-status");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.reviewFilter;
+        let visibleCount = 0;
+        filterButtons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle("is-active", isActive);
+          item.setAttribute("aria-pressed", String(isActive));
+        });
+        reviewRows.forEach((row) => {
+          const isVisible = filter === "all" || row.dataset.reviewState === filter;
+          row.hidden = !isVisible;
+          if (isVisible) visibleCount += 1;
+        });
+        reviewList.hidden = visibleCount === 0;
+        emptyState.hidden = visibleCount > 0;
+        emptyState.textContent = filter === "unanswered"
+          ? "No hay preguntas sin responder."
+          : "No hay respuestas incorrectas.";
+        filterStatus.textContent = `${visibleCount} ${visibleCount === 1 ? "respuesta mostrada" : "respuestas mostradas"}`;
+      });
+    });
+
+    const scrollTopButton = this.root.querySelector("#review-scroll-top");
+    this.reviewScrollHandler = () => {
+      scrollTopButton.hidden = window.scrollY < window.innerHeight * 0.55;
+    };
+    window.addEventListener("scroll", this.reviewScrollHandler, { passive: true });
+    window.addEventListener("resize", this.reviewScrollHandler);
+    this.reviewScrollHandler();
+    scrollTopButton.addEventListener("click", () => {
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth";
+      window.scrollTo({ top: 0, behavior });
+    });
   }
 }

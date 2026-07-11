@@ -11,12 +11,11 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
   });
 
   root.innerHTML = `
-    <a class="back-link" href="${backHref}">← ${escapeHtml(backLabel)}</a>
+    <a class="back-link view-back-link" href="${backHref}">← ${escapeHtml(backLabel)}</a>
     <section class="results-shell" aria-labelledby="results-title">
       <header class="results-heading">
         <p class="eyebrow">Resultado</p>
         <h1 id="results-title">Resultados del intento</h1>
-        ${metadata(test)}
       </header>
 
       <div class="score-layout">
@@ -65,10 +64,13 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
           </dl>
         </div>
 
-        <p class="result-test-reference">
-          <span>Test realizado:</span>
-          <span class="result-test-name">${escapeHtml(formatDisplayTitle(test.titulo))}</span>
-        </p>
+        <div class="result-test-context">
+          ${metadata(test)}
+          <p class="result-test-reference">
+            <span>Test realizado:</span>
+            <span class="result-test-name">${escapeHtml(formatDisplayTitle(test.titulo))}</span>
+          </p>
+        </div>
       </div>
 
       <div class="result-actions">
