@@ -393,11 +393,18 @@ h3 {
   line-height: 1.2;
 }
 
-.filter-button:hover,
 .filter-button:focus-visible {
   border-color: var(--brand);
   background: #edf1ef;
   color: var(--brand);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filter-button:hover {
+    border-color: var(--brand);
+    background: #edf1ef;
+    color: var(--brand);
+  }
 }
 
 .filter-button.is-active {
@@ -1961,12 +1968,19 @@ html[data-theme="dark"] .filter-button {
   background: var(--surface);
 }
 
-html[data-theme="dark"] .filter-button:hover,
 html[data-theme="dark"] .filter-button:focus-visible,
 html[data-theme="dark"] .filter-button.is-active {
   border-color: var(--brand);
   background: #2d3733;
   color: var(--brand);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme="dark"] .filter-button:hover {
+    border-color: var(--brand);
+    background: #2d3733;
+    color: var(--brand);
+  }
 }
 
 html[data-theme="dark"] .meta-list li + li::before {

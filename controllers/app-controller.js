@@ -204,11 +204,14 @@ export class AppController {
       );
     };
 
-    filterButton.addEventListener("click", () => {
+    filterButton.addEventListener("click", (event) => {
       onlyIvotTests = !onlyIvotTests;
       filterButton.setAttribute("aria-pressed", String(onlyIvotTests));
       filterButton.classList.toggle("is-active", onlyIvotTests);
       applyResourceFilters();
+      if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
+        filterButton.blur();
+      }
     });
 
     this.showHeaderSearch("Buscar recursos", (searchQuery) => {
@@ -313,7 +316,7 @@ export class AppController {
     });
 
     this.root.querySelectorAll("[data-question-index]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
         this.navigateToQuestion(Number(button.dataset.questionIndex));
       });
       button.addEventListener("keydown", (event) => {
@@ -494,6 +497,9 @@ export class AppController {
           ? "No hay preguntas sin responder."
           : "No hay respuestas incorrectas.";
         filterStatus.textContent = `${visibleCount} ${visibleCount === 1 ? "respuesta mostrada" : "respuestas mostradas"}`;
+        if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
+          button.blur();
+        }
       });
     });
 
