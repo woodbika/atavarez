@@ -68,6 +68,8 @@ export class AppController {
       filename = "portada-temas-gobierno-vasco.jpg";
     } else if (section === "test" || section === "resultados") {
       filename = "portada-resultados.jpg";
+    } else if (section === "revision") {
+      filename = "portada-revision.jpg";
     } else if (section) {
       return;
     }

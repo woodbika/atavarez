@@ -11,7 +11,7 @@ export function renderReview(root, test, result, { backHref }) {
   root.innerHTML = `
     <a class="back-link view-back-link" href="#/resultados/${encodeURIComponent(test.id)}">← Volver al resultado</a>
     <section class="review-shell" aria-labelledby="review-title">
-      <header class="review-heading">
+      <header class="review-heading review-hero">
         <p class="eyebrow">Revisión completa</p>
         <h1 id="review-title">Revisa tus respuestas</h1>
         <p>${escapeHtml(formatDisplayTitle(test.titulo))}</p>

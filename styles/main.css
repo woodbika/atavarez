@@ -18,6 +18,7 @@
   --image-cover-basque-themes: url("../assets/images/portada-temas-gobierno-vasco.jpg");
   --image-cover-resources: url("../assets/images/portada-recursos.jpg");
   --image-cover-results: url("../assets/images/portada-resultados.jpg");
+  --image-cover-review: url("../assets/images/portada-revision.jpg");
   --radius: 11px;
   --shell: 1040px;
 }
@@ -405,6 +406,49 @@ html[data-theme="dark"] .theme-icon-sun {
 
 .results-hero .eyebrow {
   color: var(--correct);
+}
+
+.review-hero {
+  display: flex;
+  min-height: 245px;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(28px, 5vw, 42px);
+  overflow: hidden;
+  border-radius: 14px;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 249, 1) 0%,
+      rgba(248, 250, 249, 1) 8%,
+      rgba(248, 250, 249, 0.95) 42%,
+      rgba(248, 250, 249, 0.72) 68%,
+      rgba(248, 250, 249, 0.18) 100%
+    ),
+    var(--image-cover-review);
+  background-position: center 48%;
+  background-size: cover;
+  text-align: left;
+}
+
+.review-hero h1 {
+  max-width: 500px;
+  color: var(--ink);
+}
+
+.review-hero .eyebrow {
+  color: var(--correct);
+}
+
+.review-heading.review-hero > p:not(.eyebrow) {
+  max-width: 510px;
+  margin-inline: 0;
+  color: #52605b;
+}
+
+.review-heading.review-hero .meta-list {
+  justify-content: flex-start;
 }
 
 .opposition-hero h1,
@@ -2103,6 +2147,31 @@ html[data-theme="dark"] .results-hero .eyebrow {
   color: #9bc7b5;
 }
 
+html[data-theme="dark"] .review-hero {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(27, 33, 31, 1) 0%,
+      rgba(27, 33, 31, 1) 8%,
+      rgba(27, 33, 31, 0.95) 42%,
+      rgba(27, 33, 31, 0.8) 68%,
+      rgba(27, 33, 31, 0.52) 100%
+    ),
+    var(--image-cover-review);
+}
+
+html[data-theme="dark"] .review-hero h1 {
+  color: #f1f4f2;
+}
+
+html[data-theme="dark"] .review-hero .eyebrow {
+  color: #9bc7b5;
+}
+
+html[data-theme="dark"] .review-heading.review-hero > p:not(.eyebrow) {
+  color: #aab4b0;
+}
+
 html[data-theme="dark"] .opposition-hero h1,
 html[data-theme="dark"] .resource-hero h1 {
   color: #f1f4f2;
@@ -2449,6 +2518,12 @@ html[data-theme="dark"] .review-scroll-top:hover {
     background-position: center 66%;
   }
 
+  .review-hero {
+    min-height: 235px;
+    padding: 28px;
+    background-position: 56% 48%;
+  }
+
   .score-layout {
     grid-template-columns: 1fr;
   }
@@ -2500,6 +2575,13 @@ html[data-theme="dark"] .review-scroll-top:hover {
     padding: 22px;
     border-radius: 11px;
     background-position: 56% 66%;
+  }
+
+  .review-hero {
+    min-height: 225px;
+    padding: 22px;
+    border-radius: 11px;
+    background-position: 60% 48%;
   }
 
   .focus-mode .focus-toggle {
