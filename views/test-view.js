@@ -61,13 +61,20 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
               <input id="live-answer-toggle" type="checkbox" ${session.liveResponseEnabled ? "checked" : ""} aria-describedby="live-answer-help">
               <span class="live-answer-control" aria-hidden="true"></span>
             </label>
+            <label class="live-answer-toggle" title="Avanza a la siguiente pregunta después de mostrar la corrección">
+              <span>Responder y avanzar</span>
+              <input id="auto-advance-toggle" type="checkbox" ${session.autoAdvanceEnabled ? "checked" : ""} aria-describedby="auto-advance-help">
+              <span class="live-answer-control" aria-hidden="true"></span>
+            </label>
             <span id="live-answer-help" class="sr-only">Al responder se mostrará el resultado y ya no se podrá cambiar esa pregunta.</span>
+            <span id="auto-advance-help" class="sr-only">Después de responder, espera un momento y avanza a la siguiente pregunta.</span>
           </div>
 
           <fieldset>
             <legend>
               <span class="question-number">Pregunta ${currentIndex + 1}</span>
               <span>${escapeHtml(question.enunciado)}</span>
+              <span class="auto-advance-progress" aria-hidden="true"><span></span></span>
             </legend>
             <div class="options-list">
               ${question.opciones

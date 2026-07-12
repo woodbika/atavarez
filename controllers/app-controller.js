@@ -17,6 +17,7 @@ export class AppController {
     this.currentResult = null;
     this.testControls = new TestControlsController(root);
     this.reviewController = null;
+    this.autoAdvanceTimer = null;
     this.onRouteChange = this.onRouteChange.bind(this);
   }
 
@@ -31,6 +32,7 @@ export class AppController {
   }
 
   onRouteChange() {
+    this.clearAutoAdvance();
     this.reviewController?.destroy();
     this.reviewController = null;
     this.testControls.hideSearch();
@@ -164,6 +166,7 @@ export class AppController {
   }
 
   renderCurrentQuestion() {
+    this.clearAutoAdvance();
     const resource = this.repository.getById(this.session.test.id);
     renderTest(this.root, this.session, {
       ...this.resourceContext(this.session.test),
@@ -172,6 +175,7 @@ export class AppController {
     });
     const form = this.root.querySelector("#question-form");
     const liveAnswerToggle = this.root.querySelector("#live-answer-toggle");
+    const autoAdvanceToggle = this.root.querySelector("#auto-advance-toggle");
 
     liveAnswerToggle.addEventListener("change", (event) => {
       this.session.setLiveResponseEnabled(event.target.checked);
@@ -179,11 +183,18 @@ export class AppController {
       this.root.querySelector("#live-answer-toggle")?.focus({ preventScroll: true });
     });
 
+    autoAdvanceToggle.addEventListener("change", (event) => {
+      this.session.setAutoAdvanceEnabled(event.target.checked);
+      this.renderCurrentQuestion();
+      this.root.querySelector("#auto-advance-toggle")?.focus({ preventScroll: true });
+    });
+
     form.addEventListener("click", (event) => {
       if (event.target.name !== "answer") return;
       const selected = this.session.selectedAnswer(this.session.currentQuestion.id);
       if (selected !== event.target.value) return;
       if (!this.session.clearCurrentAnswer()) return;
+      this.clearAutoAdvance();
       event.target.checked = false;
       event.target.closest(".option").classList.remove("is-selected");
       this.updateAnsweredLabel();
@@ -196,12 +207,14 @@ export class AppController {
       if (this.session.isLiveAnswerLocked(this.session.currentQuestion.id)) {
         this.renderCurrentQuestion();
         this.root.querySelector(".question-card")?.focus({ preventScroll: true });
+        this.scheduleAutoAdvance();
         return;
       }
       form.querySelectorAll(".option").forEach((option) => option.classList.remove("is-selected"));
       event.target.closest(".option").classList.add("is-selected");
       this.updateAnsweredLabel();
       this.updateCurrentQuestionPill();
+      this.scheduleAutoAdvance();
     });
 
     this.root.querySelectorAll("[data-action]").forEach((control) => {
@@ -231,6 +244,24 @@ export class AppController {
     });
 
     this.centerCurrentQuestionPill();
+  }
+
+  scheduleAutoAdvance() {
+    this.clearAutoAdvance();
+    const isLastQuestion =
+      this.session.currentIndex >= this.session.test.preguntas.length - 1;
+    if (!this.session.autoAdvanceEnabled || isLastQuestion) return;
+    this.root.querySelector(".auto-advance-progress")?.classList.add("is-active");
+    this.autoAdvanceTimer = window.setTimeout(() => {
+      this.autoAdvanceTimer = null;
+      this.navigateToQuestion(this.session.currentIndex + 1);
+    }, 1300);
+  }
+
+  clearAutoAdvance() {
+    window.clearTimeout(this.autoAdvanceTimer);
+    this.autoAdvanceTimer = null;
+    this.root.querySelector(".auto-advance-progress")?.classList.remove("is-active");
   }
 
   navigateToQuestion(index, keepMapFocus = false) {

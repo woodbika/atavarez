@@ -4,6 +4,7 @@ export class TestSession {
     this.answers = {};
     this.currentIndex = 0;
     this.liveResponseEnabled = false;
+    this.autoAdvanceEnabled = false;
     this.liveLockedQuestions = new Set();
   }
 
@@ -37,6 +38,10 @@ export class TestSession {
         this.liveLockedQuestions.add(questionId);
       });
     }
+  }
+
+  setAutoAdvanceEnabled(enabled) {
+    this.autoAdvanceEnabled = enabled;
   }
 
   isLiveAnswerLocked(questionId) {

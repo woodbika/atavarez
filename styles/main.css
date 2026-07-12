@@ -1031,6 +1031,7 @@ h3 {
   top: 12px;
   right: 14px;
   display: flex;
+  gap: 16px;
   justify-content: flex-end;
   min-height: 28px;
   align-items: center;
@@ -1101,7 +1102,7 @@ h3 {
 
 .question-card legend {
   width: 100%;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
   font-size: clamp(0.94rem, 1.5vw, 1.04rem);
   font-weight: 630;
   line-height: 1.4;
@@ -1114,6 +1115,40 @@ h3 {
   font-size: 0.76rem;
   font-weight: 650;
   letter-spacing: 0.01em;
+}
+
+.auto-advance-progress {
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.auto-advance-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.auto-advance-progress.is-active {
+  background: var(--line);
+}
+
+.auto-advance-progress.is-active > span {
+  animation: auto-advance-fill 1300ms linear forwards;
+  opacity: 0.72;
+}
+
+@keyframes auto-advance-fill {
+  to { transform: scaleX(1); }
 }
 
 .options-list {
@@ -2532,6 +2567,13 @@ html[data-theme="dark"] .review-scroll-top:hover {
 
   .question-card {
     padding-inline: 18px;
+  }
+
+  .live-answer-setting {
+    position: static;
+    flex-wrap: wrap;
+    gap: 9px 14px;
+    margin-bottom: 18px;
   }
 
   .option {
