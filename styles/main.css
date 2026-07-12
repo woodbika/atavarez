@@ -1213,6 +1213,11 @@ body[data-test-font-size="large"] .option {
   background: #f8faf9;
 }
 
+.suppress-option-hover .option:hover {
+  border-color: var(--line);
+  background: var(--surface);
+}
+
 .option.is-selected {
   border-color: var(--brand);
   background: #edf4f1;
@@ -2256,6 +2261,11 @@ html[data-theme="dark"] .question-pill.is-answered {
 html[data-theme="dark"] .option:hover {
   border-color: #62776e;
   background: #29322f;
+}
+
+html[data-theme="dark"] .suppress-option-hover .option:hover {
+  border-color: var(--line);
+  background: var(--surface);
 }
 
 html[data-theme="dark"] .option.is-selected {

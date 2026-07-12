@@ -18,6 +18,7 @@ export class AppController {
     this.testControls = new TestControlsController(root);
     this.reviewController = null;
     this.autoAdvanceTimer = null;
+    this.restoreOptionHover = null;
     this.onRouteChange = this.onRouteChange.bind(this);
   }
 
@@ -33,6 +34,7 @@ export class AppController {
 
   onRouteChange() {
     this.clearAutoAdvance();
+    this.restoreOptionHover?.();
     this.reviewController?.destroy();
     this.reviewController = null;
     this.testControls.hideSearch();
@@ -254,7 +256,7 @@ export class AppController {
     this.root.querySelector(".auto-advance-progress")?.classList.add("is-active");
     this.autoAdvanceTimer = window.setTimeout(() => {
       this.autoAdvanceTimer = null;
-      this.navigateToQuestion(this.session.currentIndex + 1);
+      this.navigateToQuestion(this.session.currentIndex + 1, false, true);
     }, 1300);
   }
 
@@ -264,13 +266,30 @@ export class AppController {
     this.root.querySelector(".auto-advance-progress")?.classList.remove("is-active");
   }
 
-  navigateToQuestion(index, keepMapFocus = false) {
+  navigateToQuestion(index, keepMapFocus = false, suppressOptionHover = false) {
     this.session.currentIndex = index;
     this.renderCurrentQuestion();
+    if (suppressOptionHover) this.suppressOptionHoverUntilInteraction();
     const focusTarget = keepMapFocus
       ? this.root.querySelector(".question-pill.is-current")
       : this.root.querySelector(".question-card");
     focusTarget?.focus({ preventScroll: true });
+  }
+
+  suppressOptionHoverUntilInteraction() {
+    this.restoreOptionHover?.();
+    const testShell = this.root.querySelector(".test-shell");
+    if (!testShell) return;
+    testShell.classList.add("suppress-option-hover");
+    const restoreHover = () => {
+      testShell.classList.remove("suppress-option-hover");
+      window.removeEventListener("pointermove", restoreHover);
+      window.removeEventListener("pointerdown", restoreHover);
+      if (this.restoreOptionHover === restoreHover) this.restoreOptionHover = null;
+    };
+    this.restoreOptionHover = restoreHover;
+    window.addEventListener("pointermove", restoreHover);
+    window.addEventListener("pointerdown", restoreHover);
   }
 
   updateAnsweredLabel() {
