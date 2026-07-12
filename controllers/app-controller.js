@@ -35,6 +35,7 @@ export class AppController {
     this.reviewController = null;
     this.testControls.hideSearch();
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
+    this.preloadRouteCover(section, subsection, subId);
     const isTestRoute = section === "test" && Boolean(id);
     this.testControls.setTestRouteActive(isTestRoute);
     const keepsCurrentResult =
@@ -53,6 +54,23 @@ export class AppController {
     document.title = `${this.root.querySelector("h1")?.textContent ?? "OPOSAKETAK"} · OPOSAKETAK`;
     this.root.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  preloadRouteCover(section, subsection, subId) {
+    let filename = "portada-oposiciones.jpg";
+    if (section === "oposiciones" && subsection === "temas" && subId) {
+      filename = "portada-recursos.jpg";
+    } else if (section === "oposiciones") {
+      filename = "portada-temas-gobierno-vasco.jpg";
+    } else if (section === "test" || section === "resultados") {
+      filename = "portada-resultados.jpg";
+    } else if (section) {
+      return;
+    }
+
+    const href = `./assets/images/${filename}`;
+    const preload = document.querySelector("#cover-preload");
+    if (preload?.getAttribute("href") !== href) preload?.setAttribute("href", href);
   }
 
   showOppositions() {
