@@ -13,7 +13,7 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
   root.innerHTML = `
     <a class="back-link view-back-link" href="${backHref}">← ${escapeHtml(backLabel)}</a>
     <section class="results-shell" aria-labelledby="results-title">
-      <header class="results-heading">
+      <header class="results-heading results-hero">
         <p class="eyebrow">Resultado</p>
         <h1 id="results-title">Resultados del intento</h1>
       </header>

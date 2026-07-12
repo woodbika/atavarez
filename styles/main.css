@@ -14,6 +14,10 @@
   --correct-soft: #edf6f1;
   --incorrect: #9a4d49;
   --incorrect-soft: #faf0ef;
+  --image-cover-oppositions: url("../assets/images/portada-oposiciones.jpg");
+  --image-cover-basque-themes: url("../assets/images/portada-temas-gobierno-vasco.jpg");
+  --image-cover-resources: url("../assets/images/portada-recursos.jpg");
+  --image-cover-results: url("../assets/images/portada-resultados.jpg");
   --radius: 11px;
   --shell: 1040px;
 }
@@ -286,13 +290,134 @@ html[data-theme="dark"] .theme-icon-sun {
   padding: 24px 0 52px;
 }
 
-.hero-compact {
-  max-width: 720px;
+.hero-home {
+  display: flex;
+  min-height: 290px;
+  max-width: none;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 52px;
+  padding: clamp(30px, 5vw, 50px);
+  overflow: hidden;
+  border: 0;
+  border-radius: 14px;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 249, 1) 0%,
+      rgba(248, 250, 249, 1) 8%,
+      rgba(248, 250, 249, 0.93) 40%,
+      rgba(248, 250, 249, 0.68) 64%,
+      rgba(248, 250, 249, 0.08) 100%
+    ),
+    var(--image-cover-oppositions);
+  background-position: center 53%;
+  background-size: cover;
+}
+
+.hero-home h1,
+.hero-home .hero-copy {
+  max-width: 560px;
+}
+
+.hero-home .hero-copy {
+  color: #52605b;
 }
 
 .page-heading {
   max-width: 720px;
   padding: 4px 0 42px;
+}
+
+.opposition-hero,
+.resource-hero {
+  display: flex;
+  min-height: 245px;
+  max-width: none;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 42px;
+  padding: clamp(28px, 5vw, 46px);
+  overflow: hidden;
+  border-radius: 14px;
+  background-position: center;
+  background-size: cover;
+}
+
+.opposition-hero-basque-admin {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 249, 1) 0%,
+      rgba(248, 250, 249, 1) 8%,
+      rgba(248, 250, 249, 0.93) 43%,
+      rgba(248, 250, 249, 0.77) 72%,
+      rgba(248, 250, 249, 0.54) 100%
+    ),
+    var(--image-cover-basque-themes);
+  background-position: center 48%;
+}
+
+.resource-hero {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 249, 1) 0%,
+      rgba(248, 250, 249, 1) 8%,
+      rgba(248, 250, 249, 0.94) 42%,
+      rgba(248, 250, 249, 0.68) 68%,
+      rgba(248, 250, 249, 0.12) 100%
+    ),
+    var(--image-cover-resources);
+  background-position: center 54%;
+}
+
+.results-hero {
+  display: flex;
+  min-height: 225px;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(28px, 5vw, 42px);
+  overflow: hidden;
+  border-radius: 14px;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 249, 1) 0%,
+      rgba(248, 250, 249, 1) 8%,
+      rgba(248, 250, 249, 0.94) 40%,
+      rgba(248, 250, 249, 0.7) 64%,
+      rgba(248, 250, 249, 0.16) 100%
+    ),
+    var(--image-cover-results);
+  background-position: center 66%;
+  background-size: cover;
+  text-align: left;
+}
+
+.results-hero h1 {
+  max-width: 480px;
+  color: var(--ink);
+}
+
+.results-hero .eyebrow {
+  color: var(--correct);
+}
+
+.opposition-hero h1,
+.resource-hero h1 {
+  max-width: 590px;
+  color: var(--ink);
+}
+
+.opposition-hero .eyebrow,
+.resource-hero .eyebrow {
+  color: var(--correct);
+}
+
+.opposition-hero .hero-copy,
+.resource-hero .hero-copy {
+  color: #52605b;
 }
 
 .page-heading h1 {
@@ -1871,6 +1996,85 @@ html[data-theme="dark"] .site-header {
   background: rgba(31, 38, 35, 0.95);
 }
 
+html[data-theme="dark"] .hero-home {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(27, 33, 31, 1) 0%,
+      rgba(27, 33, 31, 1) 8%,
+      rgba(27, 33, 31, 0.94) 41%,
+      rgba(27, 33, 31, 0.73) 65%,
+      rgba(27, 33, 31, 0.18) 100%
+    ),
+    var(--image-cover-oppositions);
+}
+
+html[data-theme="dark"] .hero-home .hero-copy {
+  color: #aab4b0;
+}
+
+html[data-theme="dark"] .opposition-hero-basque-admin {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(27, 33, 31, 1) 0%,
+      rgba(27, 33, 31, 1) 8%,
+      rgba(27, 33, 31, 0.94) 43%,
+      rgba(27, 33, 31, 0.8) 72%,
+      rgba(27, 33, 31, 0.6) 100%
+    ),
+    var(--image-cover-basque-themes);
+}
+
+html[data-theme="dark"] .resource-hero {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(27, 33, 31, 1) 0%,
+      rgba(27, 33, 31, 1) 8%,
+      rgba(27, 33, 31, 0.94) 42%,
+      rgba(27, 33, 31, 0.8) 68%,
+      rgba(27, 33, 31, 0.58) 100%
+    ),
+    var(--image-cover-resources);
+}
+
+html[data-theme="dark"] .results-hero {
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(27, 33, 31, 1) 0%,
+      rgba(27, 33, 31, 1) 8%,
+      rgba(27, 33, 31, 0.94) 40%,
+      rgba(27, 33, 31, 0.78) 64%,
+      rgba(27, 33, 31, 0.48) 100%
+    ),
+    var(--image-cover-results);
+}
+
+html[data-theme="dark"] .results-hero h1 {
+  color: #f1f4f2;
+}
+
+html[data-theme="dark"] .results-hero .eyebrow {
+  color: #9bc7b5;
+}
+
+html[data-theme="dark"] .opposition-hero h1,
+html[data-theme="dark"] .resource-hero h1 {
+  color: #f1f4f2;
+}
+
+html[data-theme="dark"] .opposition-hero .eyebrow,
+html[data-theme="dark"] .resource-hero .eyebrow {
+  color: #9bc7b5;
+}
+
+html[data-theme="dark"] .opposition-hero .hero-copy,
+html[data-theme="dark"] .resource-hero .hero-copy {
+  color: #c5ceca;
+}
+
 html[data-theme="dark"] .header-search input,
 html[data-theme="dark"] .theme-toggle,
 html[data-theme="dark"] .focus-toggle,
@@ -2176,6 +2380,27 @@ html[data-theme="dark"] .review-scroll-top:hover {
     padding: 18px 0 42px;
   }
 
+  .hero.hero-home {
+    min-height: 270px;
+    margin-bottom: 40px;
+    padding: 28px;
+    background-position: 58% center;
+  }
+
+  .opposition-hero,
+  .resource-hero {
+    min-height: 235px;
+    margin-bottom: 38px;
+    padding: 28px;
+    background-position: 56% center;
+  }
+
+  .results-hero {
+    min-height: 215px;
+    padding: 28px;
+    background-position: center 66%;
+  }
+
   .score-layout {
     grid-template-columns: 1fr;
   }
@@ -2205,6 +2430,28 @@ html[data-theme="dark"] .review-scroll-top:hover {
 
   .header-actions {
     gap: 6px;
+  }
+
+  .hero.hero-home {
+    min-height: 250px;
+    padding: 22px;
+    border-radius: 11px;
+    background-position: 61% center;
+  }
+
+  .opposition-hero,
+  .resource-hero {
+    min-height: 225px;
+    padding: 22px;
+    border-radius: 11px;
+    background-position: 60% center;
+  }
+
+  .results-hero {
+    min-height: 205px;
+    padding: 22px;
+    border-radius: 11px;
+    background-position: 56% 66%;
   }
 
   .focus-mode .focus-toggle {

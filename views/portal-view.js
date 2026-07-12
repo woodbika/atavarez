@@ -1,4 +1,4 @@
-import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
+import { escapeHtml, formatDisplayTitle, normalizeText } from "../utils/text.js";
 
 function plural(count, singular, pluralForm) {
   return `${count} ${count === 1 ? singular : pluralForm}`;
@@ -6,7 +6,7 @@ function plural(count, singular, pluralForm) {
 
 export function renderOppositions(root, oppositions) {
   root.innerHTML = `
-    <section class="hero hero-compact" aria-labelledby="oppositions-title">
+    <section class="hero hero-home" aria-labelledby="oppositions-title">
       <p class="eyebrow">Inicio</p>
       <h1 id="oppositions-title">Oposiciones disponibles</h1>
       <p class="hero-copy">Elige una oposición para consultar sus temas y acceder a los recursos disponibles.</p>
@@ -45,9 +45,16 @@ export function renderOppositions(root, oppositions) {
 }
 
 export function renderThemes(root, opposition, themes) {
+  const oppositionIdentity = normalizeText(
+    `${opposition.administration} ${opposition.title}`,
+  );
+  const hasBasqueAdministrativeHero =
+    oppositionIdentity.includes("eusko jaurlaritza") &&
+    oppositionIdentity.includes("cuerpo administrativo");
+
   root.innerHTML = `
     <a class="back-link" href="#/">← Oposiciones</a>
-    <section class="page-heading" aria-labelledby="opposition-title">
+    <section class="page-heading ${hasBasqueAdministrativeHero ? "opposition-hero opposition-hero-basque-admin" : ""}" aria-labelledby="opposition-title">
       <p class="eyebrow">${escapeHtml(formatDisplayTitle(opposition.administration))}</p>
       <h1 id="opposition-title">${escapeHtml(formatDisplayTitle(opposition.title))}</h1>
       <p class="hero-copy">${escapeHtml(opposition.group)} · ${escapeHtml(opposition.scale)}</p>
@@ -107,7 +114,7 @@ export function renderResources(
       <span aria-current="page">Tema ${escapeHtml(theme.numero)}</span>
     </nav>
 
-    <section class="page-heading" aria-labelledby="theme-title">
+    <section class="page-heading resource-hero" aria-labelledby="theme-title">
       <p class="eyebrow">Tema ${escapeHtml(theme.numero)}</p>
       <h1 id="theme-title">${escapeHtml(theme.titulo)}</h1>
       <p class="hero-copy">Consulta los materiales disponibles para este tema.</p>

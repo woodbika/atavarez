@@ -26,6 +26,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 .
 ├── index.html                 # Documento principal
 ├── app.js                     # Punto de entrada
+├── assets/images/             # Imágenes y atribución de procedencia
 ├── controllers/              # Enrutado e interacción
 ├── data/
 │   ├── resources.js          # Registro central de recursos
