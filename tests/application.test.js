@@ -4,10 +4,14 @@ import assert from "node:assert/strict";
 import { resources } from "../data/resources.js";
 import { tests } from "../data/tests.js";
 import { ResourceRepository } from "../models/resource-repository.js";
+import { validateResources } from "../models/resource-validator.js";
 import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
+import { orderTestQuestions } from "../utils/test-order.js";
+import { parseHashRoute } from "../utils/router.js";
 
 test("el registro contiene todos los tests con un esquema válido", () => {
+  assert.deepEqual(validateResources(resources), []);
   assert.equal(tests.length, 6);
   assert.equal(new Set(tests.map((item) => item.id)).size, tests.length);
 
@@ -26,6 +30,15 @@ test("el registro contiene todos los tests con un esquema válido", () => {
       assert.ok(question.opciones.some((option) => option.id === question.respuestaCorrecta));
     });
   });
+});
+
+test("la validación del catálogo informa de soluciones y recursos no válidos", () => {
+  const invalidResource = structuredClone(resources[0]);
+  invalidResource.data.preguntas[0].respuestaCorrecta = "opcion-inexistente";
+  const errors = validateResources([invalidResource, invalidResource]);
+
+  assert.ok(errors.some((error) => error.includes("respuestaCorrecta")));
+  assert.ok(errors.some((error) => error.includes("está duplicado")));
 });
 
 test("la evaluación distingue aciertos, errores y preguntas sin responder", () => {
@@ -88,6 +101,29 @@ test("la respuesta en vivo corrige y bloquea la pregunta respondida", () => {
   session.setLiveResponseEnabled(false);
   session.currentIndex = 0;
   assert.equal(session.isLiveAnswerLocked(firstQuestion.id), true);
+});
+
+test("el orden de preguntas admite una secuencia guardada y mezcla controlada", () => {
+  const source = { ...tests[0], preguntas: tests[0].preguntas.slice(0, 3) };
+  const reversedIds = [...source.preguntas].reverse().map((question) => String(question.id));
+  const restored = orderTestQuestions(source, "natural", reversedIds);
+  const shuffled = orderTestQuestions(source, "aleatorio", null, () => 0);
+
+  assert.deepEqual(restored.preguntas.map((question) => String(question.id)), reversedIds);
+  assert.notDeepEqual(
+    shuffled.preguntas.map((question) => question.id),
+    source.preguntas.map((question) => question.id),
+  );
+  assert.deepEqual(source.preguntas, tests[0].preguntas.slice(0, 3));
+});
+
+test("las rutas hash se interpretan sin romper segmentos mal codificados", () => {
+  assert.deepEqual(parseHashRoute("#/oposiciones/cuerpo%20administrativo"), [
+    "oposiciones",
+    "cuerpo administrativo",
+  ]);
+  assert.deepEqual(parseHashRoute("#/test/%E0%A4%A"), ["test", "%E0%A4%A"]);
+  assert.deepEqual(parseHashRoute("#/"), []);
 });
 
 test("el portal agrupa oposiciones, temas y recursos", () => {

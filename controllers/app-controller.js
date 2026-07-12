@@ -1,9 +1,13 @@
 import { TestSession } from "../models/test-session.js";
+import { parseHashRoute } from "../utils/router.js";
+import { orderTestQuestions } from "../utils/test-order.js";
 import { renderNotFound } from "../views/layout.js";
 import { renderOppositions, renderResources, renderThemes } from "../views/portal-view.js";
 import { renderResults } from "../views/results-view.js";
 import { renderReview } from "../views/review-view.js";
 import { renderTest } from "../views/test-view.js";
+import { ReviewController } from "./review-controller.js";
+import { TestControlsController } from "./test-controls-controller.js";
 
 export class AppController {
   constructor({ root, repository }) {
@@ -11,70 +15,28 @@ export class AppController {
     this.repository = repository;
     this.session = null;
     this.currentResult = null;
-    this.headerSearch = document.querySelector("#header-search");
-    this.headerSearchInput = document.querySelector("#resource-search");
-    this.headerSearchLabel = this.headerSearch.querySelector("label");
-    this.focusToggle = document.querySelector("#focus-toggle");
-    this.focusToggleLabel = this.focusToggle.querySelector(".focus-toggle-label");
-    this.testFontControls = document.querySelector("#test-font-controls");
-    this.testFontStatus = this.testFontControls.querySelector(".test-font-status");
-    this.testFontLevel = 1;
-    this.focusBackdrop = document.querySelector("#focus-backdrop");
-    this.focusTransitionTimer = null;
-    this.reviewScrollHandler = null;
+    this.testControls = new TestControlsController(root);
+    this.reviewController = null;
     this.onRouteChange = this.onRouteChange.bind(this);
   }
 
   start() {
-    this.headerSearch.addEventListener("submit", (event) => event.preventDefault());
-    this.focusToggle.addEventListener("click", () => {
-      const isActive =
-        document.body.classList.contains("focus-mode") &&
-        !document.body.classList.contains("focus-mode-exiting");
-      this.setFocusMode(!isActive);
-    });
-    this.focusBackdrop.addEventListener("click", () => {
-      const canDismissFromBackdrop = window.matchMedia("(min-width: 901px)").matches;
-      const isActive =
-        document.body.classList.contains("focus-mode") &&
-        !document.body.classList.contains("focus-mode-exiting");
-      if (canDismissFromBackdrop && isActive) this.setFocusMode(false);
-    });
-    this.testFontControls.addEventListener("click", (event) => {
-      const action = event.target.closest("[data-font-action]")?.dataset.fontAction;
-      if (!action) return;
-      this.setTestFontLevel(this.testFontLevel + (action === "increase" ? 1 : -1));
-    });
+    this.testControls.start();
     window.addEventListener("hashchange", this.onRouteChange);
     this.onRouteChange();
   }
 
   route() {
-    const path = location.hash.replace(/^#\/?/, "");
-    return path.split("/").map((segment) => {
-      try {
-        return decodeURIComponent(segment);
-      } catch {
-        return segment;
-      }
-    });
+    return parseHashRoute(location.hash);
   }
 
   onRouteChange() {
-    if (this.reviewScrollHandler) {
-      window.removeEventListener("scroll", this.reviewScrollHandler);
-      window.removeEventListener("resize", this.reviewScrollHandler);
-      this.reviewScrollHandler = null;
-    }
-    this.hideHeaderSearch();
+    this.reviewController?.destroy();
+    this.reviewController = null;
+    this.testControls.hideSearch();
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
     const isTestRoute = section === "test" && Boolean(id);
-    this.focusToggle.hidden = !isTestRoute;
-    this.testFontControls.hidden = !isTestRoute;
-    if (!isTestRoute) {
-      this.setFocusMode(false, { immediate: true });
-      this.setTestFontLevel(1);
-    }
+    this.testControls.setTestRouteActive(isTestRoute);
     const keepsCurrentResult =
       (section === "resultados" || section === "revision") &&
       this.currentResult?.testId === id;
@@ -93,72 +55,6 @@ export class AppController {
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
-  hideHeaderSearch() {
-    this.headerSearch.hidden = true;
-    this.headerSearchInput.value = "";
-    this.headerSearchInput.oninput = null;
-  }
-
-  showHeaderSearch(label, onSearch) {
-    this.headerSearch.hidden = false;
-    this.headerSearchLabel.textContent = label;
-    this.headerSearchInput.placeholder = label;
-    this.headerSearchInput.oninput = () => onSearch(this.headerSearchInput.value);
-  }
-
-  setFocusMode(active, { immediate = false } = {}) {
-    window.clearTimeout(this.focusTransitionTimer);
-    this.focusTransitionTimer = null;
-    const label = active ? "Salir del modo concentración" : "Activar modo concentración";
-    this.focusToggle.setAttribute("aria-pressed", String(active));
-    this.focusToggle.setAttribute("aria-label", label);
-    this.focusToggle.setAttribute("title", label);
-    this.focusToggleLabel.textContent = label;
-    if (active) {
-      document.body.classList.remove("focus-mode-exiting");
-      document.body.classList.add("focus-mode", "focus-mode-entering");
-      this.focusTransitionTimer = window.setTimeout(() => {
-        document.body.classList.remove("focus-mode-entering");
-        this.focusTransitionTimer = null;
-      }, 220);
-      this.root.querySelector(".question-card")?.focus({ preventScroll: true });
-      return;
-    }
-
-    const finishTransition = () => {
-      document.body.classList.remove(
-        "focus-mode",
-        "focus-mode-entering",
-        "focus-mode-exiting",
-      );
-      this.focusTransitionTimer = null;
-    };
-
-    if (
-      immediate ||
-      !document.body.classList.contains("focus-mode") ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      finishTransition();
-      return;
-    }
-
-    document.body.classList.add("focus-mode-exiting");
-    this.focusTransitionTimer = window.setTimeout(finishTransition, 200);
-  }
-
-  setTestFontLevel(level) {
-    const levels = ["small", "medium", "large"];
-    const levelLabels = ["pequeño", "medio", "grande"];
-    this.testFontLevel = Math.min(Math.max(level, 0), levels.length - 1);
-    document.body.dataset.testFontSize = levels[this.testFontLevel];
-    this.testFontControls.querySelector('[data-font-action="decrease"]').disabled =
-      this.testFontLevel === 0;
-    this.testFontControls.querySelector('[data-font-action="increase"]').disabled =
-      this.testFontLevel === levels.length - 1;
-    this.testFontStatus.textContent = `Tamaño de texto ${levelLabels[this.testFontLevel]}`;
-  }
-
   showOppositions() {
     this.session = null;
     renderOppositions(this.root, this.repository.getOppositions());
@@ -170,7 +66,7 @@ export class AppController {
     if (!opposition) return renderNotFound(this.root, "La oposición solicitada no existe.");
     const themes = this.repository.getThemes(oppositionId);
     const view = renderThemes(this.root, opposition, themes);
-    this.showHeaderSearch("Buscar temas", (query) => {
+    this.testControls.showSearch("Buscar temas", (query) => {
       view.updateList(this.repository.searchThemes(themes, query));
     });
   }
@@ -214,7 +110,7 @@ export class AppController {
       }
     });
 
-    this.showHeaderSearch("Buscar recursos", (searchQuery) => {
+    this.testControls.showSearch("Buscar recursos", (searchQuery) => {
       query = searchQuery;
       applyResourceFilters();
     });
@@ -224,9 +120,7 @@ export class AppController {
     const resource = this.repository.getById(id);
     const test = this.repository.getTestById(id);
     if (!test) {
-      this.focusToggle.hidden = true;
-      this.testFontControls.hidden = true;
-      this.setFocusMode(false, { immediate: true });
+      this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
     const isComplete = resource.variant === "complete";
@@ -235,27 +129,11 @@ export class AppController {
       : "natural";
 
     if (!this.session || this.session.test.id !== id || this.sessionOrder !== orderMode) {
-      const orderedTest = this.orderTestQuestions(test, orderMode);
+      const orderedTest = orderTestQuestions(test, orderMode);
       this.session = new TestSession(orderedTest);
       this.sessionOrder = orderMode;
     }
     this.renderCurrentQuestion();
-  }
-
-  orderTestQuestions(test, orderMode, savedOrder = null) {
-    let preguntas = [...test.preguntas];
-    if (savedOrder?.length) {
-      const positions = new Map(savedOrder.map((id, index) => [String(id), index]));
-      preguntas.sort(
-        (a, b) => (positions.get(String(a.id)) ?? Infinity) - (positions.get(String(b.id)) ?? Infinity),
-      );
-    } else if (orderMode === "aleatorio") {
-      for (let index = preguntas.length - 1; index > 0; index -= 1) {
-        const randomIndex = Math.floor(Math.random() * (index + 1));
-        [preguntas[index], preguntas[randomIndex]] = [preguntas[randomIndex], preguntas[index]];
-      }
-    }
-    return { ...test, preguntas };
   }
 
   resourceContext(test) {
@@ -469,52 +347,8 @@ export class AppController {
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
     this.session = null;
-    const orderedTest = this.orderTestQuestions(test, result.orderMode, result.questionOrder);
+    const orderedTest = orderTestQuestions(test, result.orderMode, result.questionOrder);
     renderReview(this.root, orderedTest, result, this.resourceContext(test));
-    const filterButtons = [...this.root.querySelectorAll("[data-review-filter]")];
-    const reviewRows = [...this.root.querySelectorAll("[data-review-state]")];
-    const reviewList = this.root.querySelector(".review-list");
-    const emptyState = this.root.querySelector("#review-empty");
-    const filterStatus = this.root.querySelector("#review-filter-status");
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const filter = button.dataset.reviewFilter;
-        let visibleCount = 0;
-        filterButtons.forEach((item) => {
-          const isActive = item === button;
-          item.classList.toggle("is-active", isActive);
-          item.setAttribute("aria-pressed", String(isActive));
-        });
-        reviewRows.forEach((row) => {
-          const isVisible = filter === "all" || row.dataset.reviewState === filter;
-          row.hidden = !isVisible;
-          if (isVisible) visibleCount += 1;
-        });
-        reviewList.hidden = visibleCount === 0;
-        emptyState.hidden = visibleCount > 0;
-        emptyState.textContent = filter === "unanswered"
-          ? "No hay preguntas sin responder."
-          : "No hay respuestas incorrectas.";
-        filterStatus.textContent = `${visibleCount} ${visibleCount === 1 ? "respuesta mostrada" : "respuestas mostradas"}`;
-        if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
-          button.blur();
-        }
-      });
-    });
-
-    const scrollTopButton = this.root.querySelector("#review-scroll-top");
-    this.reviewScrollHandler = () => {
-      scrollTopButton.hidden = window.scrollY < window.innerHeight * 0.55;
-    };
-    window.addEventListener("scroll", this.reviewScrollHandler, { passive: true });
-    window.addEventListener("resize", this.reviewScrollHandler);
-    this.reviewScrollHandler();
-    scrollTopButton.addEventListener("click", () => {
-      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth";
-      window.scrollTo({ top: 0, behavior });
-    });
+    this.reviewController = new ReviewController(this.root).start();
   }
 }

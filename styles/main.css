@@ -1,3 +1,4 @@
+/* Variables de diseño y base del documento */
 :root {
   color-scheme: light;
   --ink: #25312d;
@@ -98,6 +99,7 @@ select {
   transform: translateY(0);
 }
 
+/* Cabecera global y controles */
 .site-header {
   position: sticky;
   z-index: 50;
@@ -278,6 +280,7 @@ html[data-theme="dark"] .theme-icon-sun {
   color: var(--muted);
 }
 
+/* Portal, navegación y catálogo de recursos */
 .hero {
   max-width: 720px;
   padding: 24px 0 52px;
@@ -701,14 +704,8 @@ h3 {
   color: var(--brand);
 }
 
-.button-secondary:hover,
-.button-quiet:hover {
+.button-secondary:hover {
   background: #edf1ef;
-}
-
-.button-quiet {
-  background: transparent;
-  color: var(--brand);
 }
 
 .button:disabled {
@@ -726,6 +723,7 @@ h3 {
   text-underline-offset: 4px;
 }
 
+/* Vistas de estudio compartidas */
 .test-shell,
 .results-shell,
 .review-shell {
@@ -890,6 +888,7 @@ h3 {
   color: var(--brand);
 }
 
+/* Preguntas y estados de respuesta */
 .question-card {
   position: relative;
   padding: clamp(22px, 4vw, 32px);
@@ -1142,6 +1141,7 @@ body[data-test-font-size="large"] .option {
   gap: 10px;
 }
 
+/* Modo concentración */
 body.focus-mode {
   overflow: hidden;
 }
@@ -1304,6 +1304,7 @@ body.focus-mode {
   to { opacity: 0; transform: scale(0.9); }
 }
 
+/* Resultados y revisión */
 .results-shell {
   text-align: center;
 }
@@ -1865,6 +1866,7 @@ body.focus-mode {
   color: var(--muted);
 }
 
+/* Ajustes de componentes en modo oscuro */
 html[data-theme="dark"] .site-header {
   background: rgba(31, 38, 35, 0.95);
 }
@@ -1958,8 +1960,7 @@ html[data-theme="dark"] .button-secondary {
   background: var(--surface);
 }
 
-html[data-theme="dark"] .button-secondary:hover,
-html[data-theme="dark"] .button-quiet:hover {
+html[data-theme="dark"] .button-secondary:hover {
   background: #2d3733;
 }
 
@@ -2148,6 +2149,7 @@ html[data-theme="dark"] .review-scroll-top:hover {
   border: 0;
 }
 
+/* Comportamiento responsive */
 @media (min-width: 901px) {
   .focus-mode .focus-backdrop {
     cursor: pointer;
@@ -2333,6 +2335,7 @@ html[data-theme="dark"] .review-scroll-top:hover {
   }
 }
 
+/* Preferencias de accesibilidad */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

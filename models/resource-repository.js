@@ -29,6 +29,7 @@ export class ResourceRepository {
       const byVariant = Number(a.variant !== "complete") - Number(b.variant !== "complete");
       return byTheme || byVariant || a.title.localeCompare(b.title, "es");
     });
+    this.resourceById = new Map(this.resources.map((resource) => [resource.id, resource]));
   }
 
   buildCombinedResources(resources) {
@@ -91,11 +92,11 @@ export class ResourceRepository {
   }
 
   getAll() {
-    return this.resources;
+    return [...this.resources];
   }
 
   getById(id) {
-    return this.resources.find((resource) => resource.id === id);
+    return this.resourceById.get(id) ?? null;
   }
 
   getTestById(id) {
@@ -125,10 +126,10 @@ export class ResourceRepository {
     });
 
     return [...groups.values()]
-      .map((opposition) => ({
-        ...opposition,
-        themeCount: opposition.themeNumbers.size,
-      }))
+      .map((opposition) => {
+        const { themeNumbers, ...data } = opposition;
+        return { ...data, themeCount: themeNumbers.size };
+      })
       .sort((a, b) => a.title.localeCompare(b.title, "es"));
   }
 

@@ -1,9 +1,21 @@
 {
-  "name": "opotest",
-  "version": "1.0.0",
+  "name": "oposaketak",
+  "version": "0.1.0",
+  "description": "Aplicación web estática para preparar oposiciones mediante temas y tests.",
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/woodbika/atavarez.git"
+  },
+  "homepage": "https://woodbika.github.io/atavarez/",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "check": "npm run validate:data && npm test",
+    "test": "node --test",
+    "validate:data": "node scripts/validate-data.js"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
