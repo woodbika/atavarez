@@ -4,6 +4,16 @@ function plural(count, singular, pluralForm) {
   return `${count} ${count === 1 ? singular : pluralForm}`;
 }
 
+function themeTitleParts(title) {
+  const normalizedTitle = String(title).trim();
+  const firstSentence = normalizedTitle.match(/^(.+?[.!?])\s+(.+)$/);
+  if (!firstSentence) return { heading: normalizedTitle, scope: "" };
+  return {
+    heading: firstSentence[1].replace(/\.$/, ""),
+    scope: firstSentence[2],
+  };
+}
+
 export function renderOppositions(root, oppositions) {
   root.innerHTML = `
     <section class="hero hero-home" aria-labelledby="oppositions-title">
@@ -83,19 +93,21 @@ export function renderThemes(root, opposition, themes) {
     }
 
     list.innerHTML = filteredThemes
-          .map(
-            (theme) => `
+          .map((theme) => {
+            const title = themeTitleParts(theme.titulo);
+            return `
               <article class="navigation-card theme-card">
                 <span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>
                 <p class="card-kicker">Tema ${escapeHtml(theme.numero)}</p>
-                <h3>${escapeHtml(theme.titulo)}</h3>
+                <h3>${escapeHtml(title.heading)}</h3>
+                ${title.scope ? `<p class="theme-card-scope">${escapeHtml(title.scope)}</p>` : ""}
                 <p class="card-summary">${plural(theme.resourceCount, "recurso disponible", "recursos disponibles")}</p>
                 <a class="card-link" href="#/oposiciones/${encodeURIComponent(opposition.id)}/temas/${encodeURIComponent(theme.numero)}">
                   Ver recursos <span aria-hidden="true">→</span>
                 </a>
               </article>
-            `,
-          )
+            `;
+          })
           .join("");
   }
 
@@ -107,6 +119,7 @@ export function renderResources(
   root,
   { opposition, theme, resources },
 ) {
+  const title = themeTitleParts(theme.titulo);
   root.innerHTML = `
     <nav class="breadcrumbs" aria-label="Migas de pan">
       <a href="#/">Oposiciones</a><span aria-hidden="true">/</span>
@@ -116,8 +129,8 @@ export function renderResources(
 
     <section class="page-heading resource-hero" aria-labelledby="theme-title">
       <p class="eyebrow">Tema ${escapeHtml(theme.numero)}</p>
-      <h1 id="theme-title">${escapeHtml(theme.titulo)}</h1>
-      <p class="hero-copy">Consulta los materiales disponibles para este tema.</p>
+      <h1 id="theme-title">${escapeHtml(title.heading)}</h1>
+      <p class="hero-copy resource-hero-scope">${escapeHtml(title.scope || "Consulta los materiales disponibles para este tema.")}</p>
     </section>
 
     <section class="catalog-section" aria-labelledby="resources-title">

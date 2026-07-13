@@ -457,6 +457,21 @@ html[data-theme="dark"] .theme-icon-sun {
   color: var(--ink);
 }
 
+.resource-hero h1 {
+  max-width: 680px;
+  font-size: clamp(1.55rem, 2.7vw, 2.15rem);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+}
+
+.resource-hero .resource-hero-scope {
+  max-width: 680px;
+  margin-bottom: 0;
+  font-size: clamp(0.84rem, 1.35vw, 0.96rem);
+  line-height: 1.5;
+}
+
 .opposition-hero .eyebrow,
 .resource-hero .eyebrow {
   color: var(--correct);
@@ -674,6 +689,17 @@ h3 {
 
 .theme-card .topic-number {
   margin-bottom: 14px;
+}
+
+.theme-card-scope {
+  display: -webkit-box;
+  margin: -3px 0 14px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .resource-type {
