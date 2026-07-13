@@ -98,7 +98,6 @@ export function renderThemes(root, opposition, themes) {
             return `
               <article class="navigation-card theme-card">
                 <span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>
-                <p class="card-kicker">Tema ${escapeHtml(theme.numero)}</p>
                 <h3>${escapeHtml(title.heading)}</h3>
                 ${title.scope ? `<p class="theme-card-scope">${escapeHtml(title.scope)}</p>` : ""}
                 <p class="card-summary">${plural(theme.resourceCount, "recurso disponible", "recursos disponibles")}</p>
