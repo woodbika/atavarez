@@ -79,6 +79,12 @@ export function renderThemes(root, opposition, themes) {
         <p id="theme-results-count" class="result-count" aria-live="polite"></p>
       </div>
       <div id="theme-list" class="navigation-grid"></div>
+      <div class="portal-back-action">
+        <a class="button button-secondary portal-back-button" href="#/">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+          Volver a oposiciones
+        </a>
+      </div>
     </section>
   `;
 
@@ -149,6 +155,12 @@ export function renderResources(
       </div>
 
       <div id="resource-list" class="resource-grid"></div>
+      <div class="portal-back-action">
+        <a class="button button-secondary portal-back-button" href="#/oposiciones/${encodeURIComponent(opposition.id)}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+          Volver a temas
+        </a>
+      </div>
     </section>
   `;
 

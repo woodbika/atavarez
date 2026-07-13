@@ -5,7 +5,6 @@ function releaseTouchFocus(event, button) {
 export class ReviewController {
   constructor(root) {
     this.root = root;
-    this.onViewportChange = this.onViewportChange.bind(this);
   }
 
   start() {
@@ -14,23 +13,12 @@ export class ReviewController {
     this.reviewList = this.root.querySelector(".review-list");
     this.emptyState = this.root.querySelector("#review-empty");
     this.filterStatus = this.root.querySelector("#review-filter-status");
-    this.scrollTopButton = this.root.querySelector("#review-scroll-top");
-
     this.filterButtons.forEach((button) => {
       button.addEventListener("click", (event) => {
         this.applyFilter(button.dataset.reviewFilter, button);
         releaseTouchFocus(event, button);
       });
     });
-    this.scrollTopButton.addEventListener("click", () => {
-      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth";
-      window.scrollTo({ top: 0, behavior });
-    });
-    window.addEventListener("scroll", this.onViewportChange, { passive: true });
-    window.addEventListener("resize", this.onViewportChange);
-    this.onViewportChange();
     return this;
   }
 
@@ -56,12 +44,6 @@ export class ReviewController {
     }`;
   }
 
-  onViewportChange() {
-    this.scrollTopButton.hidden = window.scrollY < window.innerHeight * 0.55;
-  }
-
   destroy() {
-    window.removeEventListener("scroll", this.onViewportChange);
-    window.removeEventListener("resize", this.onViewportChange);
   }
 }

@@ -77,11 +77,5 @@ export function renderReview(root, test, result, { backHref }) {
         <a class="button button-secondary" href="${backHref}">Volver a los recursos</a>
       </div>
     </section>
-
-    <button id="review-scroll-top" class="review-scroll-top" type="button" aria-label="Volver al inicio de la revisión" title="Volver arriba" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m6 14 6-6 6 6"></path>
-      </svg>
-    </button>
   `;
 }

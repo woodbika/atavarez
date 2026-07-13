@@ -7,6 +7,7 @@ import { renderResults } from "../views/results-view.js";
 import { renderReview } from "../views/review-view.js";
 import { renderTest } from "../views/test-view.js";
 import { ReviewController } from "./review-controller.js";
+import { ScrollTopController } from "./scroll-top-controller.js";
 import { TestControlsController } from "./test-controls-controller.js";
 
 export class AppController {
@@ -17,6 +18,9 @@ export class AppController {
     this.currentResult = null;
     this.testControls = new TestControlsController(root);
     this.reviewController = null;
+    this.scrollTopController = new ScrollTopController(
+      document.querySelector("#app-scroll-top"),
+    );
     this.autoAdvanceTimer = null;
     this.restoreOptionHover = null;
     this.onRouteChange = this.onRouteChange.bind(this);
@@ -24,6 +28,7 @@ export class AppController {
 
   start() {
     this.testControls.start();
+    this.scrollTopController.start();
     window.addEventListener("hashchange", this.onRouteChange);
     this.onRouteChange();
   }
@@ -55,9 +60,14 @@ export class AppController {
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
 
+    this.scrollTopController.button?.classList.toggle(
+      "is-study-context",
+      Boolean(this.root.querySelector(".test-shell, .results-shell, .review-shell")),
+    );
     document.title = `${this.root.querySelector("h1")?.textContent ?? "OPOSAKETAK"} · OPOSAKETAK`;
     this.root.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "auto" });
+    this.scrollTopController.onViewportChange();
   }
 
   preloadRouteCover(section, subsection, subId) {
