@@ -23,13 +23,22 @@ export class AppController {
     );
     this.autoAdvanceTimer = null;
     this.restoreOptionHover = null;
+    this.testPreferences = {
+      questionMap: true,
+      liveResponse: false,
+      autoAdvance: false,
+      focusMode: false,
+      fontSize: "medium",
+    };
     this.onRouteChange = this.onRouteChange.bind(this);
+    this.onTestSettingChange = this.onTestSettingChange.bind(this);
   }
 
   start() {
     this.testControls.start();
     this.scrollTopController.start();
     window.addEventListener("hashchange", this.onRouteChange);
+    window.addEventListener("testsettingchange", this.onTestSettingChange);
     this.onRouteChange();
   }
 
@@ -162,12 +171,21 @@ export class AppController {
       ? "aleatorio"
       : "natural";
 
-    if (!this.session || this.session.test.id !== id || this.sessionOrder !== orderMode) {
+    const startsNewSession =
+      !this.session || this.session.test.id !== id || this.sessionOrder !== orderMode;
+    if (startsNewSession) {
       const orderedTest = orderTestQuestions(test, orderMode);
       this.session = new TestSession(orderedTest);
+      this.session.setLiveResponseEnabled(this.testPreferences.liveResponse);
+      this.session.setAutoAdvanceEnabled(this.testPreferences.autoAdvance);
       this.sessionOrder = orderMode;
     }
     this.renderCurrentQuestion();
+    if (startsNewSession) {
+      const fontLevels = { small: 0, medium: 1, large: 2 };
+      this.testControls.setFontLevel(fontLevels[this.testPreferences.fontSize] ?? 1);
+      this.testControls.setFocusMode(this.testPreferences.focusMode);
+    }
   }
 
   resourceContext(test) {
@@ -186,6 +204,7 @@ export class AppController {
       ...this.resourceContext(this.session.test),
       orderMode: this.sessionOrder,
       showOrder: resource?.variant === "complete",
+      showQuestionMap: this.testPreferences.questionMap,
     });
     const form = this.root.querySelector("#question-form");
     const liveAnswerToggle = this.root.querySelector("#live-answer-toggle");
@@ -258,6 +277,28 @@ export class AppController {
     });
 
     this.centerCurrentQuestionPill();
+  }
+
+  onTestSettingChange(event) {
+    const { key, value } = event.detail ?? {};
+    if (!(key in this.testPreferences)) return;
+    this.testPreferences[key] = value;
+    const isTestRoute = this.route()[0] === "test" && Boolean(this.session);
+    if (!isTestRoute) return;
+
+    if (key === "questionMap") this.renderCurrentQuestion();
+    else if (key === "liveResponse") {
+      this.session.setLiveResponseEnabled(Boolean(value));
+      this.renderCurrentQuestion();
+    } else if (key === "autoAdvance") {
+      this.session.setAutoAdvanceEnabled(Boolean(value));
+      this.renderCurrentQuestion();
+    } else if (key === "focusMode") {
+      this.testControls.setFocusMode(Boolean(value));
+    } else if (key === "fontSize") {
+      const fontLevels = { small: 0, medium: 1, large: 2 };
+      this.testControls.setFontLevel(fontLevels[value] ?? 1);
+    }
   }
 
   scheduleAutoAdvance() {

@@ -1,7 +1,11 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { metadata } from "./layout.js";
 
-export function renderTest(root, session, { backHref, backLabel, orderMode, showOrder }) {
+export function renderTest(
+  root,
+  session,
+  { backHref, backLabel, orderMode, showOrder, showQuestionMap = true },
+) {
   const { test, currentQuestion: question, currentIndex } = session;
   const total = test.preguntas.length;
   const selected = session.selectedAnswer(question.id);
@@ -27,7 +31,7 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
         <div class="progress-track" role="progressbar" aria-label="Preguntas respondidas" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${answeredCount}">
           <span style="width: ${progress}%"></span>
         </div>
-        <nav class="question-map" aria-label="Navegar por las preguntas">
+        ${showQuestionMap ? `<nav class="question-map" aria-label="Navegar por las preguntas">
           <span class="question-map-label">Preguntas</span>
           <div class="question-map-scroll">
             ${test.preguntas
@@ -50,7 +54,7 @@ export function renderTest(root, session, { backHref, backLabel, orderMode, show
               })
               .join("")}
           </div>
-        </nav>
+        </nav>` : ""}
       </div>
 
       <div class="focus-content">

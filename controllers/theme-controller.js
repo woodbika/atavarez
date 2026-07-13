@@ -1,26 +1,29 @@
+const THEME_COLORS = {
+  light: "#f8faf9",
+  dark: "#1b211f",
+};
+
 export class ThemeController {
-  constructor({ button, themeColor }) {
-    this.button = button;
-    this.label = button.querySelector(".theme-toggle-label");
+  constructor({ themeColor }) {
     this.themeColor = themeColor;
+    this.mode = "light";
+    this.palette = "forest";
   }
 
   start() {
-    this.applyTheme("light");
-    this.button.addEventListener("click", () => {
-      const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-      this.applyTheme(nextTheme);
-    });
+    this.applyMode(this.mode);
+    this.applyPalette(this.palette);
+    return this;
   }
 
-  applyTheme(theme) {
-    const isDark = theme === "dark";
-    document.documentElement.dataset.theme = theme;
-    const label = isDark ? "Activar modo claro" : "Activar modo oscuro";
-    this.button.setAttribute("aria-pressed", String(isDark));
-    this.button.setAttribute("aria-label", label);
-    this.button.setAttribute("title", label);
-    this.label.textContent = label;
-    this.themeColor.setAttribute("content", isDark ? "#1b211f" : "#f8faf9");
+  applyMode(mode) {
+    this.mode = mode === "dark" ? "dark" : "light";
+    document.documentElement.dataset.theme = this.mode;
+    this.themeColor.setAttribute("content", THEME_COLORS[this.mode]);
+  }
+
+  applyPalette(palette) {
+    this.palette = ["forest", "mist", "clay"].includes(palette) ? palette : "forest";
+    document.documentElement.dataset.palette = this.palette;
   }
 }

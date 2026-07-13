@@ -35,21 +35,74 @@
             </svg>
             <span class="sr-only focus-toggle-label">Activar modo concentración</span>
           </button>
-          <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Activar modo oscuro" title="Activar modo oscuro">
-            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"></path>
+          <button id="settings-toggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="settings-panel" aria-label="Abrir configuración" title="Configuración">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.08A1.7 1.7 0 0 0 9 19.37a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15 1.7 1.7 0 0 0 3.08 14H3v-4h.08A1.7 1.7 0 0 0 4.63 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63 1.7 1.7 0 0 0 10 3.08V3h4v.08A1.7 1.7 0 0 0 15 4.63a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9 1.7 1.7 0 0 0 20.92 10H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"></path>
             </svg>
-            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="3.5"></circle>
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
-            </svg>
-            <span class="sr-only theme-toggle-label">Activar modo oscuro</span>
           </button>
         </div>
       </div>
     </header>
 
     <div id="focus-backdrop" class="focus-backdrop" aria-hidden="true"></div>
+    <div id="settings-backdrop" class="settings-backdrop" aria-hidden="true"></div>
+
+    <aside id="settings-panel" class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+      <div class="settings-heading">
+        <div>
+          <p class="eyebrow">Preferencias</p>
+          <h2 id="settings-title">Configuración</h2>
+        </div>
+        <button class="settings-close" type="button" data-settings-close aria-label="Cerrar configuración" title="Cerrar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+      </div>
+
+      <div class="settings-content">
+        <section class="settings-section" aria-labelledby="appearance-settings-title">
+          <div class="settings-section-heading">
+            <h3 id="appearance-settings-title">Apariencia</h3>
+            <p>Adapta el entorno a tu forma de estudiar.</p>
+          </div>
+          <div class="settings-field">
+            <span class="settings-label">Modo</span>
+            <div class="settings-segmented" role="group" aria-label="Modo de color">
+              <button type="button" data-theme-mode="light" aria-pressed="true">Claro</button>
+              <button type="button" data-theme-mode="dark" aria-pressed="false">Oscuro</button>
+            </div>
+          </div>
+          <div class="settings-field">
+            <span class="settings-label">Tema visual</span>
+            <div class="palette-options" role="group" aria-label="Tema visual">
+              <button type="button" class="palette-option" data-palette="forest" aria-pressed="true"><span class="palette-swatch palette-forest" aria-hidden="true"></span><span>Verde sereno</span></button>
+              <button type="button" class="palette-option" data-palette="mist" aria-pressed="false"><span class="palette-swatch palette-mist" aria-hidden="true"></span><span>Azul bruma</span></button>
+              <button type="button" class="palette-option" data-palette="clay" aria-pressed="false"><span class="palette-swatch palette-clay" aria-hidden="true"></span><span>Tierra cálida</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section" aria-labelledby="test-settings-title">
+          <div class="settings-section-heading">
+            <h3 id="test-settings-title">Test</h3>
+            <p>Valores iniciales para cada nuevo intento.</p>
+          </div>
+          <label class="settings-switch-row"><span><strong>Navegación por preguntas</strong><small>Muestra los números y permite saltar entre preguntas.</small></span><input type="checkbox" data-test-setting="questionMap" checked><span class="settings-switch" aria-hidden="true"></span></label>
+          <label class="settings-switch-row"><span><strong>Respuesta en vivo</strong><small>Corrige y bloquea la pregunta al responder.</small></span><input type="checkbox" data-test-setting="liveResponse"><span class="settings-switch" aria-hidden="true"></span></label>
+          <label class="settings-switch-row"><span><strong>Responder y avanzar</strong><small>Avanza tras mostrar la respuesta durante 1,3 segundos.</small></span><input type="checkbox" data-test-setting="autoAdvance"><span class="settings-switch" aria-hidden="true"></span></label>
+          <label class="settings-switch-row"><span><strong>Modo concentración</strong><small>Abre los tests con el contenido en primer plano.</small></span><input type="checkbox" data-test-setting="focusMode"><span class="settings-switch" aria-hidden="true"></span></label>
+          <div class="settings-field settings-font-field">
+            <span class="settings-label">Tamaño del texto</span>
+            <div class="settings-segmented" role="radiogroup" aria-label="Tamaño inicial del texto">
+              <label><input type="radio" name="default-font-size" value="small" data-test-setting="fontSize"><span>Pequeño</span></label>
+              <label><input type="radio" name="default-font-size" value="medium" data-test-setting="fontSize" checked><span>Medio</span></label>
+              <label><input type="radio" name="default-font-size" value="large" data-test-setting="fontSize"><span>Grande</span></label>
+            </div>
+          </div>
+        </section>
+        <p class="settings-note">Estas preferencias no se guardan al cerrar o recargar la aplicación.</p>
+      </div>
+    </aside>
 
     <main id="contenido" class="shell main-content" tabindex="-1">
       <p class="loading" role="status">Cargando tests…</p>

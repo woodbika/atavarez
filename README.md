@@ -18,7 +18,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Sin historial ni progreso guardado: al salir de un test se descarta el intento.
 - Rutas con hash compatibles con GitHub Pages y recarga directa.
 - Navegación por teclado, foco visible, HTML semántico y soporte de `prefers-reduced-motion`.
-- Modo claro por defecto y modo oscuro opcional, sin persistencia entre recargas.
+- Panel de configuración con modos claro y oscuro, tres temas visuales y valores iniciales para los tests, sin persistencia entre recargas.
 
 ## Estructura
 
