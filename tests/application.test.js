@@ -12,7 +12,7 @@ import { parseHashRoute } from "../utils/router.js";
 
 test("el registro contiene todos los tests con un esquema válido", () => {
   assert.deepEqual(validateResources(resources), []);
-  assert.equal(tests.length, 6);
+  assert.equal(tests.length, 10);
   assert.equal(new Set(tests.map((item) => item.id)).size, tests.length);
 
   tests.forEach((item) => {
@@ -129,25 +129,37 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
 test("el portal agrupa oposiciones, temas y recursos", () => {
   const repository = new ResourceRepository(resources);
   const [opposition] = repository.getOppositions();
-  const [theme] = repository.getThemes(opposition.id);
-  const themeResources = repository.getResources(opposition.id, theme.numero);
-  const completeTest = themeResources.find((resource) => resource.variant === "complete");
+  const themes = repository.getThemes(opposition.id);
+  const theme01 = themes.find((theme) => theme.numero === "01");
+  const theme17 = themes.find((theme) => theme.numero === "17");
+  const theme01Resources = repository.getResources(opposition.id, theme01.numero);
+  const theme17Resources = repository.getResources(opposition.id, theme17.numero);
+  const completeTest01 = theme01Resources.find((resource) => resource.variant === "complete");
+  const completeTest17 = theme17Resources.find((resource) => resource.variant === "complete");
 
   assert.equal(repository.getOppositions().length, 1);
-  assert.equal(opposition.themeCount, 1);
-  assert.equal(theme.resourceCount, 7);
-  assert.equal(themeResources.length, 7);
-  assert.equal(completeTest.data.preguntas.length, 121);
-  assert.equal(new Set(completeTest.data.preguntas.map((question) => question.id)).size, 121);
-  assert.deepEqual(completeTest.orderModes, ["natural", "aleatorio"]);
-  assert.equal(completeTest.defaultOrder, "natural");
-  assert.equal(repository.searchThemes([theme], "tema 01").length, 1);
-  assert.equal(repository.searchThemes([theme], "constitucion").length, 1);
-  assert.ok(repository.searchResources(themeResources, "constitucion").length > 0);
-  assert.equal(repository.searchResources(themeResources, "IVOT").length, 6);
+  assert.equal(opposition.themeCount, 2);
+  assert.equal(theme01.resourceCount, 7);
+  assert.equal(theme17.resourceCount, 5);
+  assert.equal(theme01Resources.length, 7);
+  assert.equal(theme17Resources.length, 5);
+  assert.equal(completeTest01.data.preguntas.length, 121);
+  assert.equal(completeTest17.data.preguntas.length, 97);
+  assert.equal(new Set(completeTest01.data.preguntas.map((question) => question.id)).size, 121);
+  assert.equal(new Set(completeTest17.data.preguntas.map((question) => question.id)).size, 97);
+  assert.deepEqual(completeTest01.orderModes, ["natural", "aleatorio"]);
+  assert.deepEqual(completeTest17.orderModes, ["natural", "aleatorio"]);
+  assert.equal(completeTest01.defaultOrder, "natural");
+  assert.equal(completeTest17.defaultOrder, "natural");
+  assert.equal(repository.searchThemes(themes, "tema 17").length, 1);
+  assert.equal(repository.searchThemes(themes, "empleo publico").length, 1);
+  assert.ok(repository.searchResources(theme01Resources, "constitucion").length > 0);
+  assert.ok(repository.searchResources(theme17Resources, "empleo publico").length > 0);
+  assert.equal(repository.searchResources(theme01Resources, "IVOT").length, 6);
+  assert.equal(repository.searchResources(theme17Resources, "IVOT").length, 4);
   assert.ok(
     repository
-      .searchResources(themeResources, "CAPÍTULO V")
+      .searchResources(theme01Resources, "CAPÍTULO V")
       .every((item) => item.classification.partes.includes("CAPÍTULO V")),
   );
 });
