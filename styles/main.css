@@ -2914,8 +2914,8 @@ html[data-theme="dark"] .scroll-top:hover {
 @media (min-width: 521px) and (max-width: 900px) {
   .app-scroll-top {
     top: auto;
-    right: clamp(20px, 3vw, 28px);
-    bottom: clamp(46px, 7vh, 64px);
+    right: 24px;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
     transform: none;
     animation-name: scroll-top-corner-in;
   }
