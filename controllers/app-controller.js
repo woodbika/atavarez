@@ -12,7 +12,7 @@ import { TestControlsController } from "./test-controls-controller.js";
 import { TestTimerController } from "./test-timer-controller.js";
 
 export class AppController {
-  constructor({ root, repository }) {
+  constructor({ root, repository, testPreferences = {} }) {
     this.root = root;
     this.repository = repository;
     this.session = null;
@@ -36,6 +36,7 @@ export class AppController {
       fontSize: "medium",
       timerEnabled: false,
       timerSecondsPerQuestion: 40,
+      ...testPreferences,
     };
     this.onRouteChange = this.onRouteChange.bind(this);
     this.onTestSettingChange = this.onTestSettingChange.bind(this);

@@ -422,8 +422,7 @@ body.settings-open {
   font-size: 0.96rem;
 }
 
-.settings-section-heading p,
-.settings-note {
+.settings-section-heading p {
   margin: 0;
   color: var(--muted);
   font-size: 0.78rem;
@@ -678,11 +677,58 @@ body.settings-open {
   margin-top: 18px;
 }
 
-.settings-note {
+.settings-storage-actions {
   margin-top: 22px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 9px;
   background: var(--paper);
+}
+
+.settings-reset {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.73rem;
+  font-weight: 600;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.settings-reset:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft-hover);
+  color: var(--brand);
+}
+
+.settings-reset svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.settings-reset-status {
+  margin: 8px 0 0;
+  color: var(--brand);
+  font-size: 0.69rem;
+  text-align: center;
+}
+
+.settings-reset-status:empty {
+  display: none;
 }
 
 html[data-theme="dark"] .settings-backdrop {

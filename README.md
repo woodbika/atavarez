@@ -19,7 +19,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Sin historial ni progreso guardado: al salir de un test se descarta el intento.
 - Rutas con hash compatibles con GitHub Pages y recarga directa.
 - Navegación por teclado, foco visible, HTML semántico y soporte de `prefers-reduced-motion`.
-- Panel de configuración con modos claro y oscuro, tres temas visuales y valores iniciales para los tests, sin persistencia entre recargas.
+- Panel de configuración con modos claro y oscuro, tres temas visuales y valores iniciales para los tests, guardados localmente y restablecibles.
 
 ## Estructura
 
@@ -95,7 +95,7 @@ Todos los recursos usan rutas relativas y la navegación usa hashes, por lo que 
 - Registro estático explícito: GitHub Pages no puede descubrir archivos del repositorio en tiempo de ejecución.
 - Hash routing para no depender de redirecciones del servidor.
 - Validación preventiva del catálogo tanto en el navegador como en integración continua.
-- No se guarda progreso, historial ni resultados. El resultado calculado solo está disponible en las pantallas de resultado y revisión del intento recién finalizado.
+- No se guarda progreso, historial ni resultados. El resultado calculado solo está disponible en las pantallas de resultado y revisión del intento recién finalizado; únicamente las preferencias del panel se conservan en `localStorage`.
 - Los datos de preguntas, opciones y soluciones se importan directamente y no se modifican.
 
 ## Licencia

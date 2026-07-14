@@ -8,6 +8,14 @@ import { validateResources } from "../models/resource-validator.js";
 import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
 import { orderTestQuestions } from "../utils/test-order.js";
+import {
+  DEFAULT_PREFERENCES,
+  PREFERENCES_STORAGE_KEY,
+  clearPreferences,
+  loadPreferences,
+  normalizePreferences,
+  savePreferences,
+} from "../utils/preferences.js";
 import { parseHashRoute } from "../utils/router.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 
@@ -77,6 +85,32 @@ test("la cuenta atrás asigna 40 segundos por pregunta y formatea su duración",
   assert.equal(formatCountdown(40), "00:40");
   assert.equal(formatCountdown(720), "12:00");
   assert.equal(formatCountdown(3661), "01:01:01");
+});
+
+test("las preferencias se validan, guardan y restablecen localmente", () => {
+  const memory = new Map();
+  const storage = {
+    getItem: (key) => memory.get(key) ?? null,
+    setItem: (key, value) => memory.set(key, value),
+    removeItem: (key) => memory.delete(key),
+  };
+  const custom = normalizePreferences({
+    themeMode: "dark",
+    palette: "mist",
+    questionMap: false,
+    timerEnabled: true,
+    timerDurationMode: "custom",
+    timerSecondsPerQuestion: 500,
+    fontSize: "large",
+  });
+
+  assert.equal(custom.timerSecondsPerQuestion, 300);
+  assert.equal(savePreferences(storage, custom), true);
+  assert.deepEqual(loadPreferences(storage), custom);
+  assert.equal(clearPreferences(storage), true);
+  assert.deepEqual(loadPreferences(storage), DEFAULT_PREFERENCES);
+  storage.setItem(PREFERENCES_STORAGE_KEY, "contenido no válido");
+  assert.deepEqual(loadPreferences(storage), DEFAULT_PREFERENCES);
 });
 
 test("la sesión mantiene respuestas durante el intento y permite navegar", () => {

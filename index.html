@@ -89,7 +89,7 @@
           </div>
           <label class="settings-switch-row"><span><strong>Navegación por preguntas</strong><small>Muestra los números y permite saltar entre preguntas.</small></span><input type="checkbox" data-test-setting="questionMap" checked><span class="settings-switch" aria-hidden="true"></span></label>
           <label class="settings-switch-row"><span><strong>Respuesta en vivo</strong><small>Corrige y bloquea la pregunta al responder.</small></span><input type="checkbox" data-test-setting="liveResponse"><span class="settings-switch" aria-hidden="true"></span></label>
-          <label class="settings-switch-row"><span><strong>Responder y avanzar</strong><small>Avanza tras mostrar la respuesta durante 1,3 segundos.</small></span><input type="checkbox" data-test-setting="autoAdvance"><span class="settings-switch" aria-hidden="true"></span></label>
+          <label class="settings-switch-row"><span><strong>Responder y avanzar</strong><small>Avanza automáticamente tras responder la pregunta.</small></span><input type="checkbox" data-test-setting="autoAdvance"><span class="settings-switch" aria-hidden="true"></span></label>
           <label class="settings-switch-row"><span><strong>Cuenta atrás</strong><small>Asigna un tiempo máximo por cada pregunta del test.</small></span><input id="timer-enabled-setting" type="checkbox" data-test-setting="timerEnabled" aria-controls="timer-duration-settings"><span class="settings-switch" aria-hidden="true"></span></label>
           <div id="timer-duration-settings" class="settings-timer-duration" hidden>
             <span class="settings-label">Tiempo por pregunta</span>
@@ -113,7 +113,13 @@
             </div>
           </div>
         </section>
-        <p class="settings-note">Estas preferencias no se guardan al cerrar o recargar la aplicación.</p>
+        <div class="settings-storage-actions">
+          <button class="settings-reset" type="button" data-settings-reset>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v5h5M5.5 16a8 8 0 1 0 .5-9l-2 5"></path></svg>
+            <span>Restablecer preferencias</span>
+          </button>
+          <p class="settings-reset-status" role="status" aria-live="polite" data-settings-status></p>
+        </div>
       </div>
     </aside>
 

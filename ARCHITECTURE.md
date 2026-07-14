@@ -14,7 +14,7 @@ OPOSAKETAK es una aplicación estática con módulos ES, sin framework, backend 
 
 ## Estado
 
-El intento activo vive exclusivamente en memoria mediante `TestSession`. No se utiliza `localStorage`, `sessionStorage`, IndexedDB ni cookies. Al abandonar o recargar la aplicación se descartan respuestas, resultados y preferencias.
+El intento activo vive exclusivamente en memoria mediante `TestSession`. Al abandonar o recargar la aplicación se descartan respuestas y resultados. Solo las preferencias del panel se conservan en `localStorage`; no se utiliza `sessionStorage`, IndexedDB ni cookies.
 
 ## Datos
 

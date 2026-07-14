@@ -12,7 +12,7 @@ const themeController = new ThemeController({
   themeColor: document.querySelector('meta[name="theme-color"]'),
 }).start();
 
-new SettingsController({
+const settingsController = new SettingsController({
   trigger: document.querySelector("#settings-toggle"),
   panel: document.querySelector("#settings-panel"),
   backdrop: document.querySelector("#settings-backdrop"),
@@ -24,6 +24,7 @@ try {
   const controller = new AppController({
     root,
     repository: new ResourceRepository(resources),
+    testPreferences: settingsController.getTestPreferences(),
   });
   controller.start();
 } catch (error) {
