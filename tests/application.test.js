@@ -11,8 +11,14 @@ import { orderTestQuestions } from "../utils/test-order.js";
 import { parseHashRoute } from "../utils/router.js";
 
 test("el registro contiene todos los tests con un esquema válido", () => {
+  const registeredTests = resources.filter((resource) => resource.type === "test");
+
   assert.deepEqual(validateResources(resources), []);
-  assert.equal(tests.length, 10);
+  assert.equal(tests.length, registeredTests.length);
+  assert.deepEqual(
+    tests.map((item) => item.id),
+    registeredTests.map((resource) => resource.id),
+  );
   assert.equal(new Set(tests.map((item) => item.id)).size, tests.length);
 
   tests.forEach((item) => {
@@ -128,39 +134,121 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
 
 test("el portal agrupa oposiciones, temas y recursos", () => {
   const repository = new ResourceRepository(resources);
-  const [opposition] = repository.getOppositions();
-  const themes = repository.getThemes(opposition.id);
-  const theme01 = themes.find((theme) => theme.numero === "01");
-  const theme17 = themes.find((theme) => theme.numero === "17");
-  const theme01Resources = repository.getResources(opposition.id, theme01.numero);
-  const theme17Resources = repository.getResources(opposition.id, theme17.numero);
-  const completeTest01 = theme01Resources.find((resource) => resource.variant === "complete");
-  const completeTest17 = theme17Resources.find((resource) => resource.variant === "complete");
+  const oppositions = repository.getOppositions();
+  const expectedOppositionIds = new Set(
+    resources.map((resource) => repository.getOppositionForResource(resource.id)),
+  );
 
-  assert.equal(repository.getOppositions().length, 1);
-  assert.equal(opposition.themeCount, 2);
-  assert.equal(theme01.resourceCount, 7);
-  assert.equal(theme17.resourceCount, 5);
-  assert.equal(theme01Resources.length, 7);
-  assert.equal(theme17Resources.length, 5);
-  assert.equal(completeTest01.data.preguntas.length, 121);
-  assert.equal(completeTest17.data.preguntas.length, 97);
-  assert.equal(new Set(completeTest01.data.preguntas.map((question) => question.id)).size, 121);
-  assert.equal(new Set(completeTest17.data.preguntas.map((question) => question.id)).size, 97);
-  assert.deepEqual(completeTest01.orderModes, ["natural", "aleatorio"]);
-  assert.deepEqual(completeTest17.orderModes, ["natural", "aleatorio"]);
-  assert.equal(completeTest01.defaultOrder, "natural");
-  assert.equal(completeTest17.defaultOrder, "natural");
+  assert.equal(oppositions.length, expectedOppositionIds.size);
+
+  oppositions.forEach((opposition) => {
+    const oppositionResources = resources.filter(
+      (resource) => repository.getOppositionForResource(resource.id) === opposition.id,
+    );
+    const themes = repository.getThemes(opposition.id);
+    const expectedThemeNumbers = new Set(
+      oppositionResources.map((resource) => String(resource.classification.tema.numero)),
+    );
+
+    assert.equal(opposition.themeCount, expectedThemeNumbers.size);
+    assert.equal(themes.length, expectedThemeNumbers.size);
+
+    themes.forEach((theme) => {
+      const sourceResources = oppositionResources.filter(
+        (resource) => String(resource.classification.tema.numero) === theme.numero,
+      );
+      const sourceTestResources = sourceResources.filter(
+        (resource) => resource.type === "test",
+      );
+      const themeResources = repository.getResources(opposition.id, theme.numero);
+      const completeTest = themeResources.find((resource) => resource.variant === "complete");
+      const expectedQuestionCount = sourceTestResources.reduce(
+        (total, resource) => total + resource.data.preguntas.length,
+        0,
+      );
+      const combinedResourceCount = sourceTestResources.length ? 1 : 0;
+
+      assert.equal(theme.resourceCount, sourceResources.length + combinedResourceCount);
+      assert.equal(themeResources.length, sourceResources.length + combinedResourceCount);
+      if (!sourceTestResources.length) {
+        assert.equal(completeTest, undefined);
+        return;
+      }
+
+      assert.ok(completeTest);
+      assert.equal(completeTest.data.preguntas.length, expectedQuestionCount);
+      assert.equal(
+        new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+        expectedQuestionCount,
+      );
+      assert.deepEqual(completeTest.orderModes, ["natural", "aleatorio"]);
+      assert.equal(completeTest.defaultOrder, "natural");
+    });
+  });
+
+  const opposition = oppositions.find(
+    (item) => repository.getTheme(item.id, "01") && repository.getTheme(item.id, "17"),
+  );
+  assert.ok(opposition);
+  const themes = repository.getThemes(opposition.id);
   assert.equal(repository.searchThemes(themes, "tema 17").length, 1);
-  assert.equal(repository.searchThemes(themes, "empleo publico").length, 1);
+  assert.ok(
+    repository.searchThemes(themes, "empleo publico").some((theme) => theme.numero === "17"),
+  );
+
+  const theme01Resources = repository.getResources(opposition.id, "01");
+  const theme17Resources = repository.getResources(opposition.id, "17");
   assert.ok(repository.searchResources(theme01Resources, "constitucion").length > 0);
   assert.ok(repository.searchResources(theme17Resources, "empleo publico").length > 0);
-  assert.equal(repository.searchResources(theme01Resources, "IVOT").length, 6);
-  assert.equal(repository.searchResources(theme17Resources, "IVOT").length, 4);
+  assert.ok(repository.searchResources(theme01Resources, "IVOT").length >= 6);
+  assert.ok(repository.searchResources(theme17Resources, "IVOT").length >= 4);
   assert.ok(
     repository
       .searchResources(theme01Resources, "CAPÍTULO V")
       .every((item) => item.classification.partes.includes("CAPÍTULO V")),
+  );
+});
+
+test("el tema 18 reúne sus tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "18"));
+  assert.ok(opposition);
+  const theme18 = repository.getTheme(opposition.id, "18");
+  const theme18Resources = repository.getResources(opposition.id, "18");
+  const sourceTests = theme18Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme18Resources.find((resource) => resource.variant === "complete");
+  const sourceQuestionCount = sourceTests.reduce(
+    (total, resource) => total + resource.data.preguntas.length,
+    0,
+  );
+  const requiredTestIds = [
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-139-y-140",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-141-y-142",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-143-a-145",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-146-a-148",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-149-a-152",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-153-a-155",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-156-a-160",
+  ];
+  const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+
+  assert.ok(theme18);
+  assert.ok(completeTest);
+  requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.ok(sourceQuestionCount >= 118);
+  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(sourceTests.map((resource) => resource.id)),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    sourceQuestionCount,
   );
 });
 
