@@ -9,6 +9,7 @@ import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
 import { orderTestQuestions } from "../utils/test-order.js";
 import { parseHashRoute } from "../utils/router.js";
+import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 
 test("el registro contiene todos los tests con un esquema válido", () => {
   const registeredTests = resources.filter((resource) => resource.type === "test");
@@ -63,6 +64,19 @@ test("la evaluación distingue aciertos, errores y preguntas sin responder", () 
   assert.equal(result.unanswered, 1);
   assert.equal(result.total, 3);
   assert.equal(result.score, 2.22);
+});
+
+test("la cuenta atrás asigna 40 segundos por pregunta y formatea su duración", () => {
+  assert.equal(testDurationSeconds(1), 40);
+  assert.equal(testDurationSeconds(18), 720);
+  assert.equal(testDurationSeconds(18, 60), 1080);
+  assert.equal(testDurationSeconds(3, 25), 90);
+  assert.equal(testDurationSeconds(2, 10), 60);
+  assert.equal(testDurationSeconds(2, 600), 600);
+  assert.equal(testDurationSeconds(0), 0);
+  assert.equal(formatCountdown(40), "00:40");
+  assert.equal(formatCountdown(720), "12:00");
+  assert.equal(formatCountdown(3661), "01:01:01");
 });
 
 test("la sesión mantiene respuestas durante el intento y permite navegar", () => {

@@ -9,6 +9,7 @@ import { renderTest } from "../views/test-view.js";
 import { ReviewController } from "./review-controller.js";
 import { ScrollTopController } from "./scroll-top-controller.js";
 import { TestControlsController } from "./test-controls-controller.js";
+import { TestTimerController } from "./test-timer-controller.js";
 
 export class AppController {
   constructor({ root, repository }) {
@@ -17,6 +18,10 @@ export class AppController {
     this.session = null;
     this.currentResult = null;
     this.testControls = new TestControlsController(root);
+    this.testTimer = new TestTimerController(root, {
+      onPause: () => this.clearAutoAdvance(),
+      onExpire: () => this.completeTest(),
+    });
     this.reviewController = null;
     this.scrollTopController = new ScrollTopController(
       document.querySelector("#app-scroll-top"),
@@ -29,6 +34,8 @@ export class AppController {
       autoAdvance: false,
       focusMode: false,
       fontSize: "medium",
+      timerEnabled: false,
+      timerSecondsPerQuestion: 40,
     };
     this.onRouteChange = this.onRouteChange.bind(this);
     this.onTestSettingChange = this.onTestSettingChange.bind(this);
@@ -51,8 +58,9 @@ export class AppController {
     this.restoreOptionHover?.();
     this.reviewController?.destroy();
     this.reviewController = null;
-    this.testControls.hideSearch();
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
+    if (section !== "test") this.testTimer.reset();
+    this.testControls.hideSearch();
     this.preloadRouteCover(section, subsection, subId);
     const isTestRoute = section === "test" && Boolean(id);
     this.testControls.setTestRouteActive(isTestRoute);
@@ -159,6 +167,7 @@ export class AppController {
     const resource = this.repository.getById(id);
     const test = this.repository.getTestById(id);
     if (!test) {
+      this.testTimer.reset();
       this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
@@ -175,6 +184,11 @@ export class AppController {
       this.session.setLiveResponseEnabled(this.testPreferences.liveResponse);
       this.session.setAutoAdvanceEnabled(this.testPreferences.autoAdvance);
       this.sessionOrder = orderMode;
+      this.testTimer.start(
+        orderedTest.preguntas.length,
+        this.testPreferences.timerEnabled,
+        this.testPreferences.timerSecondsPerQuestion,
+      );
     }
     this.renderCurrentQuestion();
     if (startsNewSession) {
@@ -201,6 +215,7 @@ export class AppController {
       orderMode: this.sessionOrder,
       showOrder: resource?.variant === "complete",
       showQuestionMap: this.testPreferences.questionMap,
+      timer: this.testTimer.snapshot(),
     });
     const form = this.root.querySelector("#question-form");
     const liveAnswerToggle = this.root.querySelector("#live-answer-toggle");
@@ -272,6 +287,7 @@ export class AppController {
       });
     });
 
+    this.testTimer.attach();
     this.centerCurrentQuestionPill();
   }
 
@@ -294,6 +310,20 @@ export class AppController {
     } else if (key === "fontSize") {
       const fontLevels = { small: 0, medium: 1, large: 2 };
       this.testControls.setFontLevel(fontLevels[value] ?? 1);
+    } else if (key === "timerEnabled") {
+      this.testTimer.setEnabled(
+        Boolean(value),
+        this.session.test.preguntas.length,
+        this.testPreferences.timerSecondsPerQuestion,
+      );
+      this.renderCurrentQuestion();
+    } else if (key === "timerSecondsPerQuestion" && this.testTimer.enabled) {
+      this.testTimer.start(
+        this.session.test.preguntas.length,
+        true,
+        Number(value),
+      );
+      this.renderCurrentQuestion();
     }
   }
 
@@ -405,6 +435,7 @@ export class AppController {
   }
 
   completeTest() {
+    this.testTimer.reset();
     const result = this.session.calculateResult();
     result.orderMode = this.sessionOrder;
     this.currentResult = result;

@@ -1,3 +1,8 @@
+import {
+  MAX_SECONDS_PER_QUESTION,
+  MIN_SECONDS_PER_QUESTION,
+} from "../utils/test-timer.js";
+
 const FOCUSABLE_SELECTOR = [
   "button:not([disabled])",
   "input:not([disabled])",
@@ -33,6 +38,20 @@ export class SettingsController {
         this.emitSetting(control.dataset.testSetting, value);
       });
     });
+    const timerEnabled = this.panel.querySelector("#timer-enabled-setting");
+    timerEnabled?.addEventListener("change", () => {
+      this.setTimerOptionsVisible(timerEnabled.checked);
+    });
+    this.panel.querySelectorAll("[data-timer-duration]").forEach((control) => {
+      control.addEventListener("change", () => {
+        if (control.checked) this.setTimerDurationMode(control.value);
+      });
+    });
+    this.panel.querySelector("[data-timer-custom-seconds]")?.addEventListener(
+      "change",
+      (event) => this.emitCustomTimerDuration(event.target),
+    );
+    this.setTimerOptionsVisible(Boolean(timerEnabled?.checked));
     this.setMode("light");
     this.setPalette("forest");
     return this;
@@ -98,5 +117,28 @@ export class SettingsController {
       this.close();
     }
     window.dispatchEvent(new CustomEvent("testsettingchange", { detail: { key, value } }));
+  }
+
+  setTimerOptionsVisible(visible) {
+    const options = this.panel.querySelector("#timer-duration-settings");
+    if (options) options.hidden = !visible;
+  }
+
+  setTimerDurationMode(mode) {
+    const customField = this.panel.querySelector(".settings-custom-time");
+    const customInput = this.panel.querySelector("[data-timer-custom-seconds]");
+    const isCustom = mode === "custom";
+    if (customField) customField.hidden = !isCustom;
+    if (isCustom && customInput) this.emitCustomTimerDuration(customInput);
+    else this.emitSetting("timerSecondsPerQuestion", 40);
+  }
+
+  emitCustomTimerDuration(input) {
+    const seconds = Math.min(
+      MAX_SECONDS_PER_QUESTION,
+      Math.max(MIN_SECONDS_PER_QUESTION, Math.round(Number(input.value) || 40)),
+    );
+    input.value = String(seconds);
+    this.emitSetting("timerSecondsPerQuestion", seconds);
   }
 }

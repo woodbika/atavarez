@@ -90,6 +90,19 @@
           <label class="settings-switch-row"><span><strong>Navegación por preguntas</strong><small>Muestra los números y permite saltar entre preguntas.</small></span><input type="checkbox" data-test-setting="questionMap" checked><span class="settings-switch" aria-hidden="true"></span></label>
           <label class="settings-switch-row"><span><strong>Respuesta en vivo</strong><small>Corrige y bloquea la pregunta al responder.</small></span><input type="checkbox" data-test-setting="liveResponse"><span class="settings-switch" aria-hidden="true"></span></label>
           <label class="settings-switch-row"><span><strong>Responder y avanzar</strong><small>Avanza tras mostrar la respuesta durante 1,3 segundos.</small></span><input type="checkbox" data-test-setting="autoAdvance"><span class="settings-switch" aria-hidden="true"></span></label>
+          <label class="settings-switch-row"><span><strong>Cuenta atrás</strong><small>Asigna un tiempo máximo por cada pregunta del test.</small></span><input id="timer-enabled-setting" type="checkbox" data-test-setting="timerEnabled" aria-controls="timer-duration-settings"><span class="settings-switch" aria-hidden="true"></span></label>
+          <div id="timer-duration-settings" class="settings-timer-duration" hidden>
+            <span class="settings-label">Tiempo por pregunta</span>
+            <div class="settings-segmented" role="radiogroup" aria-label="Tiempo asignado por pregunta">
+              <label><input type="radio" name="timer-duration" value="default" data-timer-duration checked><span>40 segundos</span></label>
+              <label><input type="radio" name="timer-duration" value="custom" data-timer-duration><span>Otro tiempo</span></label>
+            </div>
+            <label class="settings-custom-time" hidden>
+              <span>Segundos por pregunta</span>
+              <span class="settings-number-field"><input type="number" min="30" max="300" step="1" value="40" inputmode="numeric" data-timer-custom-seconds aria-describedby="custom-time-help"><span aria-hidden="true">s</span></span>
+              <small id="custom-time-help">Mínimo 30 segundos · máximo 5 minutos.</small>
+            </label>
+          </div>
           <label class="settings-switch-row"><span><strong>Modo concentración</strong><small>Abre los tests con el contenido en primer plano.</small></span><input type="checkbox" data-test-setting="focusMode"><span class="settings-switch" aria-hidden="true"></span></label>
           <div class="settings-field settings-font-field">
             <span class="settings-label">Tamaño del texto</span>

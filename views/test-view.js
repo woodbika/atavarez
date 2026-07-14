@@ -4,7 +4,7 @@ import { metadata } from "./layout.js";
 export function renderTest(
   root,
   session,
-  { backHref, backLabel, orderMode, showOrder, showQuestionMap = true },
+  { backHref, backLabel, orderMode, showOrder, showQuestionMap = true, timer },
 ) {
   const { test, currentQuestion: question, currentIndex } = session;
   const total = test.preguntas.length;
@@ -16,6 +16,12 @@ export function renderTest(
 
   root.innerHTML = `
     <a class="back-link test-back-link" href="${backHref}" data-action="leave">← ${escapeHtml(backLabel)}</a>
+    ${timer?.enabled ? `
+      <button class="test-timer" type="button" data-timer-toggle aria-label="Pausar el test. Tiempo restante: ${escapeHtml(timer.label)}" title="Pausar cuenta atrás">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 4 1.5 6.3 5 9-3.5 2.7-5 5-5 9M17 3c0 4-1.5 6.3-5 9 3.5 2.7 5 5 5 9"></path></svg>
+        <time data-timer-value datetime="PT${timer.remainingSeconds}S">${escapeHtml(timer.label)}</time>
+      </button>
+    ` : ""}
     <section class="test-shell" aria-labelledby="test-title">
       <header class="test-heading">
         <p class="eyebrow">Tema ${escapeHtml(test.clasificacion.tema.numero)}${showOrder ? ` · Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}` : ""}</p>
@@ -125,6 +131,17 @@ export function renderTest(
         </nav>
       </div>
     </section>
+
+    ${timer?.enabled ? `
+      <div class="timer-pause-layer" aria-hidden="${timer.paused ? "false" : "true"}">
+        <button class="timer-pause-dialog" type="button" data-timer-resume aria-label="Reanudar el test. Tiempo restante: ${escapeHtml(timer.label)}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m10 8 6 4-6 4Z"></path></svg>
+          <span>Test en pausa</span>
+          <time data-timer-value datetime="PT${timer.remainingSeconds}S">${escapeHtml(timer.label)}</time>
+          <small>Pulsa para continuar</small>
+        </button>
+      </div>
+    ` : ""}
 
     <dialog id="incomplete-dialog" class="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
       <form method="dialog">

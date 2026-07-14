@@ -12,6 +12,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Modo concentración para centrar la pregunta y sus controles sobre un fondo suavemente difuminado.
 - Ajuste temporal del tamaño del texto de las preguntas y respuestas.
 - Corrección opcional en vivo, con respuesta inmediata y bloqueo de cada pregunta evaluada.
+- Cuenta atrás opcional de 40 segundos por pregunta o una duración personalizada, con pausa que bloquea temporalmente el intento.
 - Indicador de progreso y confirmación al finalizar con preguntas pendientes.
 - Resultados con aciertos, errores, preguntas sin responder, porcentaje y puntuación sobre 10 (+1 por acierto, −⅓ por error y 0 en blanco).
 - Revisión compacta con enunciado, respuesta propia, solución, estados y filtros.
