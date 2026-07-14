@@ -8,6 +8,14 @@ import testEmpleoPublico40a44 from "./tests/tema-17/tests-ivot/test-ley-11-2022-
 import testEmpleoPublico45a50 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
 import testEmpleoPublico53a62 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-53-a-62.js";
+import testEmpleoPublico136a138 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138.js";
+import testEmpleoPublico139y140 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-139-y-140.js";
+import testEmpleoPublico141y142 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-141-y-142.js";
+import testEmpleoPublico143a145 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-143-a-145.js";
+import testEmpleoPublico146a148 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-146-a-148.js";
+import testEmpleoPublico149a152 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-149-a-152.js";
+import testEmpleoPublico153a155 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-153-a-155.js";
+import testEmpleoPublico156a160 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-156-a-160.js";
 
 function testResource(test) {
   return {
@@ -32,4 +40,12 @@ export const resources = [
   testResource(testEmpleoPublico45a50),
   testResource(testEmpleoPublico51y52),
   testResource(testEmpleoPublico53a62),
+  testResource(testEmpleoPublico136a138),
+  testResource(testEmpleoPublico139y140),
+  testResource(testEmpleoPublico141y142),
+  testResource(testEmpleoPublico143a145),
+  testResource(testEmpleoPublico146a148),
+  testResource(testEmpleoPublico149a152),
+  testResource(testEmpleoPublico153a155),
+  testResource(testEmpleoPublico156a160),
 ];
