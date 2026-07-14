@@ -69,10 +69,6 @@ export class AppController {
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
 
-    this.scrollTopController.button?.classList.toggle(
-      "is-study-context",
-      Boolean(this.root.querySelector(".test-shell, .results-shell, .review-shell")),
-    );
     document.title = `${this.root.querySelector("h1")?.textContent ?? "OPOSAKETAK"} · OPOSAKETAK`;
     this.root.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "auto" });

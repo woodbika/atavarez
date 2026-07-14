@@ -2336,10 +2336,6 @@ body.focus-mode {
   right: max(12px, calc((100vw - var(--shell)) / 2 - 48px));
 }
 
-.app-scroll-top.is-study-context {
-  right: max(12px, calc((100vw - 760px) / 2 - 58px));
-}
-
 .scroll-top[hidden] {
   display: none;
 }
@@ -2362,6 +2358,11 @@ body.focus-mode {
 @keyframes scroll-top-in {
   from { opacity: 0; transform: translateY(-40%) scale(0.94); }
   to { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+@keyframes scroll-top-corner-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .review-summary-row {
@@ -2889,6 +2890,14 @@ html[data-theme="dark"] .scroll-top:hover {
   .focus-mode .focus-backdrop {
     cursor: pointer;
   }
+
+  .app-scroll-top {
+    top: auto;
+    right: clamp(28px, 3vw, 48px);
+    bottom: clamp(52px, 8vh, 76px);
+    transform: none;
+    animation-name: scroll-top-corner-in;
+  }
 }
 
 @media (max-width: 900px) {
@@ -2899,6 +2908,16 @@ html[data-theme="dark"] .scroll-top:hover {
 
   .card-details {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 521px) and (max-width: 900px) {
+  .app-scroll-top {
+    top: auto;
+    right: clamp(20px, 3vw, 28px);
+    bottom: clamp(46px, 7vh, 64px);
+    transform: none;
+    animation-name: scroll-top-corner-in;
   }
 }
 
