@@ -300,6 +300,40 @@ test("el tema 18 reúne sus tests IVOT en un test completo", () => {
   );
 });
 
+test("el tema 28 reúne sus tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "28"));
+  assert.ok(opposition);
+  const theme28 = repository.getTheme(opposition.id, "28");
+  const theme28Resources = repository.getResources(opposition.id, "28");
+  const sourceTests = theme28Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme28Resources.find((resource) => resource.variant === "complete");
+  const sourceQuestionCount = sourceTests.reduce(
+    (total, resource) => total + resource.data.preguntas.length,
+    0,
+  );
+  const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+
+  assert.ok(theme28);
+  assert.ok(completeTest);
+  assert.ok(sourceTestIds.has("test-de-fuentes-del-derecho-1"));
+  assert.ok(sourceTestIds.has("test-de-fuentes-del-derecho-2"));
+  assert.equal(sourceQuestionCount, 47);
+  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(sourceTests.map((resource) => resource.id)),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    sourceQuestionCount,
+  );
+});
+
 test("los títulos en mayúsculas se presentan como frase sin perder siglas", () => {
   assert.equal(
     formatDisplayTitle("TEST DEL CAPÍTULO III DEL TÍTULO I DE LA CE"),

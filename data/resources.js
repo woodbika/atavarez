@@ -16,6 +16,8 @@ import testEmpleoPublico146a148 from "./tests/tema-18/tests-ivot/test-de-la-ley-
 import testEmpleoPublico149a152 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-149-a-152.js";
 import testEmpleoPublico153a155 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-153-a-155.js";
 import testEmpleoPublico156a160 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-156-a-160.js";
+import testFuentesDerecho1 from "./tests/tema-28/tests-ivot/test-de-fuentes-del-derecho-1.js";
+import testFuentesDerecho2 from "./tests/tema-28/tests-ivot/test-de-fuentes-del-derecho-2.js";
 
 function testResource(test) {
   return {
@@ -48,4 +50,6 @@ export const resources = [
   testResource(testEmpleoPublico149a152),
   testResource(testEmpleoPublico153a155),
   testResource(testEmpleoPublico156a160),
+  testResource(testFuentesDerecho1),
+  testResource(testFuentesDerecho2),
 ];
