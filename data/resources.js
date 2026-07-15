@@ -18,6 +18,11 @@ import testEmpleoPublico153a155 from "./tests/tema-18/tests-ivot/test-de-la-ley-
 import testEmpleoPublico156a160 from "./tests/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-156-a-160.js";
 import testFuentesDerecho1 from "./tests/tema-28/tests-ivot/test-de-fuentes-del-derecho-1.js";
 import testFuentesDerecho2 from "./tests/tema-28/tests-ivot/test-de-fuentes-del-derecho-2.js";
+import testLey40Articulos5a7 from "./tests/tema-29/tests-ivot/test-de-la-ley-40-2015-articulos-5-a-7.js";
+import testLey40Articulos8y9 from "./tests/tema-29/tests-ivot/test-de-la-ley-40-2015-numero-2-articulos-8-y-9.js";
+import testLey40Articulos10y11 from "./tests/tema-29/tests-ivot/test-de-la-ley-40-2015-regimen-juridico-sector-publico-articulos-10-y-11.js";
+import testLey40Articulos12a14 from "./tests/tema-29/tests-ivot/test-ley-40-2015-articulos-12-a-14.js";
+import testLey40Articulos15a18 from "./tests/tema-29/tests-ivot/test-ley-40-2015-articulos-15-a-18.js";
 
 function testResource(test) {
   return {
@@ -52,4 +57,9 @@ export const resources = [
   testResource(testEmpleoPublico156a160),
   testResource(testFuentesDerecho1),
   testResource(testFuentesDerecho2),
+  testResource(testLey40Articulos5a7),
+  testResource(testLey40Articulos8y9),
+  testResource(testLey40Articulos10y11),
+  testResource(testLey40Articulos12a14),
+  testResource(testLey40Articulos15a18),
 ];

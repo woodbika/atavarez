@@ -334,6 +334,46 @@ test("el tema 28 reúne sus tests IVOT en un test completo", () => {
   );
 });
 
+test("el tema 29 reúne sus tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "29"));
+  assert.ok(opposition);
+  const theme29 = repository.getTheme(opposition.id, "29");
+  const theme29Resources = repository.getResources(opposition.id, "29");
+  const sourceTests = theme29Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme29Resources.find((resource) => resource.variant === "complete");
+  const sourceQuestionCount = sourceTests.reduce(
+    (total, resource) => total + resource.data.preguntas.length,
+    0,
+  );
+  const requiredTestIds = [
+    "test-de-la-ley-40-2015-articulos-5-a-7",
+    "test-de-la-ley-40-2015-numero-2-articulos-8-y-9",
+    "test-de-la-ley-40-2015-regimen-juridico-sector-publico-articulos-10-y-11",
+    "test-ley-40-2015-articulos-12-a-14",
+    "test-ley-40-2015-articulos-15-a-18",
+  ];
+  const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+
+  assert.ok(theme29);
+  assert.ok(completeTest);
+  requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.equal(sourceQuestionCount, 92);
+  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(sourceTests.map((resource) => resource.id)),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    sourceQuestionCount,
+  );
+});
+
 test("los títulos en mayúsculas se presentan como frase sin perder siglas", () => {
   assert.equal(
     formatDisplayTitle("TEST DEL CAPÍTULO III DEL TÍTULO I DE LA CE"),
