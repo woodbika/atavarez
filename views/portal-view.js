@@ -16,14 +16,14 @@ function themeTitleParts(title) {
 
 export function renderOppositions(root, oppositions) {
   root.innerHTML = `
-    <section class="hero hero-home" aria-labelledby="oppositions-title">
+    <section class="hero hero-home view-heading view-heading-cover" aria-labelledby="oppositions-title">
       <p class="eyebrow">Inicio</p>
       <h1 id="oppositions-title">Oposiciones disponibles</h1>
       <p class="hero-copy">Elige una oposición para consultar sus temas y acceder a los recursos disponibles.</p>
     </section>
 
-    <section class="catalog-section" aria-labelledby="opposition-list-title">
-      <div class="section-heading">
+    <section class="catalog-section view-layout view-layout-wide" aria-labelledby="opposition-list-title">
+      <div class="section-heading view-section-heading">
         <div>
           <p class="eyebrow">Convocatorias</p>
           <h2 id="opposition-list-title">Selecciona una oposición</h2>
@@ -64,14 +64,14 @@ export function renderThemes(root, opposition, themes) {
 
   root.innerHTML = `
     <a class="back-link" href="#/">← Oposiciones</a>
-    <section class="page-heading ${hasBasqueAdministrativeHero ? "opposition-hero opposition-hero-basque-admin" : ""}" aria-labelledby="opposition-title">
+    <section class="page-heading view-heading ${hasBasqueAdministrativeHero ? "view-heading-cover opposition-hero opposition-hero-basque-admin" : ""}" aria-labelledby="opposition-title">
       <p class="eyebrow">${escapeHtml(formatDisplayTitle(opposition.administration))}</p>
       <h1 id="opposition-title">${escapeHtml(formatDisplayTitle(opposition.title))}</h1>
       <p class="hero-copy">${escapeHtml(opposition.group)} · ${escapeHtml(opposition.scale)}</p>
     </section>
 
-    <section class="catalog-section" aria-labelledby="themes-title">
-      <div class="section-heading">
+    <section class="catalog-section view-layout view-layout-wide" aria-labelledby="themes-title">
+      <div class="section-heading view-section-heading">
         <div>
           <p class="eyebrow">Temario</p>
           <h2 id="themes-title">Temas disponibles</h2>
@@ -132,14 +132,14 @@ export function renderResources(
       <span aria-current="page">Tema ${escapeHtml(theme.numero)}</span>
     </nav>
 
-    <section class="page-heading resource-hero" aria-labelledby="theme-title">
+    <section class="page-heading resource-hero view-heading view-heading-cover" aria-labelledby="theme-title">
       <p class="eyebrow">Tema ${escapeHtml(theme.numero)}</p>
       <h1 id="theme-title">${escapeHtml(title.heading)}</h1>
       <p class="hero-copy resource-hero-scope">${escapeHtml(title.scope || "Consulta los materiales disponibles para este tema.")}</p>
     </section>
 
-    <section class="catalog-section" aria-labelledby="resources-title">
-      <div class="section-heading">
+    <section class="catalog-section view-layout view-layout-wide" aria-labelledby="resources-title">
+      <div class="section-heading view-section-heading">
         <div>
           <p class="eyebrow">Materiales</p>
           <h2 id="resources-title">Recursos disponibles</h2>

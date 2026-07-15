@@ -13,7 +13,7 @@ export function metadata(test) {
 
 export function renderNotFound(root, message = "No hemos encontrado esta página.") {
   root.innerHTML = `
-    <section class="empty-state" aria-labelledby="not-found-title">
+    <section class="empty-state view-layout view-layout-reading view-heading" aria-labelledby="not-found-title">
       <p class="eyebrow">Error 404</p>
       <h1 id="not-found-title">Contenido no disponible</h1>
       <p>${escapeHtml(message)}</p>
@@ -24,7 +24,7 @@ export function renderNotFound(root, message = "No hemos encontrado esta página
 
 export function renderApplicationError(root) {
   root.innerHTML = `
-    <section class="empty-state" aria-labelledby="startup-error-title">
+    <section class="empty-state view-layout view-layout-reading view-heading" aria-labelledby="startup-error-title">
       <p class="eyebrow">Error de configuración</p>
       <h1 id="startup-error-title">No se puede iniciar OPOSAKETAK</h1>
       <p>Los datos de estudio no han superado la validación. Revisa la consola durante el desarrollo para localizar el recurso afectado.</p>

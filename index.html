@@ -21,26 +21,28 @@
             <label class="sr-only" for="resource-search">Buscar recursos</label>
             <input id="resource-search" type="search" placeholder="Buscar recursos" autocomplete="off">
           </form>
-          <div id="test-font-controls" class="test-font-controls" role="group" aria-label="Tamaño del texto del test" hidden>
-            <button type="button" data-font-action="decrease" aria-label="Reducir el tamaño del texto" title="Reducir el tamaño del texto">A−</button>
-            <button type="button" data-font-action="increase" aria-label="Aumentar el tamaño del texto" title="Aumentar el tamaño del texto">A+</button>
-            <span class="sr-only test-font-status" role="status">Tamaño de texto medio</span>
+          <div class="header-tools">
+            <div id="test-font-controls" class="test-font-controls" role="group" aria-label="Tamaño del texto del test" hidden>
+              <button type="button" data-font-action="decrease" aria-label="Reducir el tamaño del texto" title="Reducir el tamaño del texto">A−</button>
+              <button type="button" data-font-action="increase" aria-label="Aumentar el tamaño del texto" title="Aumentar el tamaño del texto">A+</button>
+              <span class="sr-only test-font-status" role="status">Tamaño de texto medio</span>
+            </div>
+            <button id="focus-toggle" class="focus-toggle" type="button" aria-pressed="false" aria-label="Activar modo concentración" title="Activar modo concentración" hidden>
+              <svg class="focus-icon focus-icon-enter" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M8 21H4a1 1 0 0 1-1-1v-4M16 21h4a1 1 0 0 0 1-1v-4"></path>
+              </svg>
+              <svg class="focus-icon focus-icon-exit" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 3v4a2 2 0 0 1-2 2H3M15 3v4a2 2 0 0 0 2 2h4M9 21v-4a2 2 0 0 0-2-2H3M15 21v-4a2 2 0 0 1 2-2h4"></path>
+              </svg>
+              <span class="sr-only focus-toggle-label">Activar modo concentración</span>
+            </button>
+            <button id="settings-toggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="settings-panel" aria-label="Abrir configuración" title="Configuración">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.08A1.7 1.7 0 0 0 9 19.37a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15 1.7 1.7 0 0 0 3.08 14H3v-4h.08A1.7 1.7 0 0 0 4.63 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63 1.7 1.7 0 0 0 10 3.08V3h4v.08A1.7 1.7 0 0 0 15 4.63a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9 1.7 1.7 0 0 0 20.92 10H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"></path>
+              </svg>
+            </button>
           </div>
-          <button id="focus-toggle" class="focus-toggle" type="button" aria-pressed="false" aria-label="Activar modo concentración" title="Activar modo concentración" hidden>
-            <svg class="focus-icon focus-icon-enter" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M8 21H4a1 1 0 0 1-1-1v-4M16 21h4a1 1 0 0 0 1-1v-4"></path>
-            </svg>
-            <svg class="focus-icon focus-icon-exit" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9 3v4a2 2 0 0 1-2 2H3M15 3v4a2 2 0 0 0 2 2h4M9 21v-4a2 2 0 0 0-2-2H3M15 21v-4a2 2 0 0 1 2-2h4"></path>
-            </svg>
-            <span class="sr-only focus-toggle-label">Activar modo concentración</span>
-          </button>
-          <button id="settings-toggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="settings-panel" aria-label="Abrir configuración" title="Configuración">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.08A1.7 1.7 0 0 0 9 19.37a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15 1.7 1.7 0 0 0 3.08 14H3v-4h.08A1.7 1.7 0 0 0 4.63 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63 1.7 1.7 0 0 0 10 3.08V3h4v.08A1.7 1.7 0 0 0 15 4.63a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9 1.7 1.7 0 0 0 20.92 10H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"></path>
-            </svg>
-          </button>
         </div>
       </div>
     </header>

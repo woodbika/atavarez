@@ -2,9 +2,7 @@ import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { metadata } from "./layout.js";
 
 export function renderResults(root, test, result, { backHref, backLabel }) {
-  const circumference = 2 * Math.PI * 42;
   const visualScore = Math.min(Math.max(result.score, 0), 10);
-  const dash = (visualScore / 10) * circumference;
   const formattedScore = result.score.toLocaleString("es-ES", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -12,10 +10,12 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
 
   root.innerHTML = `
     <a class="back-link view-back-link" href="${backHref}">← ${escapeHtml(backLabel)}</a>
-    <section class="results-shell" aria-labelledby="results-title">
-      <header class="results-heading results-hero">
+    <section class="results-shell view-layout view-layout-wide" aria-labelledby="results-title">
+      <header class="results-heading results-hero study-heading view-heading view-heading-cover">
         <p class="eyebrow">Resultado</p>
         <h1 id="results-title">Resultados del intento</h1>
+        <p class="study-heading-context">${escapeHtml(formatDisplayTitle(test.titulo))}</p>
+        ${metadata(test)}
       </header>
 
       <div class="score-layout">
@@ -42,17 +42,16 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
                 <span class="scoring-pill scoring-description">Pregunta en blanco</span>
               </li>
             </ul>
-            <p class="scoring-info-result">Aciertos en este intento: <span>${result.percentage}%</span></p>
           </div>
         </details>
 
-        <div class="score-ring" role="img" aria-label="Puntuación: ${formattedScore} sobre 10">
-          <svg viewBox="0 0 100 100" aria-hidden="true">
-            <circle class="score-ring-bg" cx="50" cy="50" r="42"></circle>
-            <circle class="score-ring-value" cx="50" cy="50" r="42" stroke-dasharray="${dash} ${circumference - dash}"></circle>
-          </svg>
-          <strong>${formattedScore}</strong>
-          <span>sobre 10</span>
+        <div class="score-overview" role="img" aria-label="Puntuación: ${formattedScore} sobre 10">
+          <p class="score-label">Puntuación</p>
+          <p class="score-value"><strong>${formattedScore}</strong><span>/ 10</span></p>
+          <div class="score-progress" aria-hidden="true">
+            <span style="--score-progress: ${visualScore * 10}%"></span>
+          </div>
+          <p class="score-percentage">${result.percentage}% de aciertos</p>
         </div>
 
         <div class="stats-panel">
@@ -63,17 +62,9 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
             <div><dt>Sin responder</dt><dd>${result.unanswered}</dd></div>
           </dl>
         </div>
-
-        <div class="result-test-context">
-          ${metadata(test)}
-          <p class="result-test-reference">
-            <span>Test realizado:</span>
-            <span class="result-test-name">${escapeHtml(formatDisplayTitle(test.titulo))}</span>
-          </p>
-        </div>
       </div>
 
-      <div class="result-actions">
+      <div class="view-actions view-actions-three">
         <a class="button button-primary" href="#/revision/${encodeURIComponent(test.id)}">Revisar respuestas</a>
         <button class="button button-secondary" type="button" data-action="repeat">Repetir test</button>
         <a class="button button-secondary" href="${backHref}">Volver a los recursos</a>

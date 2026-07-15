@@ -22,8 +22,8 @@ export function renderTest(
         <time data-timer-value datetime="PT${timer.remainingSeconds}S">${escapeHtml(timer.label)}</time>
       </button>
     ` : ""}
-    <section class="test-shell" aria-labelledby="test-title">
-      <header class="test-heading">
+    <section class="test-shell view-layout view-layout-reading" aria-labelledby="test-title">
+      <header class="test-heading study-heading view-heading">
         <p class="eyebrow">Tema ${escapeHtml(test.clasificacion.tema.numero)}${showOrder ? ` · Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}` : ""}</p>
         <h1 id="test-title">${escapeHtml(formatDisplayTitle(test.titulo))}</h1>
         ${metadata(test)}

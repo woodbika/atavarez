@@ -10,11 +10,11 @@ function stateFor(question, selected) {
 export function renderReview(root, test, result, { backHref }) {
   root.innerHTML = `
     <a class="back-link view-back-link" href="#/resultados/${encodeURIComponent(test.id)}">← Volver al resultado</a>
-    <section class="review-shell" aria-labelledby="review-title">
-      <header class="review-heading review-hero">
+    <section class="review-shell view-layout view-layout-wide" aria-labelledby="review-title">
+      <header class="review-heading review-hero study-heading view-heading view-heading-cover">
         <p class="eyebrow">Revisión completa</p>
         <h1 id="review-title">Revisa tus respuestas</h1>
-        <p>${escapeHtml(formatDisplayTitle(test.titulo))}</p>
+        <p class="study-heading-context">${escapeHtml(formatDisplayTitle(test.titulo))}</p>
         ${metadata(test)}
       </header>
 
@@ -72,7 +72,7 @@ export function renderReview(root, test, result, { backHref }) {
           .join("")}
       </ol>
       <p id="review-empty" class="review-empty" hidden></p>
-      <div class="review-actions">
+      <div class="view-actions view-actions-two">
         <a class="button button-primary" href="#/resultados/${encodeURIComponent(test.id)}">Volver al resultado</a>
         <a class="button button-secondary" href="${backHref}">Volver a los recursos</a>
       </div>
