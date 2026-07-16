@@ -3377,8 +3377,39 @@ html[data-theme="dark"] .scroll-top:hover {
 
 @media (min-width: 521px) and (max-width: 900px) {
   .test-route-active .test-shell {
-    width: calc(100% - 52px);
-    margin-left: 0;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .test-shell .focus-content {
+    padding-top: 44px;
+  }
+
+  .test-view-tools,
+  .focus-mode .test-view-tools {
+    top: 0;
+    right: 0;
+    left: auto;
+    flex-direction: row;
+    transform: none;
+  }
+
+  .test-view-tools .test-font-controls,
+  .focus-mode .test-view-tools .test-font-controls {
+    grid-template-rows: 34px;
+    grid-template-columns: repeat(2, 34px);
+    width: 70px;
+    height: 36px;
+  }
+
+  .test-view-tools .test-font-controls button + button,
+  .focus-mode .test-view-tools .test-font-controls button + button {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .focus-mode .focus-content {
+    width: min(760px, calc(100% - 32px));
   }
 
   .app-scroll-top {
