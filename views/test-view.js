@@ -1,5 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
-import { metadata } from "./layout.js";
+import { questionCount, themeDisclosure } from "./layout.js";
 
 export function renderTest(
   root,
@@ -24,9 +24,12 @@ export function renderTest(
     ` : ""}
     <section class="test-shell view-layout view-layout-reading" aria-labelledby="test-title">
       <header class="test-heading study-heading view-heading">
-        <p class="eyebrow">Tema ${escapeHtml(test.clasificacion.tema.numero)}${showOrder ? ` · Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}` : ""}</p>
+        <div class="study-heading-kicker">
+          ${themeDisclosure(test)}
+          ${showOrder ? `<span class="study-order">· Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}</span>` : ""}
+        </div>
         <h1 id="test-title">${escapeHtml(formatDisplayTitle(test.titulo))}</h1>
-        ${metadata(test)}
+        ${questionCount(test)}
       </header>
 
       <div class="progress-block">

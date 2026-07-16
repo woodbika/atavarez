@@ -1,5 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
-import { metadata } from "./layout.js";
+import { questionCount, themeDisclosure } from "./layout.js";
 
 function stateFor(question, selected) {
   if (!selected) return { key: "unanswered", label: "Sin responder" };
@@ -14,8 +14,9 @@ export function renderReview(root, test, result, { backHref }) {
       <header class="review-heading review-hero study-heading view-heading view-heading-cover">
         <p class="eyebrow">Revisión completa</p>
         <h1 id="review-title">Revisa tus respuestas</h1>
+        ${themeDisclosure(test)}
         <p class="study-heading-context">${escapeHtml(formatDisplayTitle(test.titulo))}</p>
-        ${metadata(test)}
+        ${questionCount(test)}
       </header>
 
       <div class="resource-filter-bar review-filter-bar" role="group" aria-label="Filtrar respuestas revisadas">

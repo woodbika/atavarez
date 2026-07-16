@@ -210,6 +210,7 @@ export class AppController {
 
   renderCurrentQuestion() {
     this.clearAutoAdvance();
+    this.testControls.releaseTestTools();
     const resource = this.repository.getById(this.session.test.id);
     renderTest(this.root, this.session, {
       ...this.resourceContext(this.session.test),
@@ -218,6 +219,7 @@ export class AppController {
       showQuestionMap: this.testPreferences.questionMap,
       timer: this.testTimer.snapshot(),
     });
+    this.testControls.mountTestTools();
     const form = this.root.querySelector("#question-form");
     const liveAnswerToggle = this.root.querySelector("#live-answer-toggle");
     const autoAdvanceToggle = this.root.querySelector("#auto-advance-toggle");

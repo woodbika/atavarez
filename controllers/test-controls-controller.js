@@ -13,6 +13,7 @@ export class TestControlsController {
     this.focusToggle = document.querySelector("#focus-toggle");
     this.focusToggleLabel = this.focusToggle.querySelector(".focus-toggle-label");
     this.fontControls = document.querySelector("#test-font-controls");
+    this.testViewTools = document.querySelector(".test-view-tools");
     this.fontStatus = this.fontControls.querySelector(".test-font-status");
     this.focusBackdrop = document.querySelector("#focus-backdrop");
     this.fontLevel = 1;
@@ -55,11 +56,13 @@ export class TestControlsController {
     if (event.key !== "Tab") return;
 
     const focusables = [
-      this.focusToggle,
-      ...this.fontControls.querySelectorAll("button:not(:disabled)"),
-      ...this.root.querySelectorAll(
-        '.focus-content a[href], .focus-content button:not(:disabled), .focus-content input:not(:disabled), .focus-content [tabindex]:not([tabindex="-1"])',
-      ),
+      ...new Set([
+        ...this.fontControls.querySelectorAll("button:not(:disabled)"),
+        this.focusToggle,
+        ...this.root.querySelectorAll(
+          '.focus-content a[href], .focus-content button:not(:disabled), .focus-content input:not(:disabled), .focus-content [tabindex]:not([tabindex="-1"])',
+        ),
+      ]),
     ].filter((element) => !element.hidden);
     if (!focusables.length) return;
 
@@ -73,11 +76,22 @@ export class TestControlsController {
   }
 
   setTestRouteActive(active) {
+    document.body.classList.toggle("test-route-active", active);
     this.focusToggle.hidden = !active;
     this.fontControls.hidden = !active;
     if (active) return;
+    this.releaseTestTools();
     this.setFocusMode(false, { immediate: true });
     this.setFontLevel(1);
+  }
+
+  releaseTestTools() {
+    if (this.testViewTools.parentElement === document.body) return;
+    this.focusBackdrop.before(this.testViewTools);
+  }
+
+  mountTestTools() {
+    this.root.querySelector(".focus-content")?.prepend(this.testViewTools);
   }
 
   hideSearch() {

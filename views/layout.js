@@ -1,14 +1,24 @@
 import { escapeHtml } from "../utils/text.js";
 
-export function metadata(test) {
+export function themeDisclosure(test) {
   const { clasificacion } = test;
   return `
-    <ul class="meta-list" aria-label="Datos del test">
-      <li>Tema ${escapeHtml(clasificacion.tema.numero)}</li>
-      <li>${escapeHtml(clasificacion.tema.titulo)}</li>
-      <li>${test.preguntas.length} preguntas</li>
-    </ul>
+    <details class="theme-disclosure">
+      <summary title="Mostrar el título completo del tema">
+        <span>Tema ${escapeHtml(clasificacion.tema.numero)}</span>
+        <span class="theme-disclosure-cue" aria-hidden="true">i</span>
+      </summary>
+      <div class="theme-disclosure-content" role="note">
+        <span class="theme-disclosure-label">Título del tema</span>
+        <span class="theme-disclosure-title">${escapeHtml(clasificacion.tema.titulo)}</span>
+      </div>
+    </details>
   `;
+}
+
+export function questionCount(test) {
+  const count = test.preguntas.length;
+  return `<p class="study-question-count">${count} ${count === 1 ? "pregunta" : "preguntas"}</p>`;
 }
 
 export function renderNotFound(root, message = "No hemos encontrado esta página.") {

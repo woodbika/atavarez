@@ -1,5 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
-import { metadata } from "./layout.js";
+import { questionCount, themeDisclosure } from "./layout.js";
 
 export function renderResults(root, test, result, { backHref, backLabel }) {
   const visualScore = Math.min(Math.max(result.score, 0), 10);
@@ -14,8 +14,9 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
       <header class="results-heading results-hero study-heading view-heading view-heading-cover">
         <p class="eyebrow">Resultado</p>
         <h1 id="results-title">Resultados del intento</h1>
+        ${themeDisclosure(test)}
         <p class="study-heading-context">${escapeHtml(formatDisplayTitle(test.titulo))}</p>
-        ${metadata(test)}
+        ${questionCount(test)}
       </header>
 
       <div class="score-layout">
