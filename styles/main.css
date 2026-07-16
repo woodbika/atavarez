@@ -2107,15 +2107,39 @@ body[data-test-font-size="large"] .option {
 
 .test-navigation {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 14px;
+  gap: 12px;
   margin-top: 22px;
 }
 
-.test-navigation-end {
+.test-navigation-main {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.test-finish-link {
+  justify-self: center;
+  margin-top: 2px;
+  padding: 3px 5px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 560;
+  line-height: 1.4;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+
+.test-finish-link:hover {
+  color: var(--brand);
+  text-decoration-color: currentColor;
 }
 
 /* Cuenta atrás y pausa del test */
@@ -3703,18 +3727,8 @@ html[data-theme="dark"] .scroll-top:hover {
     grid-template-columns: 1fr;
   }
 
-  .test-navigation {
-    grid-template-columns: 1fr;
-  }
-
-  .test-navigation > .button,
-  .test-navigation-end .button {
-    width: 100%;
-  }
-
-  .test-navigation-end {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .test-navigation-main .button {
+    min-width: min(42%, 150px);
   }
 
   .stats-grid {

@@ -126,11 +126,11 @@ export function renderTest(
         </form>
 
         <nav class="test-navigation" aria-label="Navegación entre preguntas">
-          <button class="button button-secondary" type="button" data-action="previous" ${currentIndex === 0 ? "disabled" : ""}>Anterior</button>
-          <div class="test-navigation-end">
+          <div class="test-navigation-main">
+            <button class="button button-secondary" type="button" data-action="previous" ${currentIndex === 0 ? "disabled" : ""}>Anterior</button>
             <button class="button button-secondary" type="button" data-action="next" ${currentIndex === total - 1 ? "disabled" : ""}>Siguiente</button>
-            <button class="button button-primary" type="button" data-action="finish">Finalizar test</button>
           </div>
+          <button class="test-finish-link" type="button" data-action="finish">Finalizar test</button>
         </nav>
       </div>
     </section>
