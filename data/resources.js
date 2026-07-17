@@ -23,6 +23,11 @@ import testLey40Articulos8y9 from "./tests/tema-29/tests-ivot/test-de-la-ley-40-
 import testLey40Articulos10y11 from "./tests/tema-29/tests-ivot/test-de-la-ley-40-2015-regimen-juridico-sector-publico-articulos-10-y-11.js";
 import testLey40Articulos12a14 from "./tests/tema-29/tests-ivot/test-ley-40-2015-articulos-12-a-14.js";
 import testLey40Articulos15a18 from "./tests/tema-29/tests-ivot/test-ley-40-2015-articulos-15-a-18.js";
+import testLey39Articulos24y25 from "./tests/tema-30/tests-ivot/test-ley-39-2015-silencio-administrativo-articulos-24-y-25.js";
+import testLey39Articulos34a40 from "./tests/tema-30/tests-ivot/test-ley-39-2015-articulos-34-a-40.js";
+import testLey39Articulos41a44 from "./tests/tema-30/tests-ivot/test-ley-39-2015-articulos-41-a-44.js";
+import testLey39Articulos45y46 from "./tests/tema-30/tests-ivot/test-ley-39-2015-articulos-45-y-46.js";
+import testLey39Articulos47a52 from "./tests/tema-30/tests-ivot/test-ley-39-2015-articulos-47-a-52.js";
 
 function testResource(test) {
   return {
@@ -62,4 +67,9 @@ export const resources = [
   testResource(testLey40Articulos10y11),
   testResource(testLey40Articulos12a14),
   testResource(testLey40Articulos15a18),
+  testResource(testLey39Articulos24y25),
+  testResource(testLey39Articulos34a40),
+  testResource(testLey39Articulos41a44),
+  testResource(testLey39Articulos45y46),
+  testResource(testLey39Articulos47a52),
 ];
