@@ -19,7 +19,6 @@ export class ReviewController {
         releaseTouchFocus(event, button);
       });
     });
-    return this;
   }
 
   applyFilter(filter, activeButton) {
@@ -42,8 +41,5 @@ export class ReviewController {
     this.filterStatus.textContent = `${visibleCount} ${
       visibleCount === 1 ? "respuesta mostrada" : "respuestas mostradas"
     }`;
-  }
-
-  destroy() {
   }
 }

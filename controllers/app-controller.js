@@ -22,7 +22,6 @@ export class AppController {
       onPause: () => this.clearAutoAdvance(),
       onExpire: () => this.completeTest(),
     });
-    this.reviewController = null;
     this.scrollTopController = new ScrollTopController(
       document.querySelector("#app-scroll-top"),
     );
@@ -57,8 +56,6 @@ export class AppController {
   onRouteChange() {
     this.clearAutoAdvance();
     this.restoreOptionHover?.();
-    this.reviewController?.destroy();
-    this.reviewController = null;
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
     if (section !== "test") this.testTimer.reset();
     this.testControls.hideSearch();
@@ -90,7 +87,7 @@ export class AppController {
       filename = "portada-recursos.jpg";
     } else if (section === "oposiciones") {
       filename = "portada-temas-gobierno-vasco.jpg";
-    } else if (section === "test" || section === "resultados") {
+    } else if (section === "resultados") {
       filename = "portada-resultados.jpg";
     } else if (section === "revision") {
       filename = "portada-revision.jpg";
@@ -500,6 +497,6 @@ export class AppController {
     this.session = null;
     const orderedTest = orderTestQuestions(test, result.orderMode, result.questionOrder);
     renderReview(this.root, orderedTest, result, this.resourceContext(test));
-    this.reviewController = new ReviewController(this.root).start();
+    new ReviewController(this.root).start();
   }
 }

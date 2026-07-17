@@ -91,10 +91,6 @@ export class ResourceRepository {
     });
   }
 
-  getAll() {
-    return [...this.resources];
-  }
-
   getById(id) {
     return this.resourceById.get(id) ?? null;
   }

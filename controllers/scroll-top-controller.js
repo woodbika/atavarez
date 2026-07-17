@@ -27,11 +27,4 @@ export class ScrollTopController {
       this.button.hidden = window.scrollY < window.innerHeight * this.viewportThreshold;
     }
   }
-
-  destroy() {
-    if (!this.button) return;
-    this.button.removeEventListener("click", this.onClick);
-    window.removeEventListener("scroll", this.onViewportChange);
-    window.removeEventListener("resize", this.onViewportChange);
-  }
 }

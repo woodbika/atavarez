@@ -31,6 +31,26 @@ function validateClassification(classification, path, errors) {
   }
 }
 
+function classificationsMatch(resourceClassification, testClassification) {
+  if (!resourceClassification || !testClassification) return false;
+  const fields = ["administracion", "oposicion", "grupo", "escala"];
+  const sameFields = fields.every(
+    (field) => resourceClassification[field] === testClassification[field],
+  );
+  const sameTheme =
+    String(resourceClassification.tema?.numero ?? "") ===
+      String(testClassification.tema?.numero ?? "") &&
+    resourceClassification.tema?.titulo === testClassification.tema?.titulo;
+  const resourceParts = resourceClassification.partes;
+  const testParts = testClassification.partes;
+  const sameParts =
+    Array.isArray(resourceParts) &&
+    Array.isArray(testParts) &&
+    resourceParts.length === testParts.length &&
+    resourceParts.every((part, index) => part === testParts[index]);
+  return sameFields && sameTheme && sameParts;
+}
+
 function validateTest(resource, path, errors) {
   const test = resource.data;
   if (!test || typeof test !== "object") {
@@ -46,8 +66,14 @@ function validateTest(resource, path, errors) {
   if (test.titulo !== resource.title) {
     errors.push(`${path}.title: debe coincidir con el título del test.`);
   }
-  if (test.autor?.id !== resource.author?.id) {
+  if (
+    test.autor?.id !== resource.author?.id ||
+    test.autor?.nombre !== resource.author?.nombre
+  ) {
     errors.push(`${path}.author: debe coincidir con el autor del test.`);
+  }
+  if (!classificationsMatch(resource.classification, test.clasificacion)) {
+    errors.push(`${path}.classification: debe coincidir con la clasificación del test.`);
   }
   validateClassification(test.clasificacion, `${path}.data`, errors);
   if (!Array.isArray(test.preguntas) || test.preguntas.length === 0) {

@@ -56,6 +56,19 @@ test("la validación del catálogo informa de soluciones y recursos no válidos"
   assert.ok(errors.some((error) => error.includes("está duplicado")));
 });
 
+test("la validación exige que autor y clasificación coincidan con el test", () => {
+  const invalidResource = structuredClone(resources[0]);
+  invalidResource.data.autor = { id: "ivot", nombre: "Autor distinto" };
+  invalidResource.data.clasificacion = {
+    ...invalidResource.data.clasificacion,
+    tema: { ...invalidResource.data.clasificacion.tema, numero: "999" },
+  };
+  const errors = validateResources([invalidResource]);
+
+  assert.ok(errors.some((error) => error.includes(".author")));
+  assert.ok(errors.some((error) => error.includes(".classification")));
+});
+
 test("la evaluación distingue aciertos, errores y preguntas sin responder", () => {
   const source = tests[0];
   const sample = { ...source, preguntas: source.preguntas.slice(0, 3) };

@@ -35,6 +35,12 @@ export class SettingsController {
     this.backdrop = backdrop;
     this.themeController = themeController;
     this.previouslyFocused = null;
+    this.inertTargets = [
+      document.querySelector(".site-header"),
+      document.querySelector(".test-view-tools"),
+      document.querySelector("#contenido"),
+      document.querySelector("#app-scroll-top"),
+    ].filter(Boolean);
     try {
       this.storage = window.localStorage;
     } catch {
@@ -91,6 +97,8 @@ export class SettingsController {
     if (document.body.classList.contains("settings-open")) return;
     this.previouslyFocused = document.activeElement;
     document.body.classList.add("settings-open");
+    this.inertTargets.forEach((element) => element.setAttribute("inert", ""));
+    this.panel.removeAttribute("inert");
     this.trigger.setAttribute("aria-expanded", "true");
     this.panel.setAttribute("aria-hidden", "false");
     this.backdrop.setAttribute("aria-hidden", "false");
@@ -101,6 +109,8 @@ export class SettingsController {
   close() {
     if (!document.body.classList.contains("settings-open")) return;
     document.body.classList.remove("settings-open");
+    this.inertTargets.forEach((element) => element.removeAttribute("inert"));
+    this.panel.setAttribute("inert", "");
     this.trigger.setAttribute("aria-expanded", "false");
     this.panel.setAttribute("aria-hidden", "true");
     this.backdrop.setAttribute("aria-hidden", "true");

@@ -63,7 +63,7 @@ Para ejecutar todas las verificaciones automatizadas (requiere Node.js 20 o post
 npm run check
 ```
 
-Este comando valida todos los bancos de preguntas y ejecuta las pruebas. También pueden lanzarse por separado con `npm run validate:data` y `npm test`. No es necesario ejecutar `npm install`: el proyecto no tiene dependencias.
+Este comando comprueba la sintaxis del código de producción, valida todos los bancos de preguntas y ejecuta las pruebas. También pueden lanzarse por separado con `npm run check:source`, `npm run validate:data` y `npm test`. No es necesario ejecutar `npm install`: el proyecto no tiene dependencias.
 
 Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante GitHub Actions.
 
@@ -88,6 +88,8 @@ Cada test puede declarar un autor estructurado mediante `autor: { id, nombre }`.
 4. Guarda y espera a que GitHub muestre la URL publicada.
 
 Todos los recursos usan rutas relativas y la navegación usa hashes, por lo que funciona tanto en el dominio raíz como en una subruta del tipo `https://usuario.github.io/repositorio/`.
+
+El archivo `.nojekyll` indica a GitHub Pages que publique el repositorio como contenido estático sin procesarlo con Jekyll. Antes de publicar cambios conviene ejecutar `npm run check` y revisar manualmente las vistas de test, resultados y revisión en los tamaños de pantalla soportados.
 
 ## Decisiones técnicas
 

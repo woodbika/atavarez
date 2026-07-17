@@ -13,6 +13,8 @@
 4. Comprueba manualmente modo claro, oscuro, móvil y navegación por teclado.
 5. Usa mensajes de commit descriptivos y no incluyas datos locales.
 
+`npm run check` verifica la sintaxis de los módulos de producción, valida el catálogo completo y ejecuta las pruebas de lógica. No publiques directamente si alguna de estas comprobaciones falla.
+
 ## Añadir tests
 
 Guarda cada banco en la carpeta de su tema y autor. Regístralo después en `data/resources.js`. La validación automática debe completarse sin errores antes de publicar.
