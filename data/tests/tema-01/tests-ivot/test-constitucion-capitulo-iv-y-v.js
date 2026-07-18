@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT",
   },
-  titulo: "TEST CONSTITUCIÓN CAPÍTULO IV y V",
+  titulo: "Título I. Capítulos IV y V. Artículos del 53 al 55.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -19,7 +19,7 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["CAPÍTULO IV", "CAPÍTULO V"],
+    partes: ["Título I", "Capítulo IV", "Capítulo V"],
   },
   fuente: {
     archivo: "TEST CONSTITUCIÓN CAPÍTULO IV Y V.pdf",

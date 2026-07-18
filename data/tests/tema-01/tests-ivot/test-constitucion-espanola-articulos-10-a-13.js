@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT",
   },
-  titulo: "TEST DE LA CONSTITUCIÓN ESPAÑOLA ARTÍCULOS 10 A 13",
+  titulo: "Título I. Capítulo I. Artículos del 10 al 13.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -19,7 +19,7 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["ARTÍCULOS 10 A 13"],
+    partes: ["Título I", "Capítulo I", "Artículos del 10 al 13"],
   },
   fuente: {
     archivo: "TEST DE LA CONSTITUCIÓN ART. 10 A 13.pdf",

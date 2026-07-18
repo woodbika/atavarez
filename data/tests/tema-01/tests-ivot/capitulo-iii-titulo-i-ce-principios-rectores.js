@@ -10,7 +10,7 @@ const test = {
     nombre: "IVOT",
   },
   titulo:
-    "CAPÍTULO III DEL TÍTULO I DE LA CE. PRINCIPIOS RECTORES DE LA POLÍTICA SOCIAL Y ECONÓMICA",
+    "Título I. Capítulo III. Artículos del 39 al 52.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -21,7 +21,9 @@ const test = {
       titulo: "La Constitución Española de 1978",
     },
     partes: [
-      "CAPÍTULO III DEL TÍTULO I DE LA CE. PRINCIPIOS RECTORES DE LA POLÍTICA SOCIAL Y ECONÓMICA",
+      "Título I",
+      "Capítulo III",
+      "Artículos del 39 al 52",
     ],
   },
   fuente: {

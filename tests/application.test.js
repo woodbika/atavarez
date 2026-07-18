@@ -47,8 +47,25 @@ test("el registro contiene todos los tests con un esquema válido", () => {
   });
 });
 
+test("el tema 01 incluye un esquema HTML válido y consultable", () => {
+  const outline = resources.find(
+    (resource) => resource.id === "esquema-estructura-constitucion-espanola",
+  );
+
+  assert.ok(outline);
+  assert.equal(outline.type, "esquema");
+  assert.equal(outline.classification.tema.numero, "01");
+  assert.ok(outline.data.sections.length >= 3);
+  assert.ok(
+    outline.data.sections.some((section) => section.title.includes("Título I")),
+  );
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("la validación del catálogo informa de soluciones y recursos no válidos", () => {
-  const invalidResource = structuredClone(resources[0]);
+  const invalidResource = structuredClone(
+    resources.find((resource) => resource.type === "test"),
+  );
   invalidResource.data.preguntas[0].respuestaCorrecta = "opcion-inexistente";
   const errors = validateResources([invalidResource, invalidResource]);
 
@@ -57,7 +74,9 @@ test("la validación del catálogo informa de soluciones y recursos no válidos"
 });
 
 test("la validación exige que autor y clasificación coincidan con el test", () => {
-  const invalidResource = structuredClone(resources[0]);
+  const invalidResource = structuredClone(
+    resources.find((resource) => resource.type === "test"),
+  );
   invalidResource.data.autor = { id: "ivot", nombre: "Autor distinto" };
   invalidResource.data.clasificacion = {
     ...invalidResource.data.clasificacion,
@@ -266,7 +285,7 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   assert.ok(
     repository
       .searchResources(theme01Resources, "CAPÍTULO V")
-      .every((item) => item.classification.partes.includes("CAPÍTULO V")),
+      .every((item) => item.classification.partes.includes("Capítulo V")),
   );
 });
 

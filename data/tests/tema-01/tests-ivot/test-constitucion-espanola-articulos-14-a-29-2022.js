@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT",
   },
-  titulo: "TEST DE LA CONSTITUCIÓN ESPAÑOLA ARTÍCULOS 14 A 29 (2022).",
+  titulo: "Título I. Capítulo II. Artículos del 14 al 29.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -19,7 +19,7 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["ARTÍCULOS 14 A 29"],
+    partes: ["Título I", "Capítulo II", "Artículos del 14 al 29"],
   },
   fuente: {
     archivo: "TEST DE LA CONSTITUCIÓN ART. 14 A 29 (2022).pdf",

@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT",
   },
-  titulo: "TEST DE LA ESTRUCTURA DE LA CONSTITUCIÓN ESPAÑOLA",
+  titulo: "Estructura de la Constitución Española",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -19,7 +19,7 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["ESTRUCTURA DE LA CONSTITUCIÓN ESPAÑOLA"],
+    partes: ["Estructura de la Constitución Española"],
   },
   fuente: {
     archivo: "TEST DE LA ESTRUCTURA DE LA CONSTITUCIÓN ESPAÑOLA NUEVO.pdf",

@@ -5,6 +5,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 ## Funcionalidades
 
 - Navegación jerárquica por tarjetas: oposiciones, temas y recursos.
+- Esquemas HTML jerárquicos, desplegables y adaptables a cada dispositivo.
 - Recursos tipados para admitir tests y otros materiales progresivamente.
 - Test completo generado automáticamente por tema, con orden natural o aleatorio.
 - Búsqueda de recursos integrada en la cabecera de cada tema.
@@ -31,6 +32,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 ├── controllers/              # Enrutado e interacción
 ├── data/
 │   ├── resources.js          # Registro central de recursos
+│   ├── resources/            # Esquemas y otros materiales agrupados por tema
 │   ├── tests.js              # Export derivado de tests
 │   └── tests/                # Bancos de preguntas agrupados por tema
 │       └── tema-01/          # Recursos del tema 01
@@ -69,7 +71,7 @@ Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante 
 
 ## Añadir un recurso
 
-1. Añade el archivo `.js` dentro de la carpeta de su tema y autor, por ejemplo `data/tests/tema-01/tests-ivot/`, con el mismo esquema de datos y sus exports nombrado y predeterminado.
+1. Añade el archivo `.js` dentro de la carpeta adecuada: `data/tests/` para tests o `data/resources/` para esquemas y otros materiales.
 2. Abre `data/resources.js`.
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
 4. Para otro material, añade una entrada con `id`, `type`, `title`, `classification`, `href` y, opcionalmente, `actionLabel`.

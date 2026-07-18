@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT",
   },
-  titulo: "TEST DEL CAPÍTULO II DEL TÍTULO I DE LA CE",
+  titulo: "Título I. Capítulo II. Sección 2ª. Artículos del 30 al 38.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -19,7 +19,7 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["ARTÍCULOS 30 A 38"],
+    partes: ["Título I", "Capítulo II", "Sección 2ª", "Artículos del 30 al 38"],
   },
   fuente: {
     archivo: "TEST DE LA CONSTITUCIÓN ART. 30 A 38.pdf",

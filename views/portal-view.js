@@ -178,20 +178,27 @@ export function renderResources(
       .map((resource) => {
         const test = resource.data;
         const isComplete = resource.variant === "complete";
-        const href = resource.type === "test" ? `#/test/${encodeURIComponent(resource.id)}` : resource.href;
+        const isOutline = resource.type === "esquema";
+        const href = resource.type === "test"
+          ? `#/test/${encodeURIComponent(resource.id)}`
+          : isOutline
+            ? `#/recurso/${encodeURIComponent(resource.id)}`
+            : resource.href;
         const actionLabel = resource.type === "test"
           ? "Empezar test"
-          : resource.actionLabel ?? "Abrir recurso";
+          : resource.actionLabel ?? (isOutline ? "Consultar esquema" : "Abrir recurso");
         return `
-          <article class="resource-card ${isComplete ? "resource-card-complete" : ""}">
+          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isOutline ? "resource-card-outline" : ""}">
             <div class="card-topline">
-              <span class="resource-type ${isComplete ? "resource-type-complete" : ""}">${isComplete ? "Test completo" : resource.type === "test" ? "Test" : escapeHtml(resource.type)}</span>
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isOutline ? "resource-type-outline" : ""}">${isComplete ? "Test completo" : resource.type === "test" ? "Test" : isOutline ? "Esquema" : escapeHtml(resource.type)}</span>
               ${resource.type === "test" ? `<span class="question-count">${test.preguntas.length} preguntas</span>` : ""}
             </div>
             <h3>${escapeHtml(formatDisplayTitle(resource.title))}</h3>
             ${isComplete
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
-              : `<p class="parts"><span class="parts-label">Incluye</span> ${(resource.classification.partes ?? []).map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`}
+              : isOutline
+                ? `<p class="complete-description">Consulta la estructura del tema en un formato jerárquico y desplegable.</p>`
+                : `<p class="parts"><span class="parts-label">Incluye</span> ${(resource.classification.partes ?? []).map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`}
             ${isComplete
               ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
                   <span>Elige el orden</span>
@@ -200,7 +207,9 @@ export function renderResources(
                     <a class="resource-action" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
                   </div>
                 </div>`
-              : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
+              : isOutline
+                ? `<button class="resource-action" type="button" data-outline-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
+                : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
           </article>
         `;
       })
