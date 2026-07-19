@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT"
   },
-  titulo: "TEST DE LA LEY 11/2022 DE EMPLEO PÚBLICO VASCO. ARTÍCULOS 156 A 160",
+  titulo: "Artículos del 156 al 160.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -17,10 +17,10 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "18",
-      titulo: "Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco."
+      titulo: "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco (2). Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas. Clasificación en Cuerpos y Escalas."
     },
     partes: [
-      "ARTÍCULOS 156 A 160"
+      "Artículos del 156 al 160"
     ]
   },
   fuente: {

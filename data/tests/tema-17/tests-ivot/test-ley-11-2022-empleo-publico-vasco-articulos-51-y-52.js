@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT"
   },
-  titulo: "TEST DE LA LEY 11/2022 DE EMPLEO PÚBLICO VASCO. ARTÍCULOS 51 Y 52",
+  titulo: "Artículos del 51 al 52.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -17,10 +17,10 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "17",
-      titulo: "Estructura y organización del empleo en las administraciones públicas vascas. Relación de puestos de trabajo. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco."
+      titulo: "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco (1). Estructura y organización del empleo en las administraciones públicas vascas. Relación de puestos de trabajo. Clasificación en Cuerpos y Escalas."
     },
     partes: [
-      "ARTÍCULOS 51 Y 52"
+      "Artículos del 51 al 52"
     ]
   },
   fuente: {
