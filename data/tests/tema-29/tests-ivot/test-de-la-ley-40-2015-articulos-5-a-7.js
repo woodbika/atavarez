@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT"
   },
-  titulo: "TEST DE LA LEY 40/2015. ARTÍCULOS 5 A 7",
+  titulo: "Artículos del 5 al 7.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -17,10 +17,10 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "29",
-      titulo: "La organización administrativa: los órganos administrativos. Órganos colegiados. Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público."
+      titulo: "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público. La organización administrativa: los órganos administrativos. Órganos colegiados."
     },
     partes: [
-      "ARTÍCULOS 5 A 7"
+      "Artículos del 5 al 7"
     ]
   },
   fuente: {

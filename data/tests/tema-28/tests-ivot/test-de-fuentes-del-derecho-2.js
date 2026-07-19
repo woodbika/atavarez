@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT"
   },
-  titulo: "TEST DE FUENTES DEL DERECHO Nº 2",
+  titulo: "Fuentes del derecho (2).",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -17,10 +17,10 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "28",
-      titulo: "Fuentes del derecho administrativo: la Ley: concepto y clases. El reglamento: titularidad de la potestad reglamentaria y sus límites. La jerarquía normativa. El principio de legalidad en la administración pública."
+      titulo: "Fuentes del derecho administrativo. La ley: concepto y clases. El reglamento: titularidad de la potestad reglamentaria y sus límites. La jerarquía normativa. El principio de legalidad en la administración pública."
     },
     partes: [
-      "FUENTES DEL DERECHO Nº 2"
+      "Fuentes del derecho"
     ]
   },
   fuente: {
