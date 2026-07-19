@@ -394,6 +394,10 @@ test("el tema 29 reúne sus tests IVOT en un test completo", () => {
   assert.ok(theme29);
   assert.ok(completeTest);
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.deepEqual(
+    sourceTests.map((resource) => resource.id),
+    requiredTestIds,
+  );
   assert.equal(sourceQuestionCount, 92);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(

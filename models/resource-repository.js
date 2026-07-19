@@ -27,7 +27,7 @@ export class ResourceRepository {
         { numeric: true },
       );
       const byVariant = Number(a.variant !== "complete") - Number(b.variant !== "complete");
-      return byTheme || byVariant || a.title.localeCompare(b.title, "es");
+      return byTheme || byVariant || a.title.localeCompare(b.title, "es", { numeric: true });
     });
     this.resourceById = new Map(this.resources.map((resource) => [resource.id, resource]));
   }
