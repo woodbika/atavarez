@@ -17,7 +17,7 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "30",
-      titulo: "El acto administrativo: concepto, producción, contenido, motivación y forma. La eficacia del acto administrativo. Silencio administrativo. Nulidad y anulabilidad. Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas."
+      titulo: "El acto administrativo: concepto, producción, contenido, motivación y forma. La eficacia del acto administrativo. Silencio administrativo. Nulidad y anulabilidad. Ley 39/2015, de 1 de octubre, de Procedimiento Administrativo Común de las Administraciones Públicas."
     }
   },
   fuente: {
