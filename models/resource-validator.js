@@ -114,8 +114,7 @@ function validateTest(resource, path, errors) {
       }
     });
 
-    const isAnnulledQuestion = question.respuestaCorrecta === "nula";
-    if (!isAnnulledQuestion && !optionIds.has(question.respuestaCorrecta)) {
+    if (!optionIds.has(question.respuestaCorrecta)) {
       errors.push(`${questionPath}.respuestaCorrecta: no coincide con ninguna opción.`);
     }
   });

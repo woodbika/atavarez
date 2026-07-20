@@ -1,6 +1,7 @@
 /**
  * Datos extraídos de "TEST TÍTULO VIII Nº 3.pdf.pdf".
- * El contenido de las preguntas, opciones y soluciones se conserva sin interpretaciones.
+ * El contenido se conserva sin interpretaciones, salvo la solución de la pregunta 10,
+ * corregida con autorización expresa a partir del artículo 150.2 de la Constitución Española.
  */
 const test = {
   "schemaVersion": 1,
@@ -213,7 +214,7 @@ const test = {
           "texto": "Ambas respuestas son correctas."
         }
       ],
-      "respuestaCorrecta": "nula"
+      "respuestaCorrecta": "c"
     },
     {
       "id": 11,
