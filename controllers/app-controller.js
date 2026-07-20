@@ -6,6 +6,7 @@ import { renderOppositions, renderResources, renderThemes } from "../views/porta
 import { renderResults } from "../views/results-view.js";
 import { renderReview } from "../views/review-view.js";
 import { renderTest } from "../views/test-view.js";
+import { openTheoryModal } from "../views/theory-view.js";
 import { ReviewController } from "./review-controller.js";
 import { ScrollTopController } from "./scroll-top-controller.js";
 import { TestControlsController } from "./test-controls-controller.js";
@@ -153,6 +154,28 @@ export class AppController {
       if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
         filterButton.blur();
       }
+    });
+
+    this.root.querySelector("#resource-list").addEventListener("click", (event) => {
+      const trigger = event.target.closest("[data-theory-resource], [data-related-theory]");
+      if (!trigger) return;
+      if (trigger.dataset.theoryResource) {
+        const resource = this.repository.getById(trigger.dataset.theoryResource);
+        if (!resource || resource.type !== "teoria") return;
+        openTheoryModal(this.root, resource, trigger);
+        return;
+      }
+
+      const testResource = this.repository.getById(trigger.dataset.relatedTheory);
+      const reference = testResource?.relatedTheory;
+      const theoryResource = reference
+        ? this.repository.getById(reference.resourceId)
+        : null;
+      if (!testResource || theoryResource?.type !== "teoria") return;
+      openTheoryModal(this.root, theoryResource, trigger, {
+        selection: reference.selection,
+        contextTitle: testResource.title,
+      });
     });
 
     this.testControls.showSearch("Buscar recursos", (searchQuery) => {

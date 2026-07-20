@@ -22,6 +22,12 @@ function firstArticleNumber(title) {
   return match ? Number(match[1]) : null;
 }
 
+function resourceDisplayOrder(resource) {
+  if (resource.type === "teoria") return 0;
+  if (resource.variant === "complete") return 2;
+  return 1;
+}
+
 export class ResourceRepository {
   constructor(resources) {
     const combinedResources = this.buildCombinedResources(resources);
@@ -31,13 +37,13 @@ export class ResourceRepository {
         "es",
         { numeric: true },
       );
-      const byVariant = Number(a.variant !== "complete") - Number(b.variant !== "complete");
+      const byType = resourceDisplayOrder(a) - resourceDisplayOrder(b);
       const articleA = firstArticleNumber(a.title);
       const articleB = firstArticleNumber(b.title);
       const byArticle = articleA !== null && articleB !== null ? articleA - articleB : 0;
       return (
         byTheme ||
-        byVariant ||
+        byType ||
         byArticle ||
         a.title.localeCompare(b.title, "es", { numeric: true })
       );

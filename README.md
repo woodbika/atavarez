@@ -76,6 +76,10 @@ Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante 
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
 4. Para otro material, añade una entrada con `id`, `type`, `title`, `classification`, `href` y, opcionalmente, `actionLabel`.
 
+Los recursos teóricos se guardan en `data/resources/tema-XX/teoria/`, junto con su fuente original cuando corresponda. Su contenido estructurado se registra con `type: "teoria"` para presentarlo como lectura dentro de la aplicación.
+
+Un test puede enlazar un fragmento de teoría mediante `relatedTheory`, indicando el `resourceId` de la teoría y una selección por `blockIds` o por intervalo de artículos. El modal reutiliza y filtra ese contenido original; no mantiene copias parciales de la teoría.
+
 Ese registro es el único punto que hay que modificar. La oposición y el tema se derivan de `classification`, por lo que la navegación se actualiza automáticamente.
 
 Antes de arrancar, la aplicación comprueba identificadores, clasificación, autoría, preguntas, opciones y soluciones. Si el catálogo no es válido, muestra un error controlado en lugar de iniciar parcialmente.

@@ -162,6 +162,8 @@ export function renderResources(
       .map((resource) => {
         const test = resource.data;
         const isComplete = resource.variant === "complete";
+        const isTheory = resource.type === "teoria";
+        const hasRelatedTheory = Boolean(resource.relatedTheory);
         const hasParts = (resource.classification.partes ?? []).length > 0;
         const usesLightTestTitle = resource.type === "test" && !isComplete && !hasParts;
         const resourceTypeLabel = isComplete
@@ -170,23 +172,29 @@ export function renderResources(
             ? "Test IVOT"
             : resource.type === "test"
               ? "Test"
-              : resource.type;
+              : isTheory
+                ? "Teoría"
+                : resource.type;
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
           : resource.href;
         const actionLabel = resource.type === "test"
           ? "Empezar test"
-          : resource.actionLabel ?? "Abrir recurso";
+          : isTheory
+            ? "Consultar teoría"
+            : resource.actionLabel ?? "Abrir recurso";
         return `
-          <article class="resource-card ${isComplete ? "resource-card-complete" : ""}">
+          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isTheory ? "resource-card-theory" : ""}">
             <div class="card-topline">
-              <span class="resource-type ${isComplete ? "resource-type-complete" : ""}">${escapeHtml(resourceTypeLabel)}</span>
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""}">${escapeHtml(resourceTypeLabel)}</span>
               ${resource.type === "test" ? `<span class="question-count">${test.preguntas.length} preguntas</span>` : ""}
             </div>
             <h3 class="${usesLightTestTitle ? "resource-test-title" : ""}">${escapeHtml(formatDisplayTitle(resource.title))}</h3>
             ${isComplete
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
-              : hasParts
+              : isTheory
+                ? '<p class="complete-description">Consulta el contenido del tema en un formato de lectura estructurado.</p>'
+                : hasParts
                   ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
                   : ""}
             ${isComplete
@@ -197,7 +205,14 @@ export function renderResources(
                     <a class="resource-action" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
                   </div>
                 </div>`
-              : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
+              : isTheory
+                ? `<button class="resource-action" type="button" data-theory-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
+                : `<div class="resource-card-actions">
+                    ${hasRelatedTheory
+                      ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`
+                      : ""}
+                    <a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>
+                  </div>`}
           </article>
         `;
       })

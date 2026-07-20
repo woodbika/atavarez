@@ -49,6 +49,18 @@ test("el registro contiene todos los tests con un formato válido", () => {
   });
 });
 
+test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
+  const theory = resources.find((resource) => resource.id === "tema-01-constitucion-espanola");
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "01");
+  assert.equal(theory.data.fuente.paginas, 8);
+  assert.ok(theory.data.bloques.some((block) => block.tipo === "estructura"));
+  assert.ok(theory.data.bloques.some((block) => block.tipo === "titulo"));
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("la validación del catálogo informa de soluciones y recursos no válidos", () => {
   const invalidResource = structuredClone(
     resources.find((resource) => resource.type === "test"),
@@ -271,6 +283,26 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   );
   assert.ok(repository.searchResources(theme01Resources, "constitucion").length > 0);
   assert.ok(repository.searchResources(theme17Resources, "empleo publico").length > 0);
+  assert.equal(theme01Resources[0].type, "teoria");
+  assert.ok(
+    theme01Resources.slice(1, -1).every(
+      (resource) => resource.type === "test" && resource.author?.id === "ivot",
+    ),
+  );
+  assert.equal(theme01Resources.at(-1).variant, "complete");
+  const expectedTheorySelections = new Map([
+    ["test-estructura-constitucion-espanola", { blockIds: ["estructura"] }],
+    ["test-constitucion-espanola-articulos-10-a-13", { articles: { from: 10, to: 13 } }],
+    ["test-constitucion-espanola-articulos-14-a-29-2022", { articles: { from: 14, to: 29 } }],
+    ["test-capitulo-ii-titulo-i-ce", { articles: { from: 30, to: 38 } }],
+    ["capitulo-iii-titulo-i-ce-principios-rectores", { articles: { from: 39, to: 52 } }],
+    ["test-constitucion-capitulo-iv-y-v", { articles: { from: 53, to: 55 } }],
+  ]);
+  expectedTheorySelections.forEach((selection, resourceId) => {
+    const resource = repository.getById(resourceId);
+    assert.equal(resource.relatedTheory.resourceId, "tema-01-constitucion-espanola");
+    assert.deepEqual(resource.relatedTheory.selection, selection);
+  });
   assert.ok(repository.searchResources(theme01Resources, "IVOT").length >= 6);
   assert.ok(repository.searchResources(theme17Resources, "IVOT").length >= 4);
   assert.ok(theme01Tests.every((resource) => resource.classification.partes === undefined));

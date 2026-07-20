@@ -55,20 +55,62 @@ import testLey39Articulos121a124 from "./tests/tema-33/tests-ivot/test-ley-39-20
 import testLey39Articulos125y126 from "./tests/tema-33/tests-ivot/test-ley-39-2015-articulos-125-y-126.js";
 import testLey40Articulos32y33 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-32-y-33.js";
 import testLey40Articulos34a37 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-34-a-37.js";
+import teoriaConstitucion from "./resources/tema-01/teoria/tema-1-la-constitucion-espanola.js";
+
+const relatedTheoryByTestId = new Map([
+  [testEstructura.id, {
+    resourceId: teoriaConstitucion.id,
+    selection: { blockIds: ["estructura"] },
+  }],
+  [testArticulos10a13.id, {
+    resourceId: teoriaConstitucion.id,
+    selection: { articles: { from: 10, to: 13 } },
+  }],
+  [testArticulos14a29.id, {
+    resourceId: teoriaConstitucion.id,
+    selection: { articles: { from: 14, to: 29 } },
+  }],
+  [testCapituloII.id, {
+    resourceId: teoriaConstitucion.id,
+    selection: { articles: { from: 30, to: 38 } },
+  }],
+  [testPrincipiosRectores.id, {
+    resourceId: teoriaConstitucion.id,
+    selection: { articles: { from: 39, to: 52 } },
+  }],
+  [testCapitulosIVyV.id, {
+    resourceId: teoriaConstitucion.id,
+    selection: { articles: { from: 53, to: 55 } },
+  }],
+]);
 
 function testResource(test) {
+  const relatedTheory = relatedTheoryByTestId.get(test.id);
   return {
     id: test.id,
     type: "test",
     title: test.titulo,
     author: test.autor,
     classification: test.clasificacion,
+    ...(relatedTheory ? { relatedTheory } : {}),
     data: test,
+  };
+}
+
+function theoryResource(theory) {
+  return {
+    id: theory.id,
+    type: "teoria",
+    title: "La Constitución Española de 1978",
+    classification: theory.clasificacion,
+    source: theory.fuente,
+    data: theory,
   };
 }
 
 // Registro central de recursos. Otros tipos pueden añadirse con su propio `type`.
 export const resources = [
+  theoryResource(teoriaConstitucion),
   testResource(testEstructura),
   testResource(testArticulos10a13),
   testResource(testArticulos14a29),
