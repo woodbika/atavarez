@@ -19,7 +19,6 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["Estructura de la Constitución Española"],
   },
   fuente: {
     archivo: "TEST DE LA ESTRUCTURA DE LA CONSTITUCIÓN ESPAÑOLA NUEVO.pdf",

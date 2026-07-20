@@ -18,10 +18,7 @@ const test = {
     tema: {
       numero: "28",
       titulo: "Fuentes del derecho administrativo. La ley: concepto y clases. El reglamento: titularidad de la potestad reglamentaria y sus límites. La jerarquía normativa. El principio de legalidad en la administración pública."
-    },
-    partes: [
-      "Fuentes del derecho"
-    ]
+    }
   },
   fuente: {
     archivo: "TEST FUENTES DEL DERECHO Nº 2.pdf",

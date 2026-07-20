@@ -17,11 +17,8 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "17",
-      titulo: "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco (1). Estructura y organización del empleo en las administraciones públicas vascas. Relación de puestos de trabajo. Clasificación en Cuerpos y Escalas."
-    },
-    partes: [
-      "Artículos del 40 al 44"
-    ]
+      titulo: "Estructura y organización del empleo en las administraciones públicas vascas. Relación de puestos de trabajo. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco."
+    }
   },
   fuente: {
     archivo: "TEST LEY 11-2022 EMPLEO PÚBLICO VASCO ART. 40 A 44.pdf",

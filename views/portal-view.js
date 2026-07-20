@@ -4,16 +4,6 @@ function plural(count, singular, pluralForm) {
   return `${count} ${count === 1 ? singular : pluralForm}`;
 }
 
-function themeTitleParts(title) {
-  const normalizedTitle = String(title).trim();
-  const firstSentence = normalizedTitle.match(/^(.+?[.!?])\s+(.+)$/);
-  if (!firstSentence) return { heading: normalizedTitle, scope: "" };
-  return {
-    heading: firstSentence[1].replace(/\.$/, ""),
-    scope: firstSentence[2],
-  };
-}
-
 export function renderOppositions(root, oppositions) {
   root.innerHTML = `
     <section class="hero hero-home view-heading view-heading-cover" aria-labelledby="oppositions-title">
@@ -99,20 +89,16 @@ export function renderThemes(root, opposition, themes) {
     }
 
     list.innerHTML = filteredThemes
-          .map((theme) => {
-            const title = themeTitleParts(theme.titulo);
-            return `
+          .map((theme) => `
               <article class="navigation-card theme-card">
                 <span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>
-                <h3>${escapeHtml(title.heading)}</h3>
-                ${title.scope ? `<p class="theme-card-scope">${escapeHtml(title.scope)}</p>` : ""}
+                <h3 class="theme-card-title">${escapeHtml(theme.titulo)}</h3>
                 <p class="card-summary">${plural(theme.resourceCount, "recurso disponible", "recursos disponibles")}</p>
                 <a class="card-link" href="#/oposiciones/${encodeURIComponent(opposition.id)}/temas/${encodeURIComponent(theme.numero)}">
                   Ver recursos <span aria-hidden="true">→</span>
                 </a>
               </article>
-            `;
-          })
+            `)
           .join("");
   }
 
@@ -124,7 +110,6 @@ export function renderResources(
   root,
   { opposition, theme, resources },
 ) {
-  const title = themeTitleParts(theme.titulo);
   root.innerHTML = `
     <nav class="breadcrumbs" aria-label="Migas de pan">
       <a href="#/">Oposiciones</a><span aria-hidden="true">/</span>
@@ -134,8 +119,7 @@ export function renderResources(
 
     <section class="page-heading resource-hero view-heading view-heading-cover" aria-labelledby="theme-title">
       <p class="eyebrow">Tema ${escapeHtml(theme.numero)}</p>
-      <h1 id="theme-title">${escapeHtml(title.heading)}</h1>
-      <p class="hero-copy resource-hero-scope">${escapeHtml(title.scope || "Consulta los materiales disponibles para este tema.")}</p>
+      <h1 id="theme-title">${escapeHtml(theme.titulo)}</h1>
     </section>
 
     <section class="catalog-section view-layout view-layout-wide" aria-labelledby="resources-title">
@@ -179,6 +163,17 @@ export function renderResources(
         const test = resource.data;
         const isComplete = resource.variant === "complete";
         const isOutline = resource.type === "esquema";
+        const hasParts = (resource.classification.partes ?? []).length > 0;
+        const usesLightTestTitle = resource.type === "test" && !isComplete && !hasParts;
+        const resourceTypeLabel = isComplete
+          ? "Test completo"
+          : resource.type === "test" && resource.author?.id === "ivot"
+            ? "Test IVOT"
+            : resource.type === "test"
+              ? "Test"
+              : isOutline
+                ? "Esquema"
+                : resource.type;
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
           : isOutline
@@ -190,15 +185,17 @@ export function renderResources(
         return `
           <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isOutline ? "resource-card-outline" : ""}">
             <div class="card-topline">
-              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isOutline ? "resource-type-outline" : ""}">${isComplete ? "Test completo" : resource.type === "test" ? "Test" : isOutline ? "Esquema" : escapeHtml(resource.type)}</span>
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isOutline ? "resource-type-outline" : ""}">${escapeHtml(resourceTypeLabel)}</span>
               ${resource.type === "test" ? `<span class="question-count">${test.preguntas.length} preguntas</span>` : ""}
             </div>
-            <h3>${escapeHtml(formatDisplayTitle(resource.title))}</h3>
+            <h3 class="${usesLightTestTitle ? "resource-test-title" : ""}">${escapeHtml(formatDisplayTitle(resource.title))}</h3>
             ${isComplete
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
               : isOutline
                 ? `<p class="complete-description">Consulta la estructura del tema en un formato jerárquico y desplegable.</p>`
-                : `<p class="parts"><span class="parts-label">Incluye</span> ${(resource.classification.partes ?? []).map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`}
+                : hasParts
+                  ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
+                  : ""}
             ${isComplete
               ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
                   <span>Elige el orden</span>

@@ -1,5 +1,5 @@
 /**
- * Datos extraídos de "TEST LEY 39-2015 ARTICULOS 24 Y 25 SILENCIO ADMINISTRATIVO.pdf.pdf".
+ * Datos extraídos de "TEST LEY 39-2015 ARTICULOS 24 Y 25 SILENCIO ADMINISTRATIVO.pdf".
  * El contenido de las preguntas, opciones y soluciones se conserva sin interpretaciones.
  */
 const test = {
@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT"
   },
-  titulo: "Test Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas. El silencio administrativo. Artículos 24 y 25.",
+  titulo: "Artículos del 24 al 25.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -18,13 +18,10 @@ const test = {
     tema: {
       numero: "30",
       titulo: "El acto administrativo: concepto, producción, contenido, motivación y forma. La eficacia del acto administrativo. Silencio administrativo. Nulidad y anulabilidad. Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas."
-    },
-    partes: [
-      "ARTÍCULOS 24 Y 25. SILENCIO ADMINISTRATIVO"
-    ]
+    }
   },
   fuente: {
-    archivo: "TEST LEY 39-2015 ARTICULOS 24 Y 25 SILENCIO ADMINISTRATIVO.pdf.pdf",
+    archivo: "TEST LEY 39-2015 ARTICULOS 24 Y 25 SILENCIO ADMINISTRATIVO.pdf",
     paginas: 3
   },
   preguntas: [

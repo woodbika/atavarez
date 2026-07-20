@@ -19,7 +19,6 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["Título I", "Capítulo IV", "Capítulo V"],
   },
   fuente: {
     archivo: "TEST CONSTITUCIÓN CAPÍTULO IV Y V.pdf",

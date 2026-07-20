@@ -872,7 +872,7 @@ html[data-theme="dark"] .settings-switch {
 }
 
 .resource-hero {
-  min-height: 280px;
+  min-height: 240px;
   background-image:
     linear-gradient(
       270deg,
@@ -966,19 +966,18 @@ html[data-theme="dark"] .settings-switch {
   color: var(--ink);
 }
 
-.resource-hero h1 {
-  max-width: 680px;
-  font-size: clamp(1.55rem, 2.7vw, 2.15rem);
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  line-height: 1.16;
+.page-heading.resource-hero h1 {
+  width: 100%;
+  max-width: 920px;
+  font-size: clamp(0.88rem, 1.3vw, 1.08rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.38;
 }
 
-.resource-hero .resource-hero-scope {
-  max-width: 680px;
-  margin-bottom: 0;
-  font-size: clamp(0.84rem, 1.35vw, 0.96rem);
-  line-height: 1.5;
+.resource-hero.view-heading-cover {
+  align-items: flex-end;
+  text-align: right;
 }
 
 .opposition-hero .eyebrow,
@@ -1252,11 +1251,12 @@ h3 {
   min-height: 340px;
 }
 
-.theme-card-scope {
-  margin: -3px 0 14px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.45;
+.theme-card h3.theme-card-title {
+  color: color-mix(in srgb, var(--ink) 78%, var(--muted));
+  font-size: clamp(0.79rem, 1.1vw, 0.88rem);
+  font-weight: 380;
+  letter-spacing: 0;
+  line-height: 1.5;
 }
 
 .resource-type {
@@ -1304,6 +1304,12 @@ h3 {
   font-weight: 680;
   line-height: 1.35;
   letter-spacing: -0.01em;
+}
+
+.resource-card h3.resource-test-title {
+  font-size: clamp(0.8rem, 1vw, 0.88rem);
+  font-weight: 480;
+  letter-spacing: -0.005em;
 }
 
 .card-details {
@@ -3802,7 +3808,7 @@ html[data-theme="dark"] .scroll-top:hover {
   }
 
   .resource-hero {
-    min-height: 270px;
+    min-height: 235px;
   }
 
   .navigation-card.theme-card {
@@ -3900,7 +3906,7 @@ html[data-theme="dark"] .scroll-top:hover {
   }
 
   .resource-hero {
-    min-height: 280px;
+    min-height: 225px;
   }
 
   .navigation-card.theme-card {

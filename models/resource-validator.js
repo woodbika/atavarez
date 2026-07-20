@@ -24,9 +24,12 @@ function validateClassification(classification, path, errors) {
   if (!isNonEmptyString(classification.tema.titulo)) {
     errors.push(`${path}.clasificacion.tema.titulo: debe contener texto.`);
   }
-  if (!Array.isArray(classification.partes)) {
+  if (classification.partes !== undefined && !Array.isArray(classification.partes)) {
     errors.push(`${path}.clasificacion.partes: debe ser una lista.`);
-  } else if (classification.partes.some((part) => !isNonEmptyString(part))) {
+  } else if (
+    Array.isArray(classification.partes) &&
+    classification.partes.some((part) => !isNonEmptyString(part))
+  ) {
     errors.push(`${path}.clasificacion.partes: solo puede contener texto.`);
   }
 }
@@ -43,11 +46,13 @@ function classificationsMatch(resourceClassification, testClassification) {
     resourceClassification.tema?.titulo === testClassification.tema?.titulo;
   const resourceParts = resourceClassification.partes;
   const testParts = testClassification.partes;
-  const sameParts =
+  const bothOmitParts = resourceParts === undefined && testParts === undefined;
+  const sameParts = bothOmitParts || (
     Array.isArray(resourceParts) &&
     Array.isArray(testParts) &&
     resourceParts.length === testParts.length &&
-    resourceParts.every((part, index) => part === testParts[index]);
+    resourceParts.every((part, index) => part === testParts[index])
+  );
   return sameFields && sameTheme && sameParts;
 }
 

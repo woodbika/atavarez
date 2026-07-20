@@ -1,5 +1,5 @@
 /**
- * Datos extraídos de "TEST LEY 39-2015 ARTÍCULOS 41 A 44.pdf.pdf".
+ * Datos extraídos de "TEST LEY 39-2015 ARTÍCULOS 41 A 44.pdf".
  * El contenido de las preguntas, opciones y soluciones se conserva sin interpretaciones.
  */
 const test = {
@@ -9,7 +9,7 @@ const test = {
     id: "ivot",
     nombre: "IVOT"
   },
-  titulo: "TEST LEY 39/2015. ARTÍCULOS 41 A 44",
+  titulo: "Artículos del 41 al 44.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
@@ -18,13 +18,10 @@ const test = {
     tema: {
       numero: "30",
       titulo: "El acto administrativo: concepto, producción, contenido, motivación y forma. La eficacia del acto administrativo. Silencio administrativo. Nulidad y anulabilidad. Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas."
-    },
-    partes: [
-      "ARTÍCULOS 41 A 44"
-    ]
+    }
   },
   fuente: {
-    archivo: "TEST LEY 39-2015 ARTÍCULOS 41 A 44.pdf.pdf",
+    archivo: "TEST LEY 39-2015 ARTÍCULOS 41 A 44.pdf",
     paginas: 3
   },
   preguntas: [

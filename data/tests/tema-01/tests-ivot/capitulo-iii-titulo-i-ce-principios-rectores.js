@@ -20,11 +20,6 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: [
-      "Título I",
-      "Capítulo III",
-      "Artículos del 39 al 52",
-    ],
   },
   fuente: {
     archivo: "CAPÍTULO III DEL TÍTULO I DE LA CE.pdf",

@@ -17,11 +17,8 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "29",
-      titulo: "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público. La organización administrativa: los órganos administrativos. Órganos colegiados."
-    },
-    partes: [
-      "Artículos del 15 al 18"
-    ]
+      titulo: "La organización administrativa: los órganos administrativos. Órganos colegiados. Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público."
+    }
   },
   fuente: {
     archivo: "TEST LEY 40-2015 ARTÍCULOS 15 A 18.pdf",

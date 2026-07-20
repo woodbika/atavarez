@@ -17,11 +17,8 @@ const test = {
     escala: "Escala Administrativa",
     tema: {
       numero: "18",
-      titulo: "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco (2). Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas. Clasificación en Cuerpos y Escalas."
-    },
-    partes: [
-      "Artículos del 141 al 142"
-    ]
+      titulo: "Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco."
+    }
   },
   fuente: {
     archivo: "TEST LEY 11-2022 EMPLEO PÚBLICO VASCO ART. 141 Y 142.pdf",
@@ -237,98 +234,6 @@ const test = {
     },
     {
       id: 10,
-      enunciado: "A efectos del cómputo de los plazos indicados, se considerarán como de servicios efectivos los años de permanencia en la situación de:",
-      opciones: [
-        {
-          id: "a",
-          texto: "Servicios especiales."
-        },
-        {
-          id: "b",
-          texto: "Expectativa de destino."
-        },
-        {
-          id: "c",
-          texto: "Excedencia para el cuidado de familiares."
-        },
-        {
-          id: "d",
-          texto: "Todas las respuestas son correctas."
-        }
-      ],
-      respuestaCorrecta: "d"
-    },
-    {
-      id: 11,
-      enunciado: "A efectos del cómputo de los plazos indicados, se considerarán como de servicios efectivos los años de permanencia en la situación de:",
-      opciones: [
-        {
-          id: "a",
-          texto: "Excedencia por motivos de violencia de género."
-        },
-        {
-          id: "b",
-          texto: "Excedencia por motivos de violencia terrorista."
-        },
-        {
-          id: "c",
-          texto: "Excedencia forzosa temporal y forzosa."
-        },
-        {
-          id: "d",
-          texto: "Todas las respuestas son correctas."
-        }
-      ],
-      respuestaCorrecta: "d"
-    },
-    {
-      id: 12,
-      enunciado: "Por el contrario, no será computable el período de:",
-      opciones: [
-        {
-          id: "a",
-          texto: "Suspensión firme de funciones."
-        },
-        {
-          id: "b",
-          texto: "Suspensión provisional de funciones."
-        },
-        {
-          id: "c",
-          texto: "Ambas respuestas son correctas."
-        },
-        {
-          id: "d",
-          texto: "Ninguna de las respuestas anteriores es correcta."
-        }
-      ],
-      respuestaCorrecta: "a"
-    },
-    {
-      id: 13,
-      enunciado: "La excedencia voluntaria por interés particular:",
-      opciones: [
-        {
-          id: "a",
-          texto: "Se declarará a instancia de parte."
-        },
-        {
-          id: "b",
-          texto: "Quedará subordinada a las necesidades temporales del servicio."
-        },
-        {
-          id: "c",
-          texto: "Deberá motivarse su denegación en todo caso."
-        },
-        {
-          id: "d",
-          texto: "Todas las respuestas son correctas."
-        }
-      ],
-      respuestaCorrecta: "d"
-    },
-    {
-      id: 14,
       enunciado: "No podrá declararse cuando:",
       opciones: [
         {
@@ -351,30 +256,7 @@ const test = {
       respuestaCorrecta: "c"
     },
     {
-      id: 15,
-      enunciado: "Quienes se encuentren en situación de excedencia voluntaria por interés particular:",
-      opciones: [
-        {
-          id: "a",
-          texto: "Mantendrá la reserva del puesto durante los dos primeros años, si se prolonga dicha situación perdería el puesto."
-        },
-        {
-          id: "b",
-          texto: "No devengarán retribuciones."
-        },
-        {
-          id: "c",
-          texto: "No se les será computable el tiempo de permanencia en esa situación a efectos de carrera profesional y trienios, pero sí para los derechos en el régimen de la Seguridad Social que les sea de aplicación."
-        },
-        {
-          id: "d",
-          texto: "Todas las respuestas son correctas."
-        }
-      ],
-      respuestaCorrecta: "b"
-    },
-    {
-      id: 16,
+      id: 11,
       enunciado: "El personal funcionario de carrera dispondrá desde la conclusión del período de permanencia en la situación de excedencia para solicitar el reingreso al servicio activo de:",
       opciones: [
         {
@@ -397,7 +279,7 @@ const test = {
       respuestaCorrecta: "b"
     },
     {
-      id: 17,
+      id: 12,
       enunciado: "En caso de no hacerlo:",
       opciones: [
         {
@@ -420,7 +302,7 @@ const test = {
       respuestaCorrecta: "c"
     },
     {
-      id: 18,
+      id: 13,
       enunciado: "El disfrute de la excedencia voluntaria con reserva de puesto y destino no impedirá desempeñar puestos de trabajo en:",
       opciones: [
         {

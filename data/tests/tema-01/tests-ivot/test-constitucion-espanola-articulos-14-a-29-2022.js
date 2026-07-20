@@ -19,7 +19,6 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["Título I", "Capítulo II", "Artículos del 14 al 29"],
   },
   fuente: {
     archivo: "TEST DE LA CONSTITUCIÓN ART. 14 A 29 (2022).pdf",

@@ -37,7 +37,9 @@ test("el registro contiene todos los tests con un esquema válido", () => {
     assert.ok(item.titulo);
     assert.ok(item.clasificacion.tema.numero);
     assert.ok(item.clasificacion.tema.titulo);
-    assert.ok(Array.isArray(item.clasificacion.partes));
+    assert.ok(
+      item.clasificacion.partes === undefined || Array.isArray(item.clasificacion.partes),
+    );
     assert.ok(item.preguntas.length > 0);
 
     item.preguntas.forEach((question) => {
@@ -278,14 +280,21 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
 
   const theme01Resources = repository.getResources(opposition.id, "01");
   const theme17Resources = repository.getResources(opposition.id, "17");
+  const theme01Tests = theme01Resources.filter((resource) => resource.type === "test");
+  const theme17SourceTests = theme17Resources.filter(
+    (resource) => resource.type === "test" && resource.variant !== "complete",
+  );
   assert.ok(repository.searchResources(theme01Resources, "constitucion").length > 0);
   assert.ok(repository.searchResources(theme17Resources, "empleo publico").length > 0);
   assert.ok(repository.searchResources(theme01Resources, "IVOT").length >= 6);
   assert.ok(repository.searchResources(theme17Resources, "IVOT").length >= 4);
+  assert.ok(theme01Tests.every((resource) => resource.classification.partes === undefined));
   assert.ok(
-    repository
-      .searchResources(theme01Resources, "CAPÍTULO V")
-      .every((item) => item.classification.partes.includes("Capítulo V")),
+    theme17SourceTests.every((resource) => resource.classification.partes === undefined),
+  );
+  assert.equal(
+    new Set(theme17SourceTests.map((resource) => resource.classification.tema.titulo)).size,
+    1,
   );
 });
 
@@ -320,6 +329,11 @@ test("el tema 18 reúne sus tests IVOT en un test completo", () => {
   assert.ok(theme18);
   assert.ok(completeTest);
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
+  assert.equal(
+    new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
+    1,
+  );
   assert.ok(sourceQuestionCount >= 118);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(
@@ -352,6 +366,7 @@ test("el tema 28 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme28);
   assert.ok(completeTest);
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   assert.ok(sourceTestIds.has("test-de-fuentes-del-derecho-1"));
   assert.ok(sourceTestIds.has("test-de-fuentes-del-derecho-2"));
   assert.equal(sourceQuestionCount, 47);
@@ -393,6 +408,7 @@ test("el tema 29 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme29);
   assert.ok(completeTest);
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),
@@ -437,6 +453,7 @@ test("el tema 30 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme30);
   assert.ok(completeTest);
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.equal(sourceQuestionCount, 96);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);

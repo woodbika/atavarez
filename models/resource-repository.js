@@ -53,13 +53,7 @@ export class ResourceRepository {
           id: `${resource.id}:${question.id}`,
         })),
       );
-      const partes = [...new Set(
-        themeResources.flatMap((resource) => resource.classification.partes ?? []),
-      )];
-      const classification = {
-        ...first.classification,
-        partes,
-      };
+      const classification = { ...first.classification };
       const autor = {
         id: "recopilacion-tema",
         nombre: "Recopilación del tema",

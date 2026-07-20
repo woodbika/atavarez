@@ -19,7 +19,6 @@ const test = {
       numero: "01",
       titulo: "La Constitución Española de 1978",
     },
-    partes: ["Título I", "Capítulo I", "Artículos del 10 al 13"],
   },
   fuente: {
     archivo: "TEST DE LA CONSTITUCIÓN ART. 10 A 13.pdf",
