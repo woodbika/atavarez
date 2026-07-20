@@ -162,7 +162,6 @@ export function renderResources(
       .map((resource) => {
         const test = resource.data;
         const isComplete = resource.variant === "complete";
-        const isOutline = resource.type === "esquema";
         const hasParts = (resource.classification.partes ?? []).length > 0;
         const usesLightTestTitle = resource.type === "test" && !isComplete && !hasParts;
         const resourceTypeLabel = isComplete
@@ -171,29 +170,23 @@ export function renderResources(
             ? "Test IVOT"
             : resource.type === "test"
               ? "Test"
-              : isOutline
-                ? "Esquema"
-                : resource.type;
+              : resource.type;
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
-          : isOutline
-            ? `#/recurso/${encodeURIComponent(resource.id)}`
-            : resource.href;
+          : resource.href;
         const actionLabel = resource.type === "test"
           ? "Empezar test"
-          : resource.actionLabel ?? (isOutline ? "Consultar esquema" : "Abrir recurso");
+          : resource.actionLabel ?? "Abrir recurso";
         return `
-          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isOutline ? "resource-card-outline" : ""}">
+          <article class="resource-card ${isComplete ? "resource-card-complete" : ""}">
             <div class="card-topline">
-              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isOutline ? "resource-type-outline" : ""}">${escapeHtml(resourceTypeLabel)}</span>
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""}">${escapeHtml(resourceTypeLabel)}</span>
               ${resource.type === "test" ? `<span class="question-count">${test.preguntas.length} preguntas</span>` : ""}
             </div>
             <h3 class="${usesLightTestTitle ? "resource-test-title" : ""}">${escapeHtml(formatDisplayTitle(resource.title))}</h3>
             ${isComplete
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
-              : isOutline
-                ? `<p class="complete-description">Consulta la estructura del tema en un formato jerárquico y desplegable.</p>`
-                : hasParts
+              : hasParts
                   ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
                   : ""}
             ${isComplete
@@ -204,9 +197,7 @@ export function renderResources(
                     <a class="resource-action" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
                   </div>
                 </div>`
-              : isOutline
-                ? `<button class="resource-action" type="button" data-outline-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
-                : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
+              : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
           </article>
         `;
       })

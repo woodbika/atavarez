@@ -51,7 +51,6 @@ import testLey39Articulos121a124 from "./tests/tema-33/tests-ivot/test-ley-39-20
 import testLey39Articulos125y126 from "./tests/tema-33/tests-ivot/test-ley-39-2015-articulos-125-y-126.js";
 import testLey40Articulos32y33 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-32-y-33.js";
 import testLey40Articulos34a37 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-34-a-37.js";
-import esquemaConstitucion from "./resources/tema-01/esquemas/esquema-constitucion-espanola.js";
 
 function testResource(test) {
   return {
@@ -66,7 +65,6 @@ function testResource(test) {
 
 // Registro central de recursos. Otros tipos pueden añadirse con su propio `type`.
 export const resources = [
-  esquemaConstitucion,
   testResource(testEstructura),
   testResource(testArticulos10a13),
   testResource(testArticulos14a29),

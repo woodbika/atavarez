@@ -71,7 +71,7 @@ Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante 
 
 ## Añadir un recurso
 
-1. Añade el archivo `.js` dentro de la carpeta adecuada: `data/tests/` para tests o `data/resources/` para esquemas y otros materiales.
+1. Añade el archivo `.js` del test dentro de la carpeta temática correspondiente en `data/tests/`.
 2. Abre `data/resources.js`.
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
 4. Para otro material, añade una entrada con `id`, `type`, `title`, `classification`, `href` y, opcionalmente, `actionLabel`.

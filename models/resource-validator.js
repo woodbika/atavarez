@@ -120,51 +120,6 @@ function validateTest(resource, path, errors) {
   });
 }
 
-function validateOutlineSection(section, path, errors) {
-  if (!section || typeof section !== "object") {
-    errors.push(`${path}: debe ser un objeto.`);
-    return;
-  }
-  if (!isNonEmptyString(section.title)) {
-    errors.push(`${path}.title: debe contener texto.`);
-  }
-  if (section.meta !== undefined && !isNonEmptyString(section.meta)) {
-    errors.push(`${path}.meta: debe contener texto.`);
-  }
-  if (
-    section.items !== undefined &&
-    (!Array.isArray(section.items) || section.items.some((item) => !isNonEmptyString(item)))
-  ) {
-    errors.push(`${path}.items: solo puede contener texto.`);
-  }
-  if (section.sections !== undefined && !Array.isArray(section.sections)) {
-    errors.push(`${path}.sections: debe ser una lista.`);
-    return;
-  }
-  (section.sections ?? []).forEach((child, index) => {
-    validateOutlineSection(child, `${path}.sections[${index}]`, errors);
-  });
-}
-
-function validateOutline(resource, path, errors) {
-  if (resource.schemaVersion !== 1) {
-    errors.push(`${path}.schemaVersion: debe ser 1.`);
-  }
-  if (!isNonEmptyString(resource.data?.introduction)) {
-    errors.push(`${path}.data.introduction: debe contener texto.`);
-  }
-  if (!isNonEmptyString(resource.data?.rootTitle)) {
-    errors.push(`${path}.data.rootTitle: debe contener texto.`);
-  }
-  if (!Array.isArray(resource.data?.sections) || resource.data.sections.length === 0) {
-    errors.push(`${path}.data.sections: debe contener al menos una sección.`);
-    return;
-  }
-  resource.data.sections.forEach((section, index) => {
-    validateOutlineSection(section, `${path}.data.sections[${index}]`, errors);
-  });
-}
-
 export function validateResources(resources) {
   const errors = [];
   if (!Array.isArray(resources) || resources.length === 0) {
@@ -185,7 +140,6 @@ export function validateResources(resources) {
     if (!isNonEmptyString(resource.title)) errors.push(`${path}.title: debe contener texto.`);
     validateClassification(resource.classification, path, errors);
     if (resource.type === "test") validateTest(resource, path, errors);
-    if (resource.type === "esquema") validateOutline(resource, path, errors);
   });
 
   return errors;

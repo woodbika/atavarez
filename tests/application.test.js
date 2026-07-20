@@ -19,7 +19,7 @@ import {
 import { parseHashRoute } from "../utils/router.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 
-test("el registro contiene todos los tests con un esquema válido", () => {
+test("el registro contiene todos los tests con un formato válido", () => {
   const registeredTests = resources.filter((resource) => resource.type === "test");
 
   assert.deepEqual(validateResources(resources), []);
@@ -47,21 +47,6 @@ test("el registro contiene todos los tests con un esquema válido", () => {
       assert.ok(question.opciones.some((option) => option.id === question.respuestaCorrecta));
     });
   });
-});
-
-test("el tema 01 incluye un esquema HTML válido y consultable", () => {
-  const outline = resources.find(
-    (resource) => resource.id === "esquema-estructura-constitucion-espanola",
-  );
-
-  assert.ok(outline);
-  assert.equal(outline.type, "esquema");
-  assert.equal(outline.classification.tema.numero, "01");
-  assert.ok(outline.data.sections.length >= 3);
-  assert.ok(
-    outline.data.sections.some((section) => section.title.includes("Título I")),
-  );
-  assert.deepEqual(validateResources(resources), []);
 });
 
 test("la validación del catálogo informa de soluciones y recursos no válidos", () => {

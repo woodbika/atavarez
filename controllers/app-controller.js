@@ -2,7 +2,6 @@ import { TestSession } from "../models/test-session.js";
 import { parseHashRoute } from "../utils/router.js";
 import { orderTestQuestions } from "../utils/test-order.js";
 import { renderNotFound } from "../views/layout.js";
-import { openOutlineModal, renderOutline } from "../views/outline-view.js";
 import { renderOppositions, renderResources, renderThemes } from "../views/portal-view.js";
 import { renderResults } from "../views/results-view.js";
 import { renderReview } from "../views/review-view.js";
@@ -62,10 +61,7 @@ export class AppController {
     this.testControls.hideSearch();
     this.preloadRouteCover(section, subsection, subId);
     const isTestRoute = section === "test" && Boolean(id);
-    const isStandaloneOutline =
-      section === "recurso" && this.repository.getById(id)?.type === "esquema";
     this.testControls.setTestRouteActive(isTestRoute);
-    document.body.classList.toggle("outline-standalone-active", isStandaloneOutline);
     const keepsCurrentResult =
       (section === "resultados" || section === "revision") &&
       this.currentResult?.testId === id;
@@ -75,7 +71,6 @@ export class AppController {
     else if (section === "oposiciones" && id && subsection === "temas" && subId) {
       this.showResources(id, subId);
     } else if (section === "test" && id) this.showTest(id, subsection);
-    else if (section === "recurso" && id) this.showResource(id);
     else if (section === "resultados" && id) this.showResults(id);
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
@@ -160,16 +155,6 @@ export class AppController {
       }
     });
 
-    this.root.querySelector("#resource-list").addEventListener("click", (event) => {
-      const trigger = event.target.closest("[data-outline-resource]");
-      if (!trigger) return;
-      const resource = this.repository.getById(trigger.dataset.outlineResource);
-      if (!resource || resource.type !== "esquema") return;
-      openOutlineModal(this.root, resource, {
-        href: `#/recurso/${encodeURIComponent(resource.id)}`,
-      });
-    });
-
     this.testControls.showSearch("Buscar recursos", (searchQuery) => {
       query = searchQuery;
       applyResourceFilters();
@@ -209,15 +194,6 @@ export class AppController {
       this.testControls.setFontLevel(fontLevels[this.testPreferences.fontSize] ?? 1);
       this.testControls.setFocusMode(this.testPreferences.focusMode);
     }
-  }
-
-  showResource(id) {
-    this.session = null;
-    const resource = this.repository.getById(id);
-    if (!resource || resource.type !== "esquema") {
-      return renderNotFound(this.root, "El recurso solicitado no existe.");
-    }
-    renderOutline(this.root, resource);
   }
 
   resourceContext(test) {
