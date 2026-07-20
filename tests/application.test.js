@@ -510,6 +510,60 @@ test("el tema 31 reúne sus tests IVOT en un test completo", () => {
   );
 });
 
+test("el tema 32 reúne y ordena sus tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "32"));
+  assert.ok(opposition);
+  const theme32 = repository.getTheme(opposition.id, "32");
+  const theme32Resources = repository.getResources(opposition.id, "32");
+  const sourceTests = theme32Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme32Resources.find((resource) => resource.variant === "complete");
+  const sourceQuestionCount = sourceTests.reduce(
+    (total, resource) => total + resource.data.preguntas.length,
+    0,
+  );
+  const requiredTestIds = [
+    "test-ley-39-2015-articulo-53",
+    "test-ley-39-2015-articulos-55-a-62",
+    "test-ley-39-2015-articulos-62-a-66",
+    "test-ley-39-2015-articulos-67-y-68",
+    "test-ley-39-2015-articulos-67-69-y-70",
+    "test-ley-39-2015-articulos-70-a-74",
+    "test-ley-39-2015-articulos-75-a-77",
+    "test-ley-39-2015-articulos-78-79-80-y-82",
+    "test-ley-39-2015-articulo-83",
+    "test-ley-39-2015-articulos-85-y-86",
+    "test-ley-39-2015-articulos-87-y-88",
+    "test-ley-39-2015-articulos-89-y-90",
+    "test-ley-39-2015-articulos-91-a-95",
+    "test-ley-39-2015-articulo-96",
+  ];
+  const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+
+  assert.ok(theme32);
+  assert.ok(completeTest);
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
+  requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.deepEqual(
+    sourceTests.map((resource) => resource.id),
+    requiredTestIds,
+  );
+  assert.equal(sourceQuestionCount, 238);
+  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(sourceTests.map((resource) => resource.id)),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    sourceQuestionCount,
+  );
+});
+
 test("los títulos en mayúsculas se presentan como frase sin perder siglas", () => {
   assert.equal(
     formatDisplayTitle("TEST DEL CAPÍTULO III DEL TÍTULO I DE LA CE"),

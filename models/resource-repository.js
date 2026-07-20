@@ -17,6 +17,11 @@ function oppositionId(classification) {
   );
 }
 
+function firstArticleNumber(title) {
+  const match = String(title).match(/\bartículos?\s+(?:del\s+)?(\d+)/i);
+  return match ? Number(match[1]) : null;
+}
+
 export class ResourceRepository {
   constructor(resources) {
     const combinedResources = this.buildCombinedResources(resources);
@@ -27,7 +32,15 @@ export class ResourceRepository {
         { numeric: true },
       );
       const byVariant = Number(a.variant !== "complete") - Number(b.variant !== "complete");
-      return byTheme || byVariant || a.title.localeCompare(b.title, "es", { numeric: true });
+      const articleA = firstArticleNumber(a.title);
+      const articleB = firstArticleNumber(b.title);
+      const byArticle = articleA !== null && articleB !== null ? articleA - articleB : 0;
+      return (
+        byTheme ||
+        byVariant ||
+        byArticle ||
+        a.title.localeCompare(b.title, "es", { numeric: true })
+      );
     });
     this.resourceById = new Map(this.resources.map((resource) => [resource.id, resource]));
   }

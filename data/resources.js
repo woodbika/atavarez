@@ -31,6 +31,20 @@ import testLey39Articulos47a52 from "./tests/tema-30/tests-ivot/test-ley-39-2015
 import testLey39Articulos3a8 from "./tests/tema-31/tests-ivot/test-ley-39-2015-articulos-3-a-8.js";
 import testLey39Articulos9a12 from "./tests/tema-31/tests-ivot/test-ley-39-2015-articulos-9-a-12.js";
 import testLey40Articulos23y24 from "./tests/tema-31/tests-ivot/test-ley-40-2015-articulos-23-y-24.js";
+import testLey39Articulo53 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulo-53.js";
+import testLey39Articulos55a62 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-55-a-62.js";
+import testLey39Articulos62a66 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-62-a-66.js";
+import testLey39Articulos67y68 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-67-y-68.js";
+import testLey39Articulos6769y70 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-67-69-y-70.js";
+import testLey39Articulos70a74 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-70-a-74.js";
+import testLey39Articulos75a77 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-75-a-77.js";
+import testLey39Articulos787980y82 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-78-79-80-y-82.js";
+import testLey39Articulo83 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulo-83.js";
+import testLey39Articulos85y86 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-85-y-86.js";
+import testLey39Articulos87y88 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-87-y-88.js";
+import testLey39Articulos89y90 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-89-y-90.js";
+import testLey39Articulos91a95 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulos-91-a-95.js";
+import testLey39Articulo96 from "./tests/tema-32/tests-ivot/test-ley-39-2015-articulo-96.js";
 import esquemaConstitucion from "./resources/tema-01/esquemas/esquema-constitucion-espanola.js";
 
 function testResource(test) {
@@ -80,4 +94,18 @@ export const resources = [
   testResource(testLey39Articulos3a8),
   testResource(testLey39Articulos9a12),
   testResource(testLey40Articulos23y24),
+  testResource(testLey39Articulo53),
+  testResource(testLey39Articulos55a62),
+  testResource(testLey39Articulos62a66),
+  testResource(testLey39Articulos67y68),
+  testResource(testLey39Articulos6769y70),
+  testResource(testLey39Articulos70a74),
+  testResource(testLey39Articulos75a77),
+  testResource(testLey39Articulos787980y82),
+  testResource(testLey39Articulo83),
+  testResource(testLey39Articulos85y86),
+  testResource(testLey39Articulos87y88),
+  testResource(testLey39Articulos89y90),
+  testResource(testLey39Articulos91a95),
+  testResource(testLey39Articulo96),
 ];
