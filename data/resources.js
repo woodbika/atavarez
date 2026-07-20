@@ -49,6 +49,8 @@ import testLey39Articulos106a109 from "./tests/tema-33/tests-ivot/test-ley-39-20
 import testLey39Articulos112a120 from "./tests/tema-33/tests-ivot/test-ley-39-2015-articulos-112-a-120.js";
 import testLey39Articulos121a124 from "./tests/tema-33/tests-ivot/test-ley-39-2015-articulos-121-a-124.js";
 import testLey39Articulos125y126 from "./tests/tema-33/tests-ivot/test-ley-39-2015-articulos-125-y-126.js";
+import testLey40Articulos32y33 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-32-y-33.js";
+import testLey40Articulos34a37 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-34-a-37.js";
 import esquemaConstitucion from "./resources/tema-01/esquemas/esquema-constitucion-espanola.js";
 
 function testResource(test) {
@@ -116,4 +118,6 @@ export const resources = [
   testResource(testLey39Articulos112a120),
   testResource(testLey39Articulos121a124),
   testResource(testLey39Articulos125y126),
+  testResource(testLey40Articulos32y33),
+  testResource(testLey40Articulos34a37),
 ];
