@@ -22,6 +22,12 @@
             <input id="resource-search" type="search" placeholder="Buscar recursos" autocomplete="off">
           </form>
           <div class="header-tools">
+            <button id="updates-toggle" class="updates-toggle" type="button" aria-expanded="false" aria-controls="updates-panel" aria-label="Abrir novedades" title="Novedades">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"></path>
+              </svg>
+              <span class="updates-indicator" aria-hidden="true" hidden></span>
+            </button>
             <button id="settings-toggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="settings-panel" aria-label="Abrir configuración" title="Configuración">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="12" cy="12" r="3"></circle>
@@ -51,7 +57,32 @@
     </div>
 
     <div id="focus-backdrop" class="focus-backdrop" aria-hidden="true"></div>
+    <div id="updates-backdrop" class="updates-backdrop" aria-hidden="true"></div>
     <div id="settings-backdrop" class="settings-backdrop" aria-hidden="true"></div>
+
+    <aside id="updates-panel" class="updates-panel" role="dialog" aria-modal="true" aria-labelledby="updates-title" aria-hidden="true" inert>
+      <div class="updates-heading">
+        <div>
+          <p class="eyebrow">Actualizaciones</p>
+          <h2 id="updates-title">Novedades</h2>
+        </div>
+        <button class="updates-close" type="button" data-updates-close aria-label="Cerrar novedades" title="Cerrar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+      </div>
+      <div class="updates-content">
+        <ol class="updates-list">
+          <li class="update-entry">
+            <div class="update-entry-meta">
+              <span>Nuevo recurso</span>
+              <time datetime="2026-07-21T01:11:32+02:00">21 julio 2026</time>
+            </div>
+            <h3>Teoría de la Constitución Española</h3>
+            <p>El Tema 1 incorpora una lectura estructurada y acceso directo a la teoría relacionada desde cada test IVOT.</p>
+          </li>
+        </ol>
+      </div>
+    </aside>
 
     <aside id="settings-panel" class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true" inert>
       <div class="settings-heading">
