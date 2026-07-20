@@ -4,6 +4,10 @@ import testCapitulosIVyV from "./tests/tema-01/tests-ivot/test-constitucion-capi
 import testArticulos10a13 from "./tests/tema-01/tests-ivot/test-constitucion-espanola-articulos-10-a-13.js";
 import testArticulos14a29 from "./tests/tema-01/tests-ivot/test-constitucion-espanola-articulos-14-a-29-2022.js";
 import testEstructura from "./tests/tema-01/tests-ivot/test-estructura-constitucion-espanola.js";
+import testOrganizacionTerritorial1 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-1.js";
+import testOrganizacionTerritorial2 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-2.js";
+import testOrganizacionTerritorial3 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-3.js";
+import testOrganizacionTerritorial4 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-4-competencias.js";
 import testEmpleoPublico40a44 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-40-a-44.js";
 import testEmpleoPublico45a50 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
@@ -71,6 +75,10 @@ export const resources = [
   testResource(testCapituloII),
   testResource(testPrincipiosRectores),
   testResource(testCapitulosIVyV),
+  testResource(testOrganizacionTerritorial1),
+  testResource(testOrganizacionTerritorial2),
+  testResource(testOrganizacionTerritorial3),
+  testResource(testOrganizacionTerritorial4),
   testResource(testEmpleoPublico40a44),
   testResource(testEmpleoPublico45a50),
   testResource(testEmpleoPublico51y52),
