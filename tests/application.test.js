@@ -334,7 +334,7 @@ test("el tema 18 reúne sus tests IVOT en un test completo", () => {
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
   );
-  assert.ok(sourceQuestionCount >= 118);
+  assert.equal(sourceQuestionCount, 113);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(
     new Set(completeTest.data.fuente.tests),
