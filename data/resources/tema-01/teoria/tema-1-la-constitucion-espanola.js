@@ -15,7 +15,8 @@ const tema1ConstitucionEspanola = {
   },
   fuente: {
     tipo: "pdf",
-    archivo: "TEMA 1 LA CONSTITUCIÓN ESPAÑOLA.pdf",
+    archivo: "tema-01-constitucion-espanola.pdf",
+    url: "./data/resources/tema-01/teoria/tema-01-constitucion-espanola.pdf",
     paginas: 8,
   },
   bloques: [

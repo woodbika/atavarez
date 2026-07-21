@@ -1381,6 +1381,52 @@ h3 {
   color: #49685c;
 }
 
+.theory-pdf-link {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px 7px 8px;
+  border: 1px solid #c4d2cc;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--brand);
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.resource-card-theory-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.theory-pdf-link:hover,
+.theory-pdf-link:focus-visible {
+  border-color: var(--brand);
+  background: var(--brand-soft-hover);
+  color: var(--ink);
+}
+
+.theory-pdf-link svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.65;
+}
+
 .question-count,
 .card-kicker,
 .parts {
@@ -3758,6 +3804,19 @@ html[data-theme="dark"] .resource-type-theory {
   border-color: #52675e;
   background: #293832;
   color: #b7d1c6;
+}
+
+html[data-theme="dark"] .theory-pdf-link {
+  border-color: #52675e;
+  background: rgba(41, 56, 50, 0.78);
+  color: #b7d1c6;
+}
+
+html[data-theme="dark"] .theory-pdf-link:hover,
+html[data-theme="dark"] .theory-pdf-link:focus-visible {
+  border-color: #78988a;
+  background: #30443c;
+  color: #d8e7e1;
 }
 
 html[data-theme="dark"] .theory-modal {

@@ -188,13 +188,15 @@ export function renderResources(
           <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isTheory ? "resource-card-theory" : ""}">
             <div class="card-topline">
               <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""}">${escapeHtml(resourceTypeLabel)}</span>
-              ${resource.type === "test" ? `<span class="question-count">${test.preguntas.length} preguntas</span>` : ""}
+              ${resource.type === "test"
+                ? `<span class="question-count">${test.preguntas.length} preguntas</span>`
+                : ""}
             </div>
             <h3 class="${usesLightTestTitle ? "resource-test-title" : ""}">${escapeHtml(formatDisplayTitle(resource.title))}</h3>
             ${isComplete
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
               : isTheory
-                ? '<p class="complete-description">Consulta el contenido del tema en un formato de lectura estructurado.</p>'
+                ? '<p class="complete-description">Consulta el contenido del tema en formato de lectura estructurada o accede al PDF original.</p>'
                 : hasParts
                   ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
                   : ""}
@@ -207,7 +209,16 @@ export function renderResources(
                   </div>
                 </div>`
               : isTheory
-                ? `<button class="resource-action" type="button" data-theory-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
+                ? `<div class="resource-card-theory-actions">
+                    <button class="resource-action" type="button" data-theory-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>
+                    <a class="theory-pdf-link" href="${escapeHtml(resource.source.url)}" target="_blank" rel="noopener" aria-label="Abrir el PDF de la teoría en otra pestaña" title="Abrir PDF">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M7 3.75h6.8L18 7.95v12.3H7z"></path>
+                        <path d="M13.5 3.75V8.2H18M9.5 15.6h5M9.5 12.5h5"></path>
+                      </svg>
+                      <span>PDF</span>
+                    </a>
+                  </div>`
                 : `<div class="resource-card-actions">
                     ${hasRelatedTheory
                       ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`

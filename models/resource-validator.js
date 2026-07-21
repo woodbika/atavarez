@@ -180,6 +180,9 @@ function validateTheory(resource, path, errors) {
   if (!isNonEmptyString(theory.fuente?.archivo)) {
     errors.push(`${path}.data.fuente.archivo: debe contener texto.`);
   }
+  if (!isNonEmptyString(theory.fuente?.url)) {
+    errors.push(`${path}.data.fuente.url: debe contener la ruta del documento.`);
+  }
   if (!Number.isInteger(theory.fuente?.paginas) || theory.fuente.paginas < 1) {
     errors.push(`${path}.data.fuente.paginas: debe ser un entero positivo.`);
   }
