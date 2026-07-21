@@ -5,7 +5,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 ## Funcionalidades
 
 - Navegación jerárquica por tarjetas: oposiciones, temas y recursos.
-- Esquemas HTML jerárquicos, desplegables y adaptables a cada dispositivo.
+- Recursos teóricos estructurados, con navegación por capítulos y fragmentos relacionados desde los tests.
 - Recursos tipados para admitir tests y otros materiales progresivamente.
 - Test completo generado automáticamente por tema, con orden natural o aleatorio.
 - Búsqueda de recursos integrada en la cabecera de cada tema.
@@ -21,6 +21,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 - Rutas con hash compatibles con GitHub Pages y recarga directa.
 - Navegación por teclado, foco visible, HTML semántico y soporte de `prefers-reduced-motion`.
 - Panel de configuración con modos claro y oscuro, tres temas visuales y valores iniciales para los tests, guardados localmente y restablecibles.
+- Panel de novedades validado, con aviso temporal durante las primeras 24 horas de cada actualización.
 
 ## Estructura
 
@@ -32,6 +33,7 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 ├── controllers/              # Enrutado e interacción
 ├── data/
 │   ├── resources.js          # Registro central de recursos
+│   ├── updates.js            # Novedades visibles en la cabecera
 │   ├── resources/            # Esquemas y otros materiales agrupados por tema
 │   ├── tests.js              # Export derivado de tests
 │   └── tests/                # Bancos de preguntas agrupados por tema
@@ -81,6 +83,10 @@ Los recursos teóricos se guardan en `data/resources/tema-XX/teoria/`, junto con
 Un test puede enlazar un fragmento de teoría mediante `relatedTheory`, indicando el `resourceId` de la teoría y una selección por `blockIds` o por intervalo de artículos. El modal reutiliza y filtra ese contenido original; no mantiene copias parciales de la teoría.
 
 Ese registro es el único punto que hay que modificar. La oposición y el tema se derivan de `classification`, por lo que la navegación se actualiza automáticamente.
+
+## Publicar una novedad
+
+Añade una entrada a `data/updates.js` con un `id` único, categoría, fecha ISO, título y descripción. La aplicación valida los campos antes de arrancar y muestra el indicador de la campana durante las 24 horas posteriores a `publishedAt`.
 
 Antes de arrancar, la aplicación comprueba identificadores, clasificación, autoría, preguntas, opciones y soluciones. Si el catálogo no es válido, muestra un error controlado en lugar de iniciar parcialmente.
 

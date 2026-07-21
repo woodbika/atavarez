@@ -1,5 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
-import { questionCount, themeDisclosure } from "./layout.js";
+import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
 function stateFor(question, selected) {
   if (!selected) return { key: "unanswered", label: "Sin responder" };
@@ -9,7 +9,7 @@ function stateFor(question, selected) {
 
 export function renderReview(root, test, result, { backHref }) {
   root.innerHTML = `
-    <a class="back-link view-back-link" href="#/resultados/${encodeURIComponent(test.id)}">← Volver al resultado</a>
+    ${backLink(`#/resultados/${encodeURIComponent(test.id)}`, "Volver al resultado", { className: "view-back-link" })}
     <section class="review-shell view-layout view-layout-wide" aria-labelledby="review-title">
       <header class="review-heading review-hero study-heading view-heading view-heading-cover">
         <p class="eyebrow">Revisión completa</p>

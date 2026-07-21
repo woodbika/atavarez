@@ -1,5 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
-import { questionCount, themeDisclosure } from "./layout.js";
+import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
 export function renderTest(
   root,
@@ -15,7 +15,7 @@ export function renderTest(
   const progress = total ? (answeredCount / total) * 100 : 0;
 
   root.innerHTML = `
-    <a class="back-link test-back-link" href="${backHref}" data-action="leave">← ${escapeHtml(backLabel)}</a>
+    ${backLink(backHref, backLabel, { className: "test-back-link", action: "leave" })}
     ${timer?.enabled ? `
       <button class="test-timer" type="button" data-timer-toggle aria-label="Pausar el test. Tiempo restante: ${escapeHtml(timer.label)}" title="Pausar cuenta atrás">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 4 1.5 6.3 5 9-3.5 2.7-5 5-5 9M17 3c0 4-1.5 6.3-5 9 3.5 2.7 5 5 5 9"></path></svg>

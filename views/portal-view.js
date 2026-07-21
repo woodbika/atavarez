@@ -1,4 +1,5 @@
 import { escapeHtml, formatDisplayTitle, normalizeText } from "../utils/text.js";
+import { backLink } from "./layout.js";
 
 function plural(count, singular, pluralForm) {
   return `${count} ${count === 1 ? singular : pluralForm}`;
@@ -53,7 +54,7 @@ export function renderThemes(root, opposition, themes) {
     oppositionIdentity.includes("cuerpo administrativo");
 
   root.innerHTML = `
-    <a class="back-link" href="#/">← Oposiciones</a>
+    ${backLink("#/", "Oposiciones")}
     <section class="page-heading view-heading ${hasBasqueAdministrativeHero ? "view-heading-cover opposition-hero opposition-hero-basque-admin" : ""}" aria-labelledby="opposition-title">
       <p class="eyebrow">${escapeHtml(formatDisplayTitle(opposition.administration))}</p>
       <h1 id="opposition-title">${escapeHtml(formatDisplayTitle(opposition.title))}</h1>

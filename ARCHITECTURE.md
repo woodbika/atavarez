@@ -12,6 +12,8 @@ OPOSAKETAK es una aplicación estática con módulos ES, sin framework, backend 
 
 `AppController` coordina rutas y transiciones entre pantallas. Los comportamientos con ciclo de vida propio, como la revisión y los controles del test, se mantienen en controladores específicos para evitar listeners huérfanos.
 
+Los paneles laterales de configuración y novedades comparten `SidePanelController`, que centraliza el bloqueo del fondo, la restauración del foco, el cierre con Escape y la navegación cíclica por teclado. El contenido de las novedades reside en `data/updates.js` y se representa desde una vista específica.
+
 ## Estado
 
 El intento activo vive exclusivamente en memoria mediante `TestSession`. Al abandonar o recargar la aplicación se descartan respuestas y resultados. Solo las preferencias del panel se conservan en `localStorage`; no se utiliza `sessionStorage`, IndexedDB ni cookies.
@@ -27,6 +29,8 @@ Cada recurso se registra en `data/resources.js`. Antes de iniciar la aplicación
 - existencia de la respuesta correcta.
 
 El mismo control puede ejecutarse con `npm run validate:data` y forma parte de la integración continua.
+
+Las novedades tienen un esquema independiente y se validan con `update-validator.js`; la verificación conjunta cubre catálogo, preguntas y novedades antes de arrancar o publicar.
 
 ## Navegación
 

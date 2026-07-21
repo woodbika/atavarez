@@ -15,6 +15,8 @@
 
 `npm run check` verifica la sintaxis de los módulos de producción, valida el catálogo completo y ejecuta las pruebas de lógica. No publiques directamente si alguna de estas comprobaciones falla.
 
+Las novedades se mantienen en `data/updates.js`. Usa fechas ISO completas con zona horaria para que el aviso de 24 horas sea determinista.
+
 ## Añadir tests
 
 Guarda cada banco en la carpeta de su tema y autor. Regístralo después en `data/resources.js`. La validación automática debe completarse sin errores antes de publicar.

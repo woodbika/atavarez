@@ -1,5 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
-import { questionCount, themeDisclosure } from "./layout.js";
+import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
 export function renderResults(root, test, result, { backHref, backLabel }) {
   const visualScore = Math.min(Math.max(result.score, 0), 10);
@@ -9,7 +9,7 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
   });
 
   root.innerHTML = `
-    <a class="back-link view-back-link" href="${backHref}">← ${escapeHtml(backLabel)}</a>
+    ${backLink(backHref, backLabel, { className: "view-back-link" })}
     <section class="results-shell view-layout view-layout-wide" aria-labelledby="results-title">
       <header class="results-heading results-hero study-heading view-heading view-heading-cover">
         <p class="eyebrow">Resultado</p>

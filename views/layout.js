@@ -1,5 +1,15 @@
 import { escapeHtml } from "../utils/text.js";
 
+export function backLink(href, label, { className = "", action = "" } = {}) {
+  const classes = ["back-link", className].filter(Boolean).join(" ");
+  return `
+    <a class="${escapeHtml(classes)}" href="${escapeHtml(href)}"${action ? ` data-action="${escapeHtml(action)}"` : ""}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+      <span>${escapeHtml(label)}</span>
+    </a>
+  `;
+}
+
 export function themeDisclosure(test) {
   const { clasificacion } = test;
   return `

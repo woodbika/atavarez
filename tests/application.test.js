@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 
 import { resources } from "../data/resources.js";
 import { tests } from "../data/tests.js";
+import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
 import { validateResources } from "../models/resource-validator.js";
+import { validateUpdates } from "../models/update-validator.js";
 import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
 import { orderTestQuestions } from "../utils/test-order.js";
@@ -59,6 +61,20 @@ test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
   assert.ok(theory.data.bloques.some((block) => block.tipo === "estructura"));
   assert.ok(theory.data.bloques.some((block) => block.tipo === "titulo"));
   assert.deepEqual(validateResources(resources), []);
+});
+
+test("las novedades tienen identificadores y fechas válidas", () => {
+  assert.deepEqual(validateUpdates(updates), []);
+  assert.equal(new Set(updates.map((update) => update.id)).size, updates.length);
+  assert.ok(updates.every((update) => Number.isFinite(Date.parse(update.publishedAt))));
+
+  const invalidUpdates = [
+    { ...updates[0], publishedAt: "fecha-no-válida" },
+    { ...updates[0] },
+  ];
+  const errors = validateUpdates(invalidUpdates);
+  assert.ok(errors.some((error) => error.includes("publishedAt")));
+  assert.ok(errors.some((error) => error.includes("duplicado")));
 });
 
 test("la validación del catálogo informa de soluciones y recursos no válidos", () => {

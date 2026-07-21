@@ -10,13 +10,7 @@ import {
   MIN_SECONDS_PER_QUESTION,
   SECONDS_PER_QUESTION,
 } from "../utils/test-timer.js";
-
-const FOCUSABLE_SELECTOR = [
-  "button:not([disabled])",
-  "input:not([disabled])",
-  "a[href]",
-  '[tabindex]:not([tabindex="-1"])',
-].join(",");
+import { SidePanelController } from "./side-panel-controller.js";
 
 const TEST_SETTING_KEYS = [
   "questionMap",
@@ -28,37 +22,30 @@ const TEST_SETTING_KEYS = [
   "fontSize",
 ];
 
-export class SettingsController {
+export class SettingsController extends SidePanelController {
   constructor({ trigger, panel, backdrop, themeController }) {
-    this.trigger = trigger;
-    this.panel = panel;
-    this.backdrop = backdrop;
+    super({
+      trigger,
+      panel,
+      backdrop,
+      bodyClass: "settings-open",
+      closeSelector: "[data-settings-close]",
+      blockedBy: ["updates-open"],
+    });
     this.themeController = themeController;
-    this.previouslyFocused = null;
-    this.inertTargets = [
-      document.querySelector(".site-header"),
-      document.querySelector(".test-view-tools"),
-      document.querySelector("#contenido"),
-      document.querySelector("#app-scroll-top"),
-    ].filter(Boolean);
     try {
       this.storage = window.localStorage;
     } catch {
       this.storage = null;
     }
     this.preferences = loadPreferences(this.storage);
-    this.onKeydown = this.onKeydown.bind(this);
   }
 
   start() {
-    this.trigger.addEventListener("click", () => this.open());
-    this.panel.querySelector("[data-settings-close]").addEventListener("click", () => {
-      this.close();
-    });
+    super.start();
     this.panel.querySelector("[data-settings-reset]")?.addEventListener("click", () => {
       this.resetPreferences();
     });
-    this.backdrop.addEventListener("click", () => this.close());
     this.panel.querySelectorAll("[data-theme-mode]").forEach((button) => {
       button.addEventListener("click", () => this.setMode(button.dataset.themeMode));
     });
@@ -91,51 +78,6 @@ export class SettingsController {
     return Object.fromEntries(
       TEST_SETTING_KEYS.map((key) => [key, this.preferences[key]]),
     );
-  }
-
-  open() {
-    if (document.body.classList.contains("settings-open")) return;
-    this.previouslyFocused = document.activeElement;
-    document.body.classList.add("settings-open");
-    this.inertTargets.forEach((element) => element.setAttribute("inert", ""));
-    this.panel.removeAttribute("inert");
-    this.trigger.setAttribute("aria-expanded", "true");
-    this.panel.setAttribute("aria-hidden", "false");
-    this.backdrop.setAttribute("aria-hidden", "false");
-    document.addEventListener("keydown", this.onKeydown);
-    this.panel.querySelector("[data-settings-close]").focus({ preventScroll: true });
-  }
-
-  close() {
-    if (!document.body.classList.contains("settings-open")) return;
-    document.body.classList.remove("settings-open");
-    this.inertTargets.forEach((element) => element.removeAttribute("inert"));
-    this.panel.setAttribute("inert", "");
-    this.trigger.setAttribute("aria-expanded", "false");
-    this.panel.setAttribute("aria-hidden", "true");
-    this.backdrop.setAttribute("aria-hidden", "true");
-    document.removeEventListener("keydown", this.onKeydown);
-    this.previouslyFocused?.focus?.({ preventScroll: true });
-  }
-
-  onKeydown(event) {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      this.close();
-      return;
-    }
-    if (event.key !== "Tab") return;
-    const focusable = [...this.panel.querySelectorAll(FOCUSABLE_SELECTOR)];
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable.at(-1);
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
   }
 
   applyPreferences({ emit = false } = {}) {
