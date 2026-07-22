@@ -8,6 +8,11 @@ import testOrganizacionTerritorial1 from "./tests/tema-02/tests-ivot/test-organi
 import testOrganizacionTerritorial2 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-2.js";
 import testOrganizacionTerritorial3 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-3.js";
 import testOrganizacionTerritorial4 from "./tests/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-4-competencias.js";
+import testEstatutoVascoTituloPreliminar from "./tests/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-titulo-preliminar.js";
+import testEstatutoVascoCompetencias1 from "./tests/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-1.js";
+import testEstatutoVascoCompetencias2 from "./tests/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-2.js";
+import testEstatutoVascoCompetencias3 from "./tests/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-3.js";
+import testEstatutoVascoArticulos24a33 from "./tests/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-articulos-24-a-33.js";
 import testEmpleoPublico40a44 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-40-a-44.js";
 import testEmpleoPublico45a50 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
@@ -121,6 +126,11 @@ export const resources = [
   testResource(testOrganizacionTerritorial2),
   testResource(testOrganizacionTerritorial3),
   testResource(testOrganizacionTerritorial4),
+  testResource(testEstatutoVascoTituloPreliminar),
+  testResource(testEstatutoVascoCompetencias1),
+  testResource(testEstatutoVascoCompetencias2),
+  testResource(testEstatutoVascoCompetencias3),
+  testResource(testEstatutoVascoArticulos24a33),
   testResource(testEmpleoPublico40a44),
   testResource(testEmpleoPublico45a50),
   testResource(testEmpleoPublico51y52),

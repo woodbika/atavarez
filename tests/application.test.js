@@ -331,6 +331,51 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   );
 });
 
+test("el tema 04 reúne sus tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "04"));
+  assert.ok(opposition);
+  const theme04 = repository.getTheme(opposition.id, "04");
+  const theme04Resources = repository.getResources(opposition.id, "04");
+  const sourceTests = theme04Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme04Resources.find((resource) => resource.variant === "complete");
+  const sourceQuestionCount = sourceTests.reduce(
+    (total, resource) => total + resource.data.preguntas.length,
+    0,
+  );
+  const requiredTestIds = [
+    "test-estatuto-autonomia-pais-vasco-titulo-preliminar",
+    "test-estatuto-autonomia-pais-vasco-competencias-numero-1",
+    "test-estatuto-autonomia-pais-vasco-competencias-numero-2",
+    "test-estatuto-autonomia-pais-vasco-competencias-numero-3",
+    "test-estatuto-autonomia-pais-vasco-articulos-24-a-33",
+  ];
+  const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+
+  assert.ok(theme04);
+  assert.ok(completeTest);
+  requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
+  assert.equal(
+    new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
+    1,
+  );
+  assert.equal(sourceQuestionCount, 169);
+  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(requiredTestIds),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    sourceQuestionCount,
+  );
+});
+
 test("el tema 18 reúne sus tests IVOT en un test completo", () => {
   const repository = new ResourceRepository(resources);
   const opposition = repository
