@@ -31,7 +31,18 @@ function renderTextContent(node) {
       </ol>`
     : "";
 
-  return `${paragraphs.join("")}${letters}${subsections}`;
+  const ordinals = (node.ordinales ?? []).length
+    ? `<ol class="theory-ordinals">
+        ${node.ordinales.map((item) => `
+          <li>
+            <span>${escapeHtml(item.ordinal)}</span>
+            <p>${escapeHtml(item.texto)}</p>
+          </li>
+        `).join("")}
+      </ol>`
+    : "";
+
+  return `${paragraphs.join("")}${letters}${ordinals}${subsections}`;
 }
 
 function legalTarget(item) {
@@ -164,10 +175,10 @@ function renderTheorySideNav(theory) {
   const titleBlock = theory.bloques.find((block) => block.tipo === "titulo");
   if (!titleBlock) return "";
   return `
-    <aside class="theory-side-nav" aria-label="Navegar por los derechos y deberes fundamentales">
+    <aside class="theory-side-nav" aria-label="Navegar por el contenido de la teoría">
       <div>
         <span>Título ${escapeHtml(titleBlock.numero)}</span>
-        <strong>Derechos y deberes fundamentales</strong>
+        <strong>${escapeHtml(titleBlock.titulo)}</strong>
       </div>
       <ul>${theoryNavigationItems(titleBlock.contenido).map(renderTheoryNavItem).join("")}</ul>
     </aside>

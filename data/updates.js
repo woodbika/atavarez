@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-organizacion-territorial-tema-02",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-22T23:34:20+02:00",
+    title: "Teoría de la organización territorial",
+    description:
+      "El Tema 2 incorpora una lectura estructurada del Título VIII de la Constitución y acceso al PDF original.",
+  }),
+  Object.freeze({
     id: "tests-ivot-tema-04",
     category: "Nuevos tests",
     publishedAt: "2026-07-22T23:18:12+02:00",

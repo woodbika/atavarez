@@ -1966,7 +1966,8 @@ h3 {
 
 .theory-article p,
 .theory-subsections p,
-.theory-letters p {
+.theory-letters p,
+.theory-ordinals p {
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.62;
@@ -1977,7 +1978,8 @@ h3 {
 }
 
 .theory-subsections,
-.theory-letters {
+.theory-letters,
+.theory-ordinals {
   display: grid;
   gap: 9px;
   margin: 0;
@@ -2003,20 +2005,27 @@ h3 {
   font-weight: 720;
 }
 
-.theory-letters {
+.theory-letters,
+.theory-ordinals {
   margin-top: 8px;
 }
 
-.theory-letters > li {
+.theory-letters > li,
+.theory-ordinals > li {
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr);
   gap: 5px;
 }
 
-.theory-letters > li > span {
+.theory-letters > li > span,
+.theory-ordinals > li > span {
   color: var(--brand);
   font-size: 0.76rem;
   font-weight: 700;
+}
+
+.theory-ordinals > li {
+  grid-template-columns: 32px minmax(0, 1fr);
 }
 
 .breadcrumbs {

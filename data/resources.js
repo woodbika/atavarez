@@ -61,6 +61,7 @@ import testLey39Articulos125y126 from "./tests/tema-33/tests-ivot/test-ley-39-20
 import testLey40Articulos32y33 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-32-y-33.js";
 import testLey40Articulos34a37 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-34-a-37.js";
 import teoriaConstitucion from "./resources/tema-01/teoria/tema-1-la-constitucion-espanola.js";
+import teoriaOrganizacionTerritorial from "./resources/tema-02/teoria/tema-2-organizacion-territorial.js";
 
 const relatedTheoryByTestId = new Map([
   [testEstructura.id, {
@@ -106,7 +107,7 @@ function theoryResource(theory) {
   return {
     id: theory.id,
     type: "teoria",
-    title: "La Constitución Española de 1978",
+    title: theory.clasificacion.tema.titulo,
     classification: theory.clasificacion,
     source: theory.fuente,
     data: theory,
@@ -122,6 +123,7 @@ export const resources = [
   testResource(testCapituloII),
   testResource(testPrincipiosRectores),
   testResource(testCapitulosIVyV),
+  theoryResource(teoriaOrganizacionTerritorial),
   testResource(testOrganizacionTerritorial1),
   testResource(testOrganizacionTerritorial2),
   testResource(testOrganizacionTerritorial3),

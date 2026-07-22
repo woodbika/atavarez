@@ -135,6 +135,56 @@ function validateTheoryStructureItem(item, path, errors) {
   });
 }
 
+function validateTheoryTextContent(item, path, errors) {
+  if (item.texto !== undefined && !isNonEmptyString(item.texto)) {
+    errors.push(`${path}.texto: debe contener texto.`);
+  }
+  if (item.parrafos !== undefined && (
+    !Array.isArray(item.parrafos) || item.parrafos.some((text) => !isNonEmptyString(text))
+  )) {
+    errors.push(`${path}.parrafos: solo puede contener texto.`);
+  }
+  if (item.apartados !== undefined) {
+    if (!Array.isArray(item.apartados)) {
+      errors.push(`${path}.apartados: debe ser una lista.`);
+    } else {
+      item.apartados.forEach((section, index) => {
+        if (!section || typeof section !== "object") {
+          errors.push(`${path}.apartados[${index}]: debe ser un objeto.`);
+          return;
+        }
+        if (section.numero === undefined) {
+          errors.push(`${path}.apartados[${index}].numero: es obligatorio.`);
+        }
+        validateTheoryTextContent(section, `${path}.apartados[${index}]`, errors);
+      });
+    }
+  }
+  [
+    ["letras", "letra"],
+    ["ordinales", "ordinal"],
+  ].forEach(([field, label]) => {
+    if (item[field] === undefined) return;
+    if (!Array.isArray(item[field])) {
+      errors.push(`${path}.${field}: debe ser una lista.`);
+      return;
+    }
+    item[field].forEach((entry, index) => {
+      const entryPath = `${path}.${field}[${index}]`;
+      if (!entry || typeof entry !== "object") {
+        errors.push(`${entryPath}: debe ser un objeto.`);
+        return;
+      }
+      if (!isNonEmptyString(String(entry[label] ?? ""))) {
+        errors.push(`${entryPath}.${label}: es obligatorio.`);
+      }
+      if (!isNonEmptyString(entry.texto)) {
+        errors.push(`${entryPath}.texto: debe contener texto.`);
+      }
+    });
+  });
+}
+
 function validateTheoryLegalItem(item, path, errors) {
   if (!item || typeof item !== "object") {
     errors.push(`${path}: debe ser un objeto.`);
@@ -154,14 +204,7 @@ function validateTheoryLegalItem(item, path, errors) {
       validateTheoryLegalItem(child, `${path}.${field}[${index}]`, errors);
     });
   });
-  if (item.apartados !== undefined && !Array.isArray(item.apartados)) {
-    errors.push(`${path}.apartados: debe ser una lista.`);
-  }
-  if (item.parrafos !== undefined && (
-    !Array.isArray(item.parrafos) || item.parrafos.some((text) => !isNonEmptyString(text))
-  )) {
-    errors.push(`${path}.parrafos: solo puede contener texto.`);
-  }
+  validateTheoryTextContent(item, path, errors);
 }
 
 function validateTheory(resource, path, errors) {

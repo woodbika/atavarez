@@ -63,6 +63,26 @@ test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 02 incluye teoría y PDF sin asociarlos a sus tests genéricos", () => {
+  const theory = resources.find(
+    (resource) => resource.id === "tema-02-organizacion-territorial-del-estado",
+  );
+  const themeTests = resources.filter(
+    (resource) =>
+      resource.type === "test" && resource.classification.tema.numero === "02",
+  );
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "02");
+  assert.equal(theory.data.fuente.archivo, "tema-02-organizacion-territorial.pdf");
+  assert.equal(theory.data.fuente.paginas, 10);
+  assert.ok(theory.data.bloques.some((block) => block.tipo === "titulo"));
+  assert.ok(themeTests.length > 0);
+  assert.ok(themeTests.every((resource) => resource.relatedTheory === undefined));
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("las novedades tienen identificadores y fechas válidas", () => {
   assert.deepEqual(validateUpdates(updates), []);
   assert.equal(new Set(updates.map((update) => update.id)).size, updates.length);
