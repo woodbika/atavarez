@@ -422,6 +422,12 @@ test("el tema 04 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme04);
   assert.ok(completeTest);
+  assert.equal(theme04Resources[0].type, "teoria");
+  assert.equal(theme04Resources[0].id, "tema-04-organizacion-politica-administrativa-capv");
+  assert.equal(
+    theme04Resources[0].source.url,
+    "./data/resources/tema-04/teoria/tema-04-organizacion-politica-administrativa-capv.pdf",
+  );
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   assert.equal(
@@ -438,6 +444,18 @@ test("el tema 04 reúne sus tests IVOT en un test completo", () => {
     new Set(completeTest.data.preguntas.map((question) => question.id)).size,
     sourceQuestionCount,
   );
+  const expectedTheorySelections = new Map([
+    ["test-estatuto-autonomia-pais-vasco-titulo-preliminar", { articles: { from: 1, to: 9 } }],
+    ["test-estatuto-autonomia-pais-vasco-competencias-numero-1", { articles: { from: 10, to: 12 } }],
+    ["test-estatuto-autonomia-pais-vasco-competencias-numero-2", { articles: { from: 10, to: 20 } }],
+    ["test-estatuto-autonomia-pais-vasco-competencias-numero-3", { articles: { from: 20, to: 23 } }],
+    ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", { articles: { from: 24, to: 33 } }],
+  ]);
+  expectedTheorySelections.forEach((selection, resourceId) => {
+    const resource = repository.getById(resourceId);
+    assert.equal(resource.relatedTheory.resourceId, "tema-04-organizacion-politica-administrativa-capv");
+    assert.deepEqual(resource.relatedTheory.selection, selection);
+  });
 });
 
 test("el tema 09 reúne sus tests IVOT en un test completo", () => {

@@ -195,7 +195,9 @@ function validateTheoryLegalItem(item, path, errors) {
     errors.push(`${path}: debe ser un objeto.`);
     return;
   }
-  if (item.numero === undefined) errors.push(`${path}.numero: es obligatorio.`);
+  if (item.numero === undefined && item.tipo !== "apartado-tematico") {
+    errors.push(`${path}.numero: es obligatorio.`);
+  }
   if (item.tipo && item.tipo !== "articulo" && !isNonEmptyString(item.titulo)) {
     errors.push(`${path}.titulo: debe contener texto.`);
   }
@@ -250,7 +252,7 @@ function validateTheory(resource, path, errors) {
           validateTheoryStructureItem(item, `${blockPath}.elementos[${itemIndex}]`, errors);
         });
       }
-    } else if (block?.tipo === "titulo") {
+    } else if (block?.tipo === "titulo" || block?.tipo === "apartado-tematico") {
       if (!Array.isArray(block.contenido) || block.contenido.length === 0) {
         errors.push(`${blockPath}.contenido: debe contener elementos.`);
       } else {
@@ -306,7 +308,7 @@ function theoryArticleNumbers(theory) {
     (item.contenido ?? item.articulos ?? []).forEach(visit);
   };
   theory.bloques
-    .filter((block) => block.tipo === "titulo")
+    .filter((block) => block.tipo !== "estructura")
     .forEach((block) => block.contenido.forEach(visit));
   return numbers;
 }

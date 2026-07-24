@@ -58,8 +58,12 @@ function renderTextContent(node) {
 
 function legalScope(item, parentScope = "") {
   const kind = item.tipo ?? "articulo";
-  const number = String(item.numero).normalize("NFD").replace(/[^a-zA-Z0-9]+/g, "-");
-  return [parentScope, kind, number].filter(Boolean).join("-");
+  const identity = String(item.numero ?? item.titulo ?? "contenido")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return [parentScope, kind, identity].filter(Boolean).join("-");
 }
 
 function legalTarget(item, parentScope = "") {
@@ -93,7 +97,7 @@ function selectedTheory(theory, selection) {
     return {
       ...theory,
       bloques: theory.bloques
-        .filter((block) => block.tipo === "titulo")
+        .filter((block) => block.tipo !== "estructura")
         .map((block) => ({
           ...block,
           contenido: block.contenido
@@ -115,6 +119,14 @@ function selectionTitle(selection) {
     : `Artículos del ${range.from} al ${range.to}`;
 }
 
+function legalItemLabel(item) {
+  if (isLegalArticle(item)) return `Artículo ${item.numero}`;
+  if (item.tipo === "capitulo" && item.numero != null) return `Capítulo ${item.numero}`;
+  if (item.tipo === "titulo" && item.numero != null) return `Título ${item.numero}`;
+  if (item.tipo === "seccion" && item.numero != null) return `Sección ${item.numero}`;
+  return item.titulo ?? "";
+}
+
 function renderLegalItem(item, parentScope) {
   const itemScope = legalScope(item, parentScope);
   if (isLegalArticle(item)) {
@@ -129,13 +141,14 @@ function renderLegalItem(item, parentScope) {
     `;
   }
 
-  const kind = item.tipo === "capitulo" ? "Capítulo" : "Sección";
+  const label = legalItemLabel(item);
+  const showTitle = item.titulo && item.titulo !== label;
   const children = item.contenido ?? item.articulos ?? [];
   return `
     <section id="${legalTarget(item, parentScope)}" class="theory-legal-group theory-${escapeHtml(item.tipo)}">
       <header>
-        <span>${kind} ${escapeHtml(item.numero)}</span>
-        <h3>${escapeHtml(item.titulo)}</h3>
+        ${label ? `<span>${escapeHtml(label)}</span>` : ""}
+        ${showTitle ? `<h3>${escapeHtml(item.titulo)}</h3>` : ""}
       </header>
       <div class="theory-legal-content">
         ${children.map((child) => renderLegalItem(child, itemScope)).join("")}
@@ -176,15 +189,13 @@ function articleRange(item) {
 
 function renderTheoryNavItem({ item, target }) {
   const isArticle = isLegalArticle(item);
-  const label = isArticle
-    ? `Artículo ${item.numero}`
-    : `${item.tipo === "capitulo" ? "Capítulo" : "Sección"} ${item.numero}`;
+  const label = legalItemLabel(item);
   const range = isArticle ? "" : articleRange(item);
   return `
     <li>
       <button type="button" data-theory-target="${target}">
         <span>${escapeHtml(label)}</span>
-        ${item.titulo ? `<small>${escapeHtml(item.titulo)}</small>` : ""}
+        ${item.titulo && item.titulo !== label ? `<small>${escapeHtml(item.titulo)}</small>` : ""}
         ${range ? `<em>${escapeHtml(range)}</em>` : ""}
       </button>
     </li>
@@ -192,13 +203,15 @@ function renderTheoryNavItem({ item, target }) {
 }
 
 function renderTheorySideNav(theory) {
-  const titleBlocks = theory.bloques.filter((block) => block.tipo === "titulo");
-  if (!titleBlocks.length) return "";
+  const legalBlocks = theory.bloques.filter((block) => block.tipo !== "estructura");
+  if (!legalBlocks.length) return "";
   return `
     <aside class="theory-side-nav" aria-label="Navegar por el contenido de la teoría">
-      ${titleBlocks.map((block) => `
+      ${legalBlocks.map((block) => `
         <div>
-          <span>Título ${escapeHtml(block.numero)}</span>
+          <span>${block.tipo === "titulo" && block.numero != null
+            ? `Título ${escapeHtml(block.numero)}`
+            : "Bloque temático"}</span>
           <strong>${escapeHtml(block.titulo)}</strong>
         </div>
         <ul>${theoryNavigationItems(block.contenido, block.id).map(renderTheoryNavItem).join("")}</ul>
@@ -251,7 +264,9 @@ function renderTheoryBlock(block) {
   return `
     <section id="theory-block-${escapeHtml(block.id)}" class="theory-block theory-law-block">
       <header class="theory-block-heading">
-        <span>Título ${escapeHtml(block.numero)}</span>
+        <span>${block.tipo === "titulo" && block.numero != null
+          ? `Título ${escapeHtml(block.numero)}`
+          : "Bloque temático"}</span>
         <h3>${escapeHtml(block.titulo)}</h3>
       </header>
       <div class="theory-law-content">
@@ -266,7 +281,7 @@ export function openTheoryModal(root, resource, trigger, options = {}) {
   const theory = resource.data;
   const displayedTheory = selectedTheory(theory, options.selection);
   const contextualTitle = selectionTitle(options.selection);
-  const hasSideNavigation = displayedTheory.bloques.some((block) => block.tipo === "titulo");
+  const hasSideNavigation = displayedTheory.bloques.some((block) => block.tipo !== "estructura");
   root.insertAdjacentHTML("beforeend", `
     <dialog id="theory-modal" class="theory-modal" aria-labelledby="theory-modal-title" aria-describedby="theory-modal-subtitle">
       <div class="theory-modal-shell">

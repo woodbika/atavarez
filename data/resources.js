@@ -66,6 +66,7 @@ import testLey40Articulos32y33 from "./tests/tema-34/tests-ivot/test-ley-40-2015
 import testLey40Articulos34a37 from "./tests/tema-34/tests-ivot/test-ley-40-2015-articulos-34-a-37.js";
 import teoriaConstitucion from "./resources/tema-01/teoria/tema-1-la-constitucion-espanola.js";
 import teoriaOrganizacionTerritorial from "./resources/tema-02/teoria/tema-2-organizacion-territorial.js";
+import teoriaOrganizacionPoliticaCapv from "./resources/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaPersonalServicioPublico from "./resources/tema-09/teoria/tema-9-personal-al-servicio.js";
 
 const relatedTheoryByTestId = new Map([
@@ -100,6 +101,26 @@ const relatedTheoryByTestId = new Map([
   [testOrganizacionTerritorial4.id, {
     resourceId: teoriaOrganizacionTerritorial.id,
     selection: { articles: { from: 148, to: 149 } },
+  }],
+  [testEstatutoVascoTituloPreliminar.id, {
+    resourceId: teoriaOrganizacionPoliticaCapv.id,
+    selection: { articles: { from: 1, to: 9 } },
+  }],
+  [testEstatutoVascoCompetencias1.id, {
+    resourceId: teoriaOrganizacionPoliticaCapv.id,
+    selection: { articles: { from: 10, to: 12 } },
+  }],
+  [testEstatutoVascoCompetencias2.id, {
+    resourceId: teoriaOrganizacionPoliticaCapv.id,
+    selection: { articles: { from: 10, to: 20 } },
+  }],
+  [testEstatutoVascoCompetencias3.id, {
+    resourceId: teoriaOrganizacionPoliticaCapv.id,
+    selection: { articles: { from: 20, to: 23 } },
+  }],
+  [testEstatutoVascoArticulos24a33.id, {
+    resourceId: teoriaOrganizacionPoliticaCapv.id,
+    selection: { articles: { from: 24, to: 33 } },
   }],
   [testEmpleoPublico26a30.id, {
     resourceId: teoriaPersonalServicioPublico.id,
@@ -170,6 +191,7 @@ export const resources = [
   testResource(testOrganizacionTerritorial2),
   testResource(testOrganizacionTerritorial3),
   testResource(testOrganizacionTerritorial4),
+  theoryResource(teoriaOrganizacionPoliticaCapv),
   testResource(testEstatutoVascoTituloPreliminar),
   testResource(testEstatutoVascoCompetencias1),
   testResource(testEstatutoVascoCompetencias2),

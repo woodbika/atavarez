@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-organizacion-politica-tema-04",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-24T13:57:05+02:00",
+    title: "Teoría de la organización política vasca",
+    description:
+      "El Tema 4 incorpora una lectura estructurada, acceso al PDF y teoría específica para cada test IVOT.",
+  }),
+  Object.freeze({
     id: "teoria-vinculada-tests-tema-02",
     category: "Mejora",
     publishedAt: "2026-07-24T12:30:04+02:00",
