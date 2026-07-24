@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-empleo-publico-tema-09",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-24T10:38:58+02:00",
+    title: "Teoría del personal empleado público",
+    description:
+      "El Tema 9 incorpora una lectura estructurada, acceso al PDF y teoría específica para cada test IVOT.",
+  }),
+  Object.freeze({
     id: "teoria-organizacion-territorial-tema-02",
     category: "Nuevo recurso",
     publishedAt: "2026-07-22T23:34:20+02:00",

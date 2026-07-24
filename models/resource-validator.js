@@ -163,6 +163,7 @@ function validateTheoryTextContent(item, path, errors) {
   [
     ["letras", "letra"],
     ["ordinales", "ordinal"],
+    ["numerales", "numero"],
   ].forEach(([field, label]) => {
     if (item[field] === undefined) return;
     if (!Array.isArray(item[field])) {
@@ -178,9 +179,13 @@ function validateTheoryTextContent(item, path, errors) {
       if (!isNonEmptyString(String(entry[label] ?? ""))) {
         errors.push(`${entryPath}.${label}: es obligatorio.`);
       }
-      if (!isNonEmptyString(entry.texto)) {
-        errors.push(`${entryPath}.texto: debe contener texto.`);
+      const hasText = isNonEmptyString(entry.texto);
+      const hasParagraphs = Array.isArray(entry.parrafos) &&
+        entry.parrafos.some((paragraph) => isNonEmptyString(paragraph));
+      if (!hasText && !hasParagraphs) {
+        errors.push(`${entryPath}: debe contener texto o párrafos.`);
       }
+      validateTheoryTextContent(entry, entryPath, errors);
     });
   });
 }

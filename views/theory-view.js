@@ -25,7 +25,7 @@ function renderTextContent(node) {
         ${node.letras.map((item) => `
           <li>
             <span>${escapeHtml(item.letra)})</span>
-            <p>${escapeHtml(item.texto)}</p>
+            <div>${renderTextContent(item)}</div>
           </li>
         `).join("")}
       </ol>`
@@ -36,19 +36,34 @@ function renderTextContent(node) {
         ${node.ordinales.map((item) => `
           <li>
             <span>${escapeHtml(item.ordinal)}</span>
-            <p>${escapeHtml(item.texto)}</p>
+            <div>${renderTextContent(item)}</div>
           </li>
         `).join("")}
       </ol>`
     : "";
 
-  return `${paragraphs.join("")}${letters}${ordinals}${subsections}`;
+  const numerals = (node.numerales ?? []).length
+    ? `<ol class="theory-numerals">
+        ${node.numerales.map((item) => `
+          <li>
+            <span>${escapeHtml(item.numero)}.</span>
+            <div>${renderTextContent(item)}</div>
+          </li>
+        `).join("")}
+      </ol>`
+    : "";
+
+  return `${paragraphs.join("")}${letters}${ordinals}${numerals}${subsections}`;
 }
 
-function legalTarget(item) {
+function legalScope(item, parentScope = "") {
   const kind = item.tipo ?? "articulo";
   const number = String(item.numero).normalize("NFD").replace(/[^a-zA-Z0-9]+/g, "-");
-  return `theory-${kind}-${number}`;
+  return [parentScope, kind, number].filter(Boolean).join("-");
+}
+
+function legalTarget(item, parentScope = "") {
+  return `theory-${legalScope(item, parentScope)}`;
 }
 
 function isLegalArticle(item) {
@@ -100,11 +115,15 @@ function selectionTitle(selection) {
     : `Artículos del ${range.from} al ${range.to}`;
 }
 
-function renderLegalItem(item) {
+function renderLegalItem(item, parentScope) {
+  const itemScope = legalScope(item, parentScope);
   if (isLegalArticle(item)) {
     return `
-      <article id="${legalTarget(item)}" class="theory-article">
-        <h4>Artículo ${escapeHtml(item.numero)}</h4>
+      <article id="${legalTarget(item, parentScope)}" class="theory-article">
+        <h4>
+          <span>Artículo ${escapeHtml(item.numero)}</span>
+          ${item.titulo ? `<strong>${escapeHtml(item.titulo)}</strong>` : ""}
+        </h4>
         ${renderTextContent(item)}
       </article>
     `;
@@ -113,26 +132,27 @@ function renderLegalItem(item) {
   const kind = item.tipo === "capitulo" ? "Capítulo" : "Sección";
   const children = item.contenido ?? item.articulos ?? [];
   return `
-    <section id="${legalTarget(item)}" class="theory-legal-group theory-${escapeHtml(item.tipo)}">
+    <section id="${legalTarget(item, parentScope)}" class="theory-legal-group theory-${escapeHtml(item.tipo)}">
       <header>
         <span>${kind} ${escapeHtml(item.numero)}</span>
         <h3>${escapeHtml(item.titulo)}</h3>
       </header>
       <div class="theory-legal-content">
-        ${children.map(renderLegalItem).join("")}
+        ${children.map((child) => renderLegalItem(child, itemScope)).join("")}
       </div>
     </section>
   `;
 }
 
-function theoryNavigationItems(items, depth = 0) {
+function theoryNavigationItems(items, parentScope, depth = 0) {
   return items.flatMap((item) => {
     const isArticle = isLegalArticle(item);
     const children = item.contenido ?? item.articulos ?? [];
     const includeItem = !isArticle || depth === 0;
+    const itemScope = legalScope(item, parentScope);
     return [
-      ...(includeItem ? [item] : []),
-      ...theoryNavigationItems(children, depth + 1),
+      ...(includeItem ? [{ item, target: legalTarget(item, parentScope) }] : []),
+      ...theoryNavigationItems(children, itemScope, depth + 1),
     ];
   });
 }
@@ -154,7 +174,7 @@ function articleRange(item) {
     : `[Artículos del ${first} al ${last}]`;
 }
 
-function renderTheoryNavItem(item) {
+function renderTheoryNavItem({ item, target }) {
   const isArticle = isLegalArticle(item);
   const label = isArticle
     ? `Artículo ${item.numero}`
@@ -162,7 +182,7 @@ function renderTheoryNavItem(item) {
   const range = isArticle ? "" : articleRange(item);
   return `
     <li>
-      <button type="button" data-theory-target="${legalTarget(item)}">
+      <button type="button" data-theory-target="${target}">
         <span>${escapeHtml(label)}</span>
         ${item.titulo ? `<small>${escapeHtml(item.titulo)}</small>` : ""}
         ${range ? `<em>${escapeHtml(range)}</em>` : ""}
@@ -172,15 +192,17 @@ function renderTheoryNavItem(item) {
 }
 
 function renderTheorySideNav(theory) {
-  const titleBlock = theory.bloques.find((block) => block.tipo === "titulo");
-  if (!titleBlock) return "";
+  const titleBlocks = theory.bloques.filter((block) => block.tipo === "titulo");
+  if (!titleBlocks.length) return "";
   return `
     <aside class="theory-side-nav" aria-label="Navegar por el contenido de la teoría">
-      <div>
-        <span>Título ${escapeHtml(titleBlock.numero)}</span>
-        <strong>${escapeHtml(titleBlock.titulo)}</strong>
-      </div>
-      <ul>${theoryNavigationItems(titleBlock.contenido).map(renderTheoryNavItem).join("")}</ul>
+      ${titleBlocks.map((block) => `
+        <div>
+          <span>Título ${escapeHtml(block.numero)}</span>
+          <strong>${escapeHtml(block.titulo)}</strong>
+        </div>
+        <ul>${theoryNavigationItems(block.contenido, block.id).map(renderTheoryNavItem).join("")}</ul>
+      `).join("")}
     </aside>
   `;
 }
@@ -233,7 +255,7 @@ function renderTheoryBlock(block) {
         <h3>${escapeHtml(block.titulo)}</h3>
       </header>
       <div class="theory-law-content">
-        ${block.contenido.map(renderLegalItem).join("")}
+        ${block.contenido.map((item) => renderLegalItem(item, block.id)).join("")}
       </div>
     </section>
   `;

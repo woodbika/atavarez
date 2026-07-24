@@ -56,6 +56,7 @@ test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
 
   assert.ok(theory);
   assert.equal(theory.type, "teoria");
+  assert.equal(theory.title, "La Constitución Española de 1978");
   assert.equal(theory.classification.tema.numero, "01");
   assert.equal(theory.data.fuente.paginas, 8);
   assert.ok(theory.data.bloques.some((block) => block.tipo === "estructura"));
@@ -74,12 +75,39 @@ test("el tema 02 incluye teoría y PDF sin asociarlos a sus tests genéricos", (
 
   assert.ok(theory);
   assert.equal(theory.type, "teoria");
+  assert.equal(theory.title, "La organización territorial del Estado.");
   assert.equal(theory.classification.tema.numero, "02");
   assert.equal(theory.data.fuente.archivo, "tema-02-organizacion-territorial.pdf");
   assert.equal(theory.data.fuente.paginas, 10);
   assert.ok(theory.data.bloques.some((block) => block.tipo === "titulo"));
   assert.ok(themeTests.length > 0);
   assert.ok(themeTests.every((resource) => resource.relatedTheory === undefined));
+  assert.deepEqual(validateResources(resources), []);
+});
+
+test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
+  const theory = resources.find(
+    (resource) => resource.id === "tema-09-personal-al-servicio-administraciones-publicas-vascas",
+  );
+  const expectedSelections = new Map([
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", { from: 26, to: 30 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162", { from: 161, to: 162 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166", { from: 161, to: 166 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171", { from: 167, to: 171 }],
+  ]);
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.title, "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco.");
+  assert.equal(theory.classification.tema.numero, "09");
+  assert.equal(theory.data.fuente.archivo, "tema-09-personal-servicio-publico.pdf");
+  assert.equal(theory.data.fuente.paginas, 8);
+  assert.equal(theory.data.bloques.filter((block) => block.tipo === "titulo").length, 2);
+  expectedSelections.forEach((articles, resourceId) => {
+    const resource = resources.find((item) => item.id === resourceId);
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(resource.relatedTheory.selection, { articles });
+  });
   assert.deepEqual(validateResources(resources), []);
 });
 
@@ -385,6 +413,50 @@ test("el tema 04 reúne sus tests IVOT en un test completo", () => {
     1,
   );
   assert.equal(sourceQuestionCount, 169);
+  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(requiredTestIds),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    sourceQuestionCount,
+  );
+});
+
+test("el tema 09 reúne sus tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "09"));
+  assert.ok(opposition);
+  const theme09 = repository.getTheme(opposition.id, "09");
+  const theme09Resources = repository.getResources(opposition.id, "09");
+  const sourceTests = theme09Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme09Resources.find((resource) => resource.variant === "complete");
+  const sourceQuestionCount = sourceTests.reduce(
+    (total, resource) => total + resource.data.preguntas.length,
+    0,
+  );
+  const requiredTestIds = [
+    "test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30",
+    "test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162",
+    "test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166",
+    "test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171",
+  ];
+  const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+
+  assert.ok(theme09);
+  assert.ok(completeTest);
+  requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
+  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
+  assert.equal(
+    new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
+    1,
+  );
+  assert.equal(sourceQuestionCount, 82);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(
     new Set(completeTest.data.fuente.tests),
