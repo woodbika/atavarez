@@ -165,6 +165,7 @@ export function renderResources(
         const isComplete = resource.variant === "complete";
         const isTheory = resource.type === "teoria";
         const hasRelatedTheory = Boolean(resource.relatedTheory);
+        const theoryNotice = resource.theoryNotice;
         const hasParts = (resource.classification.partes ?? []).length > 0;
         const usesLightTestTitle = resource.type === "test" && !isComplete && !hasParts;
         const resourceTypeLabel = isComplete
@@ -222,6 +223,8 @@ export function renderResources(
                 : `<div class="resource-card-actions">
                     ${hasRelatedTheory
                       ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`
+                      : theoryNotice
+                        ? `<span class="resource-theory-notice">${escapeHtml(theoryNotice)}</span>`
                       : ""}
                     <a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>
                   </div>`}

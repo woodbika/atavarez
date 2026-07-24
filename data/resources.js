@@ -93,6 +93,14 @@ const relatedTheoryByTestId = new Map([
     resourceId: teoriaConstitucion.id,
     selection: { articles: { from: 53, to: 55 } },
   }],
+  [testOrganizacionTerritorial1.id, {
+    resourceId: teoriaOrganizacionTerritorial.id,
+    selection: { articles: { from: 137, to: 142 } },
+  }],
+  [testOrganizacionTerritorial4.id, {
+    resourceId: teoriaOrganizacionTerritorial.id,
+    selection: { articles: { from: 148, to: 149 } },
+  }],
   [testEmpleoPublico26a30.id, {
     resourceId: teoriaPersonalServicioPublico.id,
     selection: { articles: { from: 26, to: 30 } },
@@ -111,8 +119,14 @@ const relatedTheoryByTestId = new Map([
   }],
 ]);
 
+const theoryNoticeByTestId = new Map([
+  [testOrganizacionTerritorial2.id, "Sin vínculo teórico directo"],
+  [testOrganizacionTerritorial3.id, "Sin vínculo teórico directo"],
+]);
+
 function testResource(test) {
   const relatedTheory = relatedTheoryByTestId.get(test.id);
+  const theoryNotice = theoryNoticeByTestId.get(test.id);
   return {
     id: test.id,
     type: "test",
@@ -120,6 +134,7 @@ function testResource(test) {
     author: test.autor,
     classification: test.clasificacion,
     ...(relatedTheory ? { relatedTheory } : {}),
+    ...(theoryNotice ? { theoryNotice } : {}),
     data: test,
   };
 }

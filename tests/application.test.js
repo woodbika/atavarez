@@ -64,7 +64,7 @@ test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
-test("el tema 02 incluye teoría y PDF sin asociarlos a sus tests genéricos", () => {
+test("el tema 02 relaciona solo los tests con un intervalo teórico directo", () => {
   const theory = resources.find(
     (resource) => resource.id === "tema-02-organizacion-territorial-del-estado",
   );
@@ -80,8 +80,24 @@ test("el tema 02 incluye teoría y PDF sin asociarlos a sus tests genéricos", (
   assert.equal(theory.data.fuente.archivo, "tema-02-organizacion-territorial.pdf");
   assert.equal(theory.data.fuente.paginas, 10);
   assert.ok(theory.data.bloques.some((block) => block.tipo === "titulo"));
-  assert.ok(themeTests.length > 0);
-  assert.ok(themeTests.every((resource) => resource.relatedTheory === undefined));
+  const expectedSelections = new Map([
+    ["test-organizacion-territorial-del-estado-numero-1", { from: 137, to: 142 }],
+    ["test-organizacion-territorial-del-estado-numero-4-competencias", { from: 148, to: 149 }],
+  ]);
+  expectedSelections.forEach((articles, resourceId) => {
+    const resource = themeTests.find((item) => item.id === resourceId);
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(resource.relatedTheory.selection, { articles });
+    assert.equal(resource.theoryNotice, undefined);
+  });
+  [
+    "test-organizacion-territorial-del-estado-numero-2",
+    "test-organizacion-territorial-del-estado-numero-3",
+  ].forEach((resourceId) => {
+    const resource = themeTests.find((item) => item.id === resourceId);
+    assert.equal(resource.relatedTheory, undefined);
+    assert.equal(resource.theoryNotice, "Sin vínculo teórico directo");
+  });
   assert.deepEqual(validateResources(resources), []);
 });
 

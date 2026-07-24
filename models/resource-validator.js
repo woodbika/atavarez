@@ -329,6 +329,9 @@ export function validateResources(resources) {
     else resourceIds.add(resource.id);
     if (!isNonEmptyString(resource.type)) errors.push(`${path}.type: es obligatorio.`);
     if (!isNonEmptyString(resource.title)) errors.push(`${path}.title: debe contener texto.`);
+    if (resource.theoryNotice !== undefined && !isNonEmptyString(resource.theoryNotice)) {
+      errors.push(`${path}.theoryNotice: debe contener texto.`);
+    }
     validateClassification(resource.classification, path, errors);
     if (resource.type === "test") validateTest(resource, path, errors);
     if (resource.type === "teoria") validateTheory(resource, path, errors);

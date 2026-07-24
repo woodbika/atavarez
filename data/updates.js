@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-vinculada-tests-tema-02",
+    category: "Mejora",
+    publishedAt: "2026-07-24T12:30:04+02:00",
+    title: "Teoría relacionada en el Tema 2",
+    description:
+      "Los Tests 1 y 4 permiten consultar directamente los artículos de teoría correspondientes.",
+  }),
+  Object.freeze({
     id: "teoria-empleo-publico-tema-09",
     category: "Nuevo recurso",
     publishedAt: "2026-07-24T10:38:58+02:00",

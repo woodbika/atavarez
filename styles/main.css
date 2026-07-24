@@ -1608,6 +1608,14 @@ h3 {
   text-decoration-color: currentColor;
 }
 
+.resource-theory-notice {
+  max-width: 52%;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 450;
+  line-height: 1.35;
+}
+
 /* Lectura de teoría */
 .theory-modal {
   width: min(calc(100% - 40px), 1080px);
