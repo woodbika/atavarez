@@ -1,4 +1,4 @@
-import { escapeHtml, formatDisplayTitle, normalizeText } from "../utils/text.js";
+import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { backLink } from "./layout.js";
 
 function plural(count, singular, pluralForm) {
@@ -24,20 +24,27 @@ export function renderOppositions(root, oppositions) {
       <div class="navigation-grid">
         ${oppositions
           .map(
-            (opposition) => `
-              <article class="navigation-card">
+            (opposition) => {
+              const isComingSoon = opposition.status === "coming-soon";
+              return `
+              <article class="navigation-card ${isComingSoon ? "navigation-card-upcoming" : ""}">
                 <p class="card-kicker">${escapeHtml(formatDisplayTitle(opposition.administration))}</p>
                 <h3>${escapeHtml(formatDisplayTitle(opposition.title))}</h3>
                 <dl class="card-details">
                   <div><dt>Grupo</dt><dd>${escapeHtml(opposition.group)}</dd></div>
                   <div><dt>Escala</dt><dd>${escapeHtml(opposition.scale)}</dd></div>
                 </dl>
-                <p class="card-summary">${plural(opposition.themeCount, "tema", "temas")} · ${plural(opposition.resourceCount, "recurso", "recursos")}</p>
-                <a class="card-link" href="#/oposiciones/${encodeURIComponent(opposition.id)}">
-                  Ver temas <span aria-hidden="true">→</span>
-                </a>
+                <p class="card-summary">${isComingSoon
+                  ? "Contenido en preparación"
+                  : `${plural(opposition.themeCount, "tema", "temas")} · ${plural(opposition.resourceCount, "recurso", "recursos")}`}</p>
+                ${isComingSoon
+                  ? '<span class="card-link card-link-status">Próximamente</span>'
+                  : `<a class="card-link" href="#/oposiciones/${encodeURIComponent(opposition.id)}">
+                      Ver temas <span aria-hidden="true">→</span>
+                    </a>`}
               </article>
-            `,
+            `;
+            },
           )
           .join("")}
       </div>
@@ -46,16 +53,13 @@ export function renderOppositions(root, oppositions) {
 }
 
 export function renderThemes(root, opposition, themes) {
-  const oppositionIdentity = normalizeText(
-    `${opposition.administration} ${opposition.title}`,
-  );
-  const hasBasqueAdministrativeHero =
-    oppositionIdentity.includes("eusko jaurlaritza") &&
-    oppositionIdentity.includes("cuerpo administrativo");
+  const coverStyle = opposition.covers.themes
+    ? ` style="--opposition-cover-image: url('./assets/images/${escapeHtml(opposition.covers.themes)}')"`
+    : "";
 
   root.innerHTML = `
     ${backLink("#/", "Oposiciones")}
-    <section class="page-heading view-heading ${hasBasqueAdministrativeHero ? "view-heading-cover opposition-hero opposition-hero-basque-admin" : ""}" aria-labelledby="opposition-title">
+    <section class="page-heading view-heading view-heading-cover opposition-hero" aria-labelledby="opposition-title"${coverStyle}>
       <p class="eyebrow">${escapeHtml(formatDisplayTitle(opposition.administration))}</p>
       <h1 id="opposition-title">${escapeHtml(formatDisplayTitle(opposition.title))}</h1>
       <p class="hero-copy">${escapeHtml(opposition.group)} · ${escapeHtml(opposition.scale)}</p>
@@ -111,6 +115,9 @@ export function renderResources(
   root,
   { opposition, theme, resources },
 ) {
+  const coverStyle = opposition.covers.resources
+    ? ` style="--resource-cover-image: url('./assets/images/${escapeHtml(opposition.covers.resources)}')"`
+    : "";
   root.innerHTML = `
     <nav class="breadcrumbs" aria-label="Migas de pan">
       <a href="#/">Oposiciones</a><span aria-hidden="true">/</span>
@@ -118,7 +125,7 @@ export function renderResources(
       <span aria-current="page">Tema ${escapeHtml(theme.numero)}</span>
     </nav>
 
-    <section class="page-heading resource-hero view-heading view-heading-cover" aria-labelledby="theme-title">
+    <section class="page-heading resource-hero view-heading view-heading-cover" aria-labelledby="theme-title"${coverStyle}>
       <p class="eyebrow">Tema ${escapeHtml(theme.numero)}</p>
       <h1 id="theme-title">${escapeHtml(theme.titulo)}</h1>
     </section>

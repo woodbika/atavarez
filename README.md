@@ -32,13 +32,17 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 ├── assets/images/             # Imágenes y atribución de procedencia
 ├── controllers/              # Enrutado e interacción
 ├── data/
-│   ├── resources.js          # Registro central de recursos
+│   ├── oppositions.js        # Catálogo de oposiciones e identificadores estables
+│   ├── resources.js          # Agregador de los registros de cada oposición
+│   ├── resource-factory.js   # Normalización común de tests y teorías
+│   ├── *-resources.js        # Registro propio de cada oposición
 │   ├── updates.js            # Novedades visibles en la cabecera
-│   ├── resources/            # Esquemas y otros materiales agrupados por tema
+│   ├── resources/            # Materiales agrupados por oposición y tema
 │   ├── tests.js              # Export derivado de tests
-│   └── tests/                # Bancos de preguntas agrupados por tema
-│       └── tema-01/          # Recursos del tema 01
-│           └── tests-ivot/   # Tests cuyo autor es IVOT
+│   └── tests/                # Bancos de preguntas agrupados por oposición
+│       └── gobierno-vasco-administrativo-c1/
+│           └── tema-01/
+│               └── tests-ivot/ # Tests cuyo autor es IVOT
 ├── models/                   # Portal y lógica del intento activo
 ├── scripts/                  # Validaciones ejecutables desde Node.js
 ├── views/                    # Oposiciones, temas, recursos y cuestionarios
@@ -71,18 +75,53 @@ Este comando comprueba la sintaxis del código de producción, valida todos los 
 
 Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante GitHub Actions.
 
+## Añadir una oposición
+
+1. Declara la oposición en `data/oppositions.js` con un `id` estable, sus datos visibles y las portadas de temas y recursos.
+2. Crea un registro `data/<id>-resources.js`.
+3. Usa `createOppositionResourceFactory()` para convertir sus tests y teorías en recursos normalizados.
+4. Importa ese registro desde `data/resources.js`.
+5. Guarda sus bancos en `data/tests/<id>/tema-XX/` y sus materiales en `data/resources/<id>/tema-XX/`.
+
+El `id` no depende de los textos visibles. Los nombres de la administración, cuerpo,
+grupo o escala pueden corregirse sin cambiar las rutas de la aplicación. `legacyIds`
+permite conservar enlaces publicados antes de una modificación.
+
+Una oposición puede declararse con `status: "coming-soon"` para mostrar su ficha en
+la pantalla inicial sin permitir todavía el acceso. Cuando disponga de recursos debe
+cambiarse a `status: "available"` y configurar sus portadas.
+
 ## Añadir un recurso
 
-1. Añade el archivo `.js` del test dentro de la carpeta temática correspondiente en `data/tests/`.
-2. Abre `data/resources.js`.
+1. Añade el archivo `.js` dentro de la carpeta de su oposición y tema.
+2. Abre el archivo `data/<id>-resources.js` de esa oposición.
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
 4. Para otro material, añade una entrada con `id`, `type`, `title`, `classification`, `href` y, opcionalmente, `actionLabel`.
 
-Los recursos teóricos se guardan en `data/resources/tema-XX/teoria/`, junto con su fuente original cuando corresponda. Su contenido estructurado se registra con `type: "teoria"` para presentarlo como lectura dentro de la aplicación.
+Los recursos teóricos se guardan en `data/resources/<id>/tema-XX/teoria/`, junto con su fuente original cuando corresponda. Su contenido estructurado se registra con `type: "teoria"` para presentarlo como lectura dentro de la aplicación.
+
+Los archivos existentes que todavía contienen administración, cuerpo, grupo y escala
+siguen siendo compatibles. Para un recurso nuevo basta con identificar la oposición
+y el tema; la factoría completa la clasificación común:
+
+```js
+clasificacion: {
+  oposicionId: "gobierno-vasco-administrativo-c1",
+  tema: {
+    numero: "01",
+    titulo: "Título del tema",
+  },
+}
+```
+
+Los identificadores de tests, teorías y otros recursos deben ser únicos en todo el
+catálogo, aunque pertenezcan a oposiciones diferentes.
 
 Un test puede enlazar un fragmento de teoría mediante `relatedTheory`, indicando el `resourceId` de la teoría y una selección por `blockIds` o por intervalo de artículos. El modal reutiliza y filtra ese contenido original; no mantiene copias parciales de la teoría.
 
-Ese registro es el único punto que hay que modificar. La oposición y el tema se derivan de `classification`, por lo que la navegación se actualiza automáticamente.
+El registro de cada oposición es el único lugar que conoce sus recursos. El agregador
+central no contiene tests individuales y la navegación mantiene separados los temas
+que tengan el mismo número en oposiciones diferentes.
 
 ## Publicar una novedad
 

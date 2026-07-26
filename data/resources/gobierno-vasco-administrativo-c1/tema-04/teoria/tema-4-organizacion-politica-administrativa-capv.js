@@ -22,7 +22,7 @@ const tema4OrganizacionPoliticaAdministrativaCapv = {
   fuente: {
     tipo: "pdf",
     archivo: "tema-04-organizacion-politica-administrativa-capv.pdf",
-    url: "./data/resources/tema-04/teoria/tema-04-organizacion-politica-administrativa-capv.pdf",
+    url: "./data/resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-04-organizacion-politica-administrativa-capv.pdf",
     paginas: 15,
   },
   derechos: "Prohibida la reproducción parcial o total.",

@@ -1,20 +1,7 @@
 import { normalizeText } from "../utils/text.js";
 
-function slug(value) {
-  return normalizeText(value)
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function oppositionId(classification) {
-  return slug(
-    [
-      classification.administracion,
-      classification.oposicion,
-      classification.grupo,
-      classification.escala,
-    ].join("-"),
-  );
+function oppositionId(resource) {
+  return resource.opposition?.id ?? resource.classification?.oposicionId ?? "";
 }
 
 function firstArticleNumber(title) {
@@ -29,7 +16,8 @@ function resourceDisplayOrder(resource) {
 }
 
 export class ResourceRepository {
-  constructor(resources) {
+  constructor(resources, oppositions = []) {
+    this.oppositionCatalog = oppositions;
     const combinedResources = this.buildCombinedResources(resources);
     this.resources = [...combinedResources, ...resources].sort((a, b) => {
       const byTheme = String(a.classification.tema.numero).localeCompare(
@@ -57,7 +45,7 @@ export class ResourceRepository {
       .filter((resource) => resource.type === "test")
       .forEach((resource) => {
         const themeNumber = String(resource.classification.tema.numero);
-        const key = `${oppositionId(resource.classification)}:${themeNumber}`;
+        const key = `${oppositionId(resource)}:${themeNumber}`;
         if (!groups.has(key)) groups.set(key, []);
         groups.get(key).push(resource);
       });
@@ -65,7 +53,7 @@ export class ResourceRepository {
     return [...groups.values()].map((themeResources) => {
       const first = themeResources[0];
       const themeNumber = String(first.classification.tema.numero);
-      const id = `test-completo-${oppositionId(first.classification)}-tema-${themeNumber}`;
+      const id = `test-completo-${oppositionId(first)}-tema-${themeNumber}`;
       const preguntas = themeResources.flatMap((resource) =>
         resource.data.preguntas.map((question) => ({
           ...question,
@@ -96,6 +84,7 @@ export class ResourceRepository {
         variant: "complete",
         title: test.titulo,
         author: autor,
+        opposition: first.opposition,
         classification,
         orderModes: ["natural", "aleatorio"],
         defaultOrder: "natural",
@@ -114,17 +103,33 @@ export class ResourceRepository {
   }
 
   getOppositions() {
-    const groups = new Map();
+    const groups = new Map(
+      this.oppositionCatalog.map((opposition) => [
+        opposition.id,
+        {
+          ...opposition,
+          legacyIds: opposition.legacyIds ?? [],
+          covers: opposition.covers ?? {},
+          themeNumbers: new Set(),
+          resourceCount: 0,
+        },
+      ]),
+    );
     this.resources.forEach((resource) => {
       const classification = resource.classification;
-      const id = oppositionId(classification);
+      const oppositionDefinition = resource.opposition;
+      const id = oppositionId(resource);
       if (!groups.has(id)) {
         groups.set(id, {
           id,
-          title: classification.oposicion,
-          administration: classification.administracion,
-          group: classification.grupo,
-          scale: classification.escala,
+          legacyIds: oppositionDefinition?.legacyIds ?? [],
+          title: oppositionDefinition?.title ?? classification.oposicion,
+          administration:
+            oppositionDefinition?.administration ?? classification.administracion,
+          group: oppositionDefinition?.group ?? classification.grupo,
+          scale: oppositionDefinition?.scale ?? classification.escala,
+          status: oppositionDefinition?.status ?? "available",
+          covers: oppositionDefinition?.covers ?? {},
           themeNumbers: new Set(),
           resourceCount: 0,
         });
@@ -143,13 +148,16 @@ export class ResourceRepository {
   }
 
   getOpposition(id) {
-    return this.getOppositions().find((opposition) => opposition.id === id);
+    return this.getOppositions().find(
+      (opposition) => opposition.id === id || opposition.legacyIds.includes(id),
+    );
   }
 
   getThemes(oppositionIdValue) {
+    const canonicalId = this.getOpposition(oppositionIdValue)?.id ?? oppositionIdValue;
     const themes = new Map();
     this.resources
-      .filter((resource) => oppositionId(resource.classification) === oppositionIdValue)
+      .filter((resource) => oppositionId(resource) === canonicalId)
       .forEach((resource) => {
         const { numero, titulo } = resource.classification.tema;
         const key = String(numero);
@@ -176,16 +184,17 @@ export class ResourceRepository {
   }
 
   getResources(oppositionIdValue, themeNumber) {
+    const canonicalId = this.getOpposition(oppositionIdValue)?.id ?? oppositionIdValue;
     return this.resources.filter(
       (resource) =>
-        oppositionId(resource.classification) === oppositionIdValue &&
+        oppositionId(resource) === canonicalId &&
         String(resource.classification.tema.numero) === themeNumber,
     );
   }
 
   getOppositionForResource(resourceId) {
     const resource = this.getById(resourceId);
-    return resource ? oppositionId(resource.classification) : null;
+    return resource ? oppositionId(resource) : null;
   }
 
   searchResources(resources, query = "") {

@@ -21,7 +21,7 @@ const tema9PersonalAlServicio = {
   fuente: {
     tipo: "pdf",
     archivo: "tema-09-personal-servicio-publico.pdf",
-    url: "./data/resources/tema-09/teoria/tema-09-personal-servicio-publico.pdf",
+    url: "./data/resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-09-personal-servicio-publico.pdf",
     paginas: 8,
   },
   derechos: "Prohibida la reproducción parcial o total.",

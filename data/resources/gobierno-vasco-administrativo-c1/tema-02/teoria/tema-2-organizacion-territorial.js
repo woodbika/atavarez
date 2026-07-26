@@ -21,7 +21,7 @@ const tema2OrganizacionTerritorial = {
   fuente: {
     tipo: "pdf",
     archivo: "tema-02-organizacion-territorial.pdf",
-    url: "./data/resources/tema-02/teoria/tema-02-organizacion-territorial.pdf",
+    url: "./data/resources/gobierno-vasco-administrativo-c1/tema-02/teoria/tema-02-organizacion-territorial.pdf",
     paginas: 10,
   },
   derechos: "Prohibida la reproducción parcial o total.",

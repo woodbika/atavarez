@@ -1,4 +1,5 @@
 import { resources } from "./data/resources.js";
+import { oppositions } from "./data/oppositions.js";
 import { updates } from "./data/updates.js";
 import { AppController } from "./controllers/app-controller.js";
 import { ThemeController } from "./controllers/theme-controller.js";
@@ -6,6 +7,7 @@ import { SettingsController } from "./controllers/settings-controller.js";
 import { UpdatesController } from "./controllers/updates-controller.js";
 import { ResourceRepository } from "./models/resource-repository.js";
 import { assertValidResources } from "./models/resource-validator.js";
+import { assertValidOppositions } from "./models/opposition-validator.js";
 import { assertValidUpdates } from "./models/update-validator.js";
 import { renderApplicationError } from "./views/layout.js";
 
@@ -17,7 +19,8 @@ const themeController = new ThemeController({
 
 try {
   assertValidUpdates(updates);
-  assertValidResources(resources);
+  assertValidOppositions(oppositions);
+  assertValidResources(resources, oppositions);
   new UpdatesController({
     trigger: document.querySelector("#updates-toggle"),
     panel: document.querySelector("#updates-panel"),
@@ -32,7 +35,7 @@ try {
   }).start();
   const controller = new AppController({
     root,
-    repository: new ResourceRepository(resources),
+    repository: new ResourceRepository(resources, oppositions),
     testPreferences: settingsController.getTestPreferences(),
   });
   controller.start();

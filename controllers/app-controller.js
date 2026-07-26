@@ -60,7 +60,7 @@ export class AppController {
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
     if (section !== "test") this.testTimer.reset();
     this.testControls.hideSearch();
-    this.preloadRouteCover(section, subsection, subId);
+    this.preloadRouteCover(section, id, subsection, subId);
     const isTestRoute = section === "test" && Boolean(id);
     this.testControls.setTestRouteActive(isTestRoute);
     const keepsCurrentResult =
@@ -82,12 +82,12 @@ export class AppController {
     this.scrollTopController.onViewportChange();
   }
 
-  preloadRouteCover(section, subsection, subId) {
+  preloadRouteCover(section, oppositionId, subsection, subId) {
     let filename = "portada-oposiciones.jpg";
     if (section === "oposiciones" && subsection === "temas" && subId) {
-      filename = "portada-recursos.jpg";
+      filename = this.repository.getOpposition(oppositionId)?.covers?.resources;
     } else if (section === "oposiciones") {
-      filename = "portada-temas-gobierno-vasco.jpg";
+      filename = this.repository.getOpposition(oppositionId)?.covers?.themes;
     } else if (section === "resultados") {
       filename = "portada-resultados.jpg";
     } else if (section === "revision") {
@@ -96,6 +96,7 @@ export class AppController {
       return;
     }
 
+    if (!filename) return;
     const href = `./assets/images/${filename}`;
     const preload = document.querySelector("#cover-preload");
     if (preload?.getAttribute("href") !== href) preload?.setAttribute("href", href);
@@ -110,6 +111,9 @@ export class AppController {
     this.session = null;
     const opposition = this.repository.getOpposition(oppositionId);
     if (!opposition) return renderNotFound(this.root, "La oposición solicitada no existe.");
+    if (opposition.status === "coming-soon") {
+      return renderNotFound(this.root, "Esta oposición estará disponible próximamente.");
+    }
     const themes = this.repository.getThemes(oppositionId);
     const view = renderThemes(this.root, opposition, themes);
     this.testControls.showSearch("Buscar temas", (query) => {

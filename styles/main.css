@@ -19,7 +19,6 @@
   --incorrect-soft: #faf0ef;
   --view-heading-padding: clamp(28px, 5vw, 46px);
   --image-cover-oppositions: url("../assets/images/portada-oposiciones.jpg");
-  --image-cover-basque-themes: url("../assets/images/portada-temas-gobierno-vasco.jpg");
   --image-cover-resources: url("../assets/images/portada-recursos.jpg");
   --image-cover-results: url("../assets/images/portada-resultados.jpg");
   --image-cover-review: url("../assets/images/portada-revision.jpg");
@@ -958,7 +957,7 @@ html[data-theme="dark"] .settings-switch {
   background-size: cover;
 }
 
-.opposition-hero-basque-admin {
+.opposition-hero {
   background-image:
     linear-gradient(
       270deg,
@@ -968,7 +967,7 @@ html[data-theme="dark"] .settings-switch {
       rgba(248, 250, 249, 0.77) 72%,
       rgba(248, 250, 249, 0.54) 100%
     ),
-    var(--image-cover-basque-themes);
+    var(--opposition-cover-image);
   background-position: center 48%;
 }
 
@@ -983,7 +982,7 @@ html[data-theme="dark"] .settings-switch {
       rgba(248, 250, 249, 0.68) 68%,
       rgba(248, 250, 249, 0.12) 100%
     ),
-    var(--image-cover-resources);
+    var(--resource-cover-image, var(--image-cover-resources));
   background-position: center 54%;
 }
 
@@ -1279,6 +1278,13 @@ h3 {
   transform: translateY(-2px);
 }
 
+.navigation-card-upcoming,
+.navigation-card-upcoming:hover {
+  border-color: var(--line);
+  box-shadow: none;
+  transform: none;
+}
+
 .navigation-card,
 .resource-card {
   display: flex;
@@ -1515,6 +1521,11 @@ h3 {
 .card-link:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+.card-link-status {
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .parts {
@@ -3666,7 +3677,7 @@ html[data-theme="dark"] .hero-home .hero-copy {
   color: #aab4b0;
 }
 
-html[data-theme="dark"] .opposition-hero-basque-admin {
+html[data-theme="dark"] .opposition-hero {
   background-image:
     linear-gradient(
       270deg,
@@ -3676,7 +3687,7 @@ html[data-theme="dark"] .opposition-hero-basque-admin {
       rgba(27, 33, 31, 0.8) 72%,
       rgba(27, 33, 31, 0.6) 100%
     ),
-    var(--image-cover-basque-themes);
+    var(--opposition-cover-image);
 }
 
 html[data-theme="dark"] .resource-hero {
@@ -3689,7 +3700,7 @@ html[data-theme="dark"] .resource-hero {
       rgba(27, 33, 31, 0.8) 68%,
       rgba(27, 33, 31, 0.58) 100%
     ),
-    var(--image-cover-resources);
+    var(--resource-cover-image, var(--image-cover-resources));
 }
 
 html[data-theme="dark"] .results-hero {
@@ -3806,6 +3817,11 @@ html[data-theme="dark"] .navigation-card:focus-within,
 html[data-theme="dark"] .resource-card:focus-within {
   border-color: #56665f;
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.14);
+}
+
+html[data-theme="dark"] .navigation-card-upcoming:hover {
+  border-color: var(--line);
+  box-shadow: none;
 }
 
 html[data-theme="dark"] .resource-card-complete {

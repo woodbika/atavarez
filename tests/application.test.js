@@ -2,9 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { resources } from "../data/resources.js";
+import { oppositions } from "../data/oppositions.js";
+import { createOppositionResourceFactory } from "../data/resource-factory.js";
 import { tests } from "../data/tests.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
+import { validateOppositions } from "../models/opposition-validator.js";
 import { validateResources } from "../models/resource-validator.js";
 import { validateUpdates } from "../models/update-validator.js";
 import { TestSession } from "../models/test-session.js";
@@ -24,7 +27,8 @@ import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 test("el registro contiene todos los tests con un formato válido", () => {
   const registeredTests = resources.filter((resource) => resource.type === "test");
 
-  assert.deepEqual(validateResources(resources), []);
+  assert.deepEqual(validateResources(resources, oppositions), []);
+  assert.deepEqual(validateOppositions(oppositions), []);
   assert.equal(tests.length, registeredTests.length);
   assert.deepEqual(
     tests.map((item) => item.id),
@@ -48,6 +52,19 @@ test("el registro contiene todos los tests con un formato válido", () => {
       assert.ok(question.enunciado);
       assert.ok(question.opciones.some((option) => option.id === question.respuestaCorrecta));
     });
+  });
+});
+
+test("cada recurso pertenece a una oposición estable del catálogo", () => {
+  const knownOppositionIds = new Set(oppositions.map((opposition) => opposition.id));
+
+  resources.forEach((resource) => {
+    assert.ok(knownOppositionIds.has(resource.opposition.id));
+    assert.equal(resource.classification.oposicionId, resource.opposition.id);
+    assert.equal(resource.classification.administracion, resource.opposition.administration);
+    assert.equal(resource.classification.oposicion, resource.opposition.title);
+    assert.equal(resource.classification.grupo, resource.opposition.group);
+    assert.equal(resource.classification.escala, resource.opposition.scale);
   });
 });
 
@@ -141,6 +158,23 @@ test("las novedades tienen identificadores y fechas válidas", () => {
   assert.ok(errors.some((error) => error.includes("duplicado")));
 });
 
+test("el catálogo de oposiciones exige identificadores y portadas válidos", () => {
+  const duplicate = {
+    ...oppositions[0],
+    legacyIds: [],
+  };
+  const invalid = {
+    ...oppositions[0],
+    id: "otra-oposicion",
+    legacyIds: [oppositions[0].id],
+    covers: { ...oppositions[0].covers, themes: "../portada.jpg" },
+  };
+  const errors = validateOppositions([duplicate, invalid]);
+
+  assert.ok(errors.some((error) => error.includes("duplicado")));
+  assert.ok(errors.some((error) => error.includes("nombre de archivo seguro")));
+});
+
 test("la validación del catálogo informa de soluciones y recursos no válidos", () => {
   const invalidResource = structuredClone(
     resources.find((resource) => resource.type === "test"),
@@ -161,10 +195,15 @@ test("la validación exige que autor y clasificación coincidan con el test", ()
     ...invalidResource.data.clasificacion,
     tema: { ...invalidResource.data.clasificacion.tema, numero: "999" },
   };
+  invalidResource.sourceClassification = {
+    ...invalidResource.sourceClassification,
+    grupo: "Grupo distinto",
+  };
   const errors = validateResources([invalidResource]);
 
   assert.ok(errors.some((error) => error.includes(".author")));
   assert.ok(errors.some((error) => error.includes(".classification")));
+  assert.ok(errors.some((error) => error.includes(".sourceClassification")));
 });
 
 test("la evaluación distingue aciertos, errores y preguntas sin responder", () => {
@@ -292,15 +331,15 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
 });
 
 test("el portal agrupa oposiciones, temas y recursos", () => {
-  const repository = new ResourceRepository(resources);
-  const oppositions = repository.getOppositions();
+  const repository = new ResourceRepository(resources, oppositions);
+  const portalOppositions = repository.getOppositions();
   const expectedOppositionIds = new Set(
-    resources.map((resource) => repository.getOppositionForResource(resource.id)),
+    oppositions.map((opposition) => opposition.id),
   );
 
-  assert.equal(oppositions.length, expectedOppositionIds.size);
+  assert.equal(portalOppositions.length, expectedOppositionIds.size);
 
-  oppositions.forEach((opposition) => {
+  portalOppositions.forEach((opposition) => {
     const oppositionResources = resources.filter(
       (resource) => repository.getOppositionForResource(resource.id) === opposition.id,
     );
@@ -311,6 +350,11 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
 
     assert.equal(opposition.themeCount, expectedThemeNumbers.size);
     assert.equal(themes.length, expectedThemeNumbers.size);
+    if (opposition.status === "coming-soon") {
+      assert.equal(opposition.resourceCount, 0);
+      assert.equal(opposition.themeCount, 0);
+      return;
+    }
 
     themes.forEach((theme) => {
       const sourceResources = oppositionResources.filter(
@@ -344,6 +388,15 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
       assert.equal(completeTest.defaultOrder, "natural");
     });
   });
+
+  const osakidetza = repository.getOpposition(
+    "osakidetza-tecnico-especialista-informatica-c1",
+  );
+  assert.equal(osakidetza.administration, "Osakidetza");
+  assert.equal(osakidetza.title, "Técnico/a Especialista Informática");
+  assert.equal(osakidetza.group, "C1");
+  assert.equal(osakidetza.scale, "Técnico/a Especialista profesional");
+  assert.equal(osakidetza.status, "coming-soon");
 
   const opposition = oppositions.find(
     (item) => repository.getTheme(item.id, "01") && repository.getTheme(item.id, "17"),
@@ -395,6 +448,63 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   );
 });
 
+test("el repositorio mantiene separadas dos oposiciones con temas coincidentes", () => {
+  const source = resources.find((resource) => resource.type === "test");
+  const secondOpposition = {
+    id: "administracion-local-auxiliar-c2",
+    legacyIds: [],
+    administration: "Administración local",
+    title: "Cuerpo Auxiliar",
+    group: "C2",
+    scale: "Escala Auxiliar",
+    covers: {
+      themes: "portada-temas-local.jpg",
+      resources: "portada-recursos-local.jpg",
+    },
+  };
+  const secondClassification = {
+    oposicionId: secondOpposition.id,
+    tema: {
+      numero: "01",
+      titulo: "Organización municipal",
+    },
+  };
+  const secondTest = {
+    ...source.data,
+    id: "test-organizacion-municipal",
+    titulo: "Organización municipal",
+    clasificacion: secondClassification,
+    preguntas: source.data.preguntas.slice(0, 2),
+  };
+  const { testResource } = createOppositionResourceFactory(secondOpposition);
+  const secondResource = testResource(secondTest);
+  const repository = new ResourceRepository([source, secondResource]);
+
+  assert.equal(repository.getOppositions().length, 2);
+  assert.equal(repository.getThemes(source.opposition.id).length, 1);
+  assert.equal(repository.getThemes(secondOpposition.id).length, 1);
+  assert.equal(repository.getResources(source.opposition.id, "01").length, 2);
+  assert.equal(repository.getResources(secondOpposition.id, "01").length, 2);
+  assert.ok(
+    repository
+      .getResources(secondOpposition.id, "01")
+      .every((resource) => resource.opposition.id === secondOpposition.id),
+  );
+});
+
+test("los enlaces anteriores de la oposición siguen resolviéndose", () => {
+  const repository = new ResourceRepository(resources);
+  const [opposition] = oppositions;
+
+  opposition.legacyIds.forEach((legacyId) => {
+    assert.equal(repository.getOpposition(legacyId).id, opposition.id);
+    assert.deepEqual(
+      repository.getThemes(legacyId),
+      repository.getThemes(opposition.id),
+    );
+  });
+});
+
 test("el tema 04 reúne sus tests IVOT en un test completo", () => {
   const repository = new ResourceRepository(resources);
   const opposition = repository
@@ -426,7 +536,7 @@ test("el tema 04 reúne sus tests IVOT en un test completo", () => {
   assert.equal(theme04Resources[0].id, "tema-04-organizacion-politica-administrativa-capv");
   assert.equal(
     theme04Resources[0].source.url,
-    "./data/resources/tema-04/teoria/tema-04-organizacion-politica-administrativa-capv.pdf",
+    "./data/resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-04-organizacion-politica-administrativa-capv.pdf",
   );
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));

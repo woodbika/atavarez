@@ -8,6 +8,9 @@ function validateClassification(classification, path, errors) {
     return;
   }
 
+  if (!isNonEmptyString(classification.oposicionId)) {
+    errors.push(`${path}.clasificacion.oposicionId: debe contener un identificador estable.`);
+  }
   ["administracion", "oposicion", "grupo", "escala"].forEach((field) => {
     if (!isNonEmptyString(classification[field])) {
       errors.push(`${path}.clasificacion.${field}: debe contener texto.`);
@@ -36,7 +39,7 @@ function validateClassification(classification, path, errors) {
 
 function classificationsMatch(resourceClassification, testClassification) {
   if (!resourceClassification || !testClassification) return false;
-  const fields = ["administracion", "oposicion", "grupo", "escala"];
+  const fields = ["oposicionId", "administracion", "oposicion", "grupo", "escala"];
   const sameFields = fields.every(
     (field) => resourceClassification[field] === testClassification[field],
   );
@@ -54,6 +57,66 @@ function classificationsMatch(resourceClassification, testClassification) {
     resourceParts.every((part, index) => part === testParts[index])
   );
   return sameFields && sameTheme && sameParts;
+}
+
+function validateResourceOpposition(resource, path, errors, oppositionById) {
+  const opposition = resource.opposition;
+  if (!opposition || typeof opposition !== "object") {
+    errors.push(`${path}.opposition: falta la definición de la oposición.`);
+    return;
+  }
+  ["id", "administration", "title", "group", "scale"].forEach((field) => {
+    if (!isNonEmptyString(opposition[field])) {
+      errors.push(`${path}.opposition.${field}: debe contener texto.`);
+    }
+  });
+  const classification = resource.classification;
+  const expected = {
+    oposicionId: opposition.id,
+    administracion: opposition.administration,
+    oposicion: opposition.title,
+    grupo: opposition.group,
+    escala: opposition.scale,
+  };
+  Object.entries(expected).forEach(([field, value]) => {
+    if (classification?.[field] !== value) {
+      errors.push(`${path}.classification.${field}: no coincide con la oposición.`);
+    }
+  });
+  if (oppositionById?.size) {
+    const catalogOpposition = oppositionById.get(opposition.id);
+    if (!catalogOpposition) {
+      errors.push(`${path}.opposition.id: no existe en el catálogo de oposiciones.`);
+    } else {
+      ["administration", "title", "group", "scale"].forEach((field) => {
+        if (opposition[field] !== catalogOpposition[field]) {
+          errors.push(`${path}.opposition.${field}: no coincide con el catálogo.`);
+        }
+      });
+    }
+  }
+}
+
+function validateSourceClassification(resource, path, errors) {
+  const source = resource.sourceClassification;
+  if (!source || typeof source !== "object") {
+    errors.push(`${path}.sourceClassification: falta la clasificación de origen.`);
+    return;
+  }
+  const opposition = resource.opposition;
+  if (!opposition || typeof opposition !== "object") return;
+  const expected = {
+    oposicionId: opposition.id,
+    administracion: opposition.administration,
+    oposicion: opposition.title,
+    grupo: opposition.group,
+    escala: opposition.scale,
+  };
+  Object.entries(expected).forEach(([field, value]) => {
+    if (source[field] !== undefined && source[field] !== value) {
+      errors.push(`${path}.sourceClassification.${field}: no coincide con la oposición.`);
+    }
+  });
 }
 
 function validateTest(resource, path, errors) {
@@ -313,13 +376,16 @@ function theoryArticleNumbers(theory) {
   return numbers;
 }
 
-export function validateResources(resources) {
+export function validateResources(resources, oppositions = []) {
   const errors = [];
   if (!Array.isArray(resources) || resources.length === 0) {
     return ["resources: debe contener al menos un recurso."];
   }
 
   const resourceIds = new Set();
+  const oppositionById = new Map(
+    oppositions.map((opposition) => [opposition?.id, opposition]),
+  );
   resources.forEach((resource, index) => {
     const path = `resources[${index}]`;
     if (!resource || typeof resource !== "object") {
@@ -334,6 +400,8 @@ export function validateResources(resources) {
     if (resource.theoryNotice !== undefined && !isNonEmptyString(resource.theoryNotice)) {
       errors.push(`${path}.theoryNotice: debe contener texto.`);
     }
+    validateResourceOpposition(resource, path, errors, oppositionById);
+    validateSourceClassification(resource, path, errors);
     validateClassification(resource.classification, path, errors);
     if (resource.type === "test") validateTest(resource, path, errors);
     if (resource.type === "teoria") validateTheory(resource, path, errors);
@@ -378,8 +446,8 @@ export function validateResources(resources) {
   return errors;
 }
 
-export function assertValidResources(resources) {
-  const errors = validateResources(resources);
+export function assertValidResources(resources, oppositions = []) {
+  const errors = validateResources(resources, oppositions);
   if (!errors.length) return;
   throw new AggregateError(errors.map((message) => new Error(message)), "Catálogo no válido");
 }
