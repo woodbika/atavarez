@@ -12,6 +12,7 @@ import { createOppositionResourceFactory } from "../data/resource-factory.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
 import { validateAuthors } from "../models/author-validator.js";
+import { buildStudyContextItems } from "../controllers/study-context-controller.js";
 import {
   auditResources,
   findDuplicateQuestions,
@@ -715,6 +716,49 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
   assert.deepEqual(parseHashRoute("#/"), []);
 });
 
+test("la cabecera contextual describe oposición, tema y test sin crear enlaces", () => {
+  const repository = new ResourceRepository(
+    resources,
+    oppositions,
+    questionBanks,
+  );
+  const government = repository.getOpposition(
+    "gobierno-vasco-administrativo-c1",
+  );
+  const theme = repository.getTheme(government.id, "17");
+  const resource = repository.getResources(government.id, "17")[0];
+  const items = buildStudyContextItems({
+    opposition: government,
+    theme,
+    test: resource.data,
+  });
+
+  assert.deepEqual(items.map((item) => item.key), [
+    "opposition",
+    "theme",
+    "test",
+  ]);
+  assert.equal(
+    items[0].value,
+    "Eusko Jaurlaritza / Gobierno Vasco · Cuerpo Administrativo",
+  );
+  assert.equal(items[0].compactValue, items[0].value);
+  assert.equal(items[1].value, "Tema 17");
+  assert.equal(items[1].title, theme.titulo);
+  assert.equal(items[2].value, formatDisplayTitle(resource.data.titulo));
+
+  const osakidetza = repository.getOpposition(
+    "osakidetza-tecnico-especialista-informatica-c1",
+  );
+  const osakidetzaItems = buildStudyContextItems({
+    opposition: osakidetza,
+    theme: repository.getTheme(osakidetza.id, "especifico"),
+  });
+  assert.equal(osakidetzaItems[1].label, "Apartado");
+  assert.equal(osakidetzaItems[1].value, "Temario específico");
+  assert.deepEqual(buildStudyContextItems(), []);
+});
+
 test("el portal agrupa oposiciones, temas y recursos", () => {
   const repository = new ResourceRepository(
     resources,
@@ -1401,6 +1445,10 @@ test("los títulos en mayúsculas se presentan como frase sin perder siglas", ()
   assert.equal(
     formatDisplayTitle("TEST CONSTITUCIÓN CAPÍTULO IV y V"),
     "Test constitución capítulo IV y V",
+  );
+  assert.equal(
+    formatDisplayTitle("EUSKO JAURLARITZA / GOBIERNO VASCO"),
+    "Eusko Jaurlaritza / Gobierno Vasco",
   );
   assert.equal(formatDisplayTitle("La Constitución Española"), "La Constitución Española");
 });

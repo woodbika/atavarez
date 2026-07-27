@@ -32,5 +32,7 @@ export function formatDisplayTitle(value) {
     .replace(/\b(ce|ue|pdf|boe)\b/giu, (token) => token.toLocaleUpperCase("es"))
     .replace(/\b(i|ii|iii|iv|v|vi|vii|viii|ix|x)\b/giu, (token) =>
       token.toLocaleUpperCase("es"),
-    );
+    )
+    .replace(/\bEusko jaurlaritza\b/giu, "Eusko Jaurlaritza")
+    .replace(/\bGobierno vasco\b/giu, "Gobierno Vasco");
 }

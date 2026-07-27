@@ -13,6 +13,7 @@ import { renderTest } from "../views/test-view.js";
 import { ReviewController } from "./review-controller.js";
 import { ResourceController } from "./resource-controller.js";
 import { ScrollTopController } from "./scroll-top-controller.js";
+import { StudyContextController } from "./study-context-controller.js";
 import { TestControlsController } from "./test-controls-controller.js";
 import { TestTimerController } from "./test-timer-controller.js";
 
@@ -36,6 +37,9 @@ export class AppController {
     });
     this.scrollTopController = new ScrollTopController(
       document.querySelector("#app-scroll-top"),
+    );
+    this.studyContext = new StudyContextController(
+      document.querySelector("#study-context"),
     );
     this.autoAdvanceTimer = null;
     this.restoreOptionHover = null;
@@ -71,6 +75,7 @@ export class AppController {
     const [section = "", id = "", subsection = "", subId = ""] = this.route();
     if (section !== "test") this.testTimer.reset();
     this.testControls.hideSearch();
+    this.studyContext.hide();
     this.preloadRouteCover(section, id, subsection, subId);
     const isTestRoute = section === "test" && Boolean(id);
     this.testControls.setTestRouteActive(isTestRoute);
@@ -125,6 +130,7 @@ export class AppController {
     if (opposition.status === "coming-soon") {
       return renderNotFound(this.root, "Esta oposición estará disponible próximamente.");
     }
+    this.studyContext.show({ opposition });
     const themes = this.repository.getThemes(oppositionId);
     const view = renderThemes(this.root, opposition, themes);
     this.testControls.showSearch(
@@ -142,6 +148,7 @@ export class AppController {
     if (!opposition) return renderNotFound(this.root, "La oposición solicitada no existe.");
     if (!theme) return renderNotFound(this.root, "El apartado solicitado no existe.");
 
+    this.studyContext.show({ opposition, theme });
     const resources = this.repository.getResources(oppositionId, themeNumber);
     this.resourceController.show(opposition, theme, resources);
   }
@@ -163,6 +170,7 @@ export class AppController {
       this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, attempt.error);
     }
+    this.showTestStudyContext(resource, test);
 
     const startsNewSession =
       !this.session ||
@@ -198,6 +206,18 @@ export class AppController {
       backHref: `#/oposiciones/${encodeURIComponent(oppositionId)}/temas/${encodeURIComponent(themeNumber)}`,
       backLabel: opposition?.navigation?.resourceBackLabel ?? "Recursos del tema",
     };
+  }
+
+  showTestStudyContext(resource, test) {
+    const oppositionId =
+      resource?.opposition?.id ??
+      this.repository.getOppositionForResource(test.id);
+    const opposition = this.repository.getOpposition(oppositionId);
+    const theme = this.repository.getTheme(
+      oppositionId,
+      String(test.clasificacion.tema.numero),
+    );
+    this.studyContext.show({ opposition, theme, test });
   }
 
   renderCurrentQuestion() {
@@ -475,6 +495,7 @@ export class AppController {
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para consultarlo.");
 
+    this.showTestStudyContext(this.repository.getById(id), test);
     this.session = null;
     const attemptedTest = restoreTestAttempt(test, result.questionOrder);
     renderResults(this.root, attemptedTest, result, this.resourceContext(test));
@@ -492,6 +513,7 @@ export class AppController {
     const result = this.currentResult?.testId === id ? this.currentResult : null;
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
+    this.showTestStudyContext(this.repository.getById(id), test);
     this.session = null;
     const orderedTest = restoreTestAttempt(test, result.questionOrder);
     renderReview(this.root, orderedTest, result, this.resourceContext(test));

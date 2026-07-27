@@ -157,12 +157,6 @@ export function renderResources(
     ? ` style="--resource-cover-image: url('${escapeHtml(coverImageUrl(opposition.covers.resources))}')"`
     : "";
   root.innerHTML = `
-    <nav class="breadcrumbs" aria-label="Migas de pan">
-      <a href="#/">Oposiciones</a><span aria-hidden="true">/</span>
-      <a href="#/oposiciones/${encodeURIComponent(opposition.id)}">${escapeHtml(formatDisplayTitle(opposition.title))}</a><span aria-hidden="true">/</span>
-      <span aria-current="page">${escapeHtml(currentUnitLabel)}</span>
-    </nav>
-
     <section class="page-heading resource-hero view-heading view-heading-cover" aria-labelledby="theme-title"${coverStyle}>
       <p class="eyebrow">${escapeHtml(currentUnitLabel)}</p>
       <h1 id="theme-title">${escapeHtml(theme.titulo)}</h1>
