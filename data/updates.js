@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "osakidetza-tecnico-especialista-informatica",
+    category: "Nueva oposición",
+    publishedAt: "2026-07-27T08:52:48+02:00",
+    title: "Técnico/a Especialista Informática de Osakidetza",
+    description:
+      "La nueva oposición incorpora sus apartados de temario y un test de 200 preguntas del temario específico, disponible en orden natural o aleatorio.",
+  }),
+  Object.freeze({
     id: "teoria-organizacion-politica-tema-04",
     category: "Nuevo recurso",
     publishedAt: "2026-07-24T13:57:05+02:00",

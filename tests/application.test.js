@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { resources } from "../data/resources.js";
 import { oppositions } from "../data/oppositions.js";
 import { createOppositionResourceFactory } from "../data/resource-factory.js";
+import osakidetzaSpecificQuestions from "../data/tests/osakidetza-tecnico-especialista-informatica-c1/temario-especifico/tests-osakidetza/bateria-preguntas-temario-especifico.js";
 import { tests } from "../data/tests.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
@@ -12,6 +13,7 @@ import { validateResources } from "../models/resource-validator.js";
 import { validateUpdates } from "../models/update-validator.js";
 import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
+import { assetUrl, coverImageUrl } from "../utils/assets.js";
 import { orderTestQuestions } from "../utils/test-order.js";
 import {
   DEFAULT_PREFERENCES,
@@ -23,6 +25,19 @@ import {
 } from "../utils/preferences.js";
 import { parseHashRoute } from "../utils/router.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
+
+test("las portadas se resuelven desde la raíz real de la aplicación", () => {
+  const pageUrl = "https://woodbika.github.io/atavarez/index.html";
+
+  assert.equal(
+    assetUrl("./assets/images/portada-oposiciones.jpg", pageUrl),
+    "https://woodbika.github.io/atavarez/assets/images/portada-oposiciones.jpg",
+  );
+  assert.equal(
+    coverImageUrl("portada-recursos.jpg", pageUrl),
+    "https://woodbika.github.io/atavarez/assets/images/portada-recursos.jpg",
+  );
+});
 
 test("el registro contiene todos los tests con un formato válido", () => {
   const registeredTests = resources.filter((resource) => resource.type === "test");
@@ -39,7 +54,8 @@ test("el registro contiene todos los tests con un formato válido", () => {
   tests.forEach((item) => {
     assert.equal(item.schemaVersion, 1);
     assert.ok(item.id);
-    assert.deepEqual(item.autor, { id: "ivot", nombre: "IVOT" });
+    assert.ok(item.autor?.id);
+    assert.ok(item.autor?.nombre);
     assert.ok(item.titulo);
     assert.ok(item.clasificacion.tema.numero);
     assert.ok(item.clasificacion.tema.titulo);
@@ -66,6 +82,25 @@ test("cada recurso pertenece a una oposición estable del catálogo", () => {
     assert.equal(resource.classification.grupo, resource.opposition.group);
     assert.equal(resource.classification.escala, resource.opposition.scale);
   });
+});
+
+test("el banco específico de Osakidetza incorpora una plantilla provisional válida", () => {
+  assert.equal(osakidetzaSpecificQuestions.estado, "soluciones-provisionales");
+  assert.equal(osakidetzaSpecificQuestions.preguntas.length, 200);
+  assert.deepEqual(
+    osakidetzaSpecificQuestions.preguntas.map((question) => question.id),
+    Array.from({ length: 200 }, (_, index) => index + 1),
+  );
+  assert.ok(
+    osakidetzaSpecificQuestions.preguntas.every(
+      (question) =>
+        question.opciones.length === 4 &&
+        new Set(question.opciones.map((option) => option.id)).size === 4 &&
+        question.opciones.some(
+          (option) => option.id === question.respuestaCorrecta,
+        ),
+    ),
+  );
 });
 
 test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
@@ -345,7 +380,12 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
     );
     const themes = repository.getThemes(opposition.id);
     const expectedThemeNumbers = new Set(
-      oppositionResources.map((resource) => String(resource.classification.tema.numero)),
+      [
+        ...(opposition.sections ?? []).map((section) => String(section.id)),
+        ...oppositionResources.map(
+          (resource) => String(resource.classification.tema.numero),
+        ),
+      ],
     );
 
     assert.equal(opposition.themeCount, expectedThemeNumbers.size);
@@ -366,14 +406,17 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
       const themeResources = repository.getResources(opposition.id, theme.numero);
       const completeTest = themeResources.find((resource) => resource.variant === "complete");
       const expectedQuestionCount = sourceTestResources.reduce(
-        (total, resource) => total + resource.data.preguntas.length,
+        (total, resource) =>
+          resource.includeInCombinedTest === false
+            ? total
+            : total + resource.data.preguntas.length,
         0,
       );
-      const combinedResourceCount = sourceTestResources.length ? 1 : 0;
+      const combinedResourceCount = expectedQuestionCount ? 1 : 0;
 
       assert.equal(theme.resourceCount, sourceResources.length + combinedResourceCount);
       assert.equal(themeResources.length, sourceResources.length + combinedResourceCount);
-      if (!sourceTestResources.length) {
+      if (!expectedQuestionCount) {
         assert.equal(completeTest, undefined);
         return;
       }
@@ -396,7 +439,22 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   assert.equal(osakidetza.title, "Técnico/a Especialista Informática");
   assert.equal(osakidetza.group, "C1");
   assert.equal(osakidetza.scale, "Técnico/a Especialista profesional");
-  assert.equal(osakidetza.status, "coming-soon");
+  assert.equal(osakidetza.status, "available");
+  assert.deepEqual(
+    repository.getThemes(osakidetza.id).map((section) => section.numero),
+    ["comun", "especifico"],
+  );
+  const osakidetzaSpecificResources = repository.getResources(
+    osakidetza.id,
+    "especifico",
+  );
+  assert.equal(osakidetzaSpecificResources.length, 1);
+  assert.equal(osakidetzaSpecificResources[0].variant, undefined);
+  assert.equal(osakidetzaSpecificResources[0].includeInCombinedTest, false);
+  assert.deepEqual(
+    osakidetzaSpecificResources[0].orderModes,
+    ["natural", "aleatorio"],
+  );
 
   const opposition = oppositions.find(
     (item) => repository.getTheme(item.id, "01") && repository.getTheme(item.id, "17"),

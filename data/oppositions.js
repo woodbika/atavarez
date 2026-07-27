@@ -21,8 +21,33 @@ export const OSAKIDETZA_TECNICO_ESPECIALISTA_INFORMATICA_C1 = Object.freeze({
   title: "Técnico/a Especialista Informática",
   group: "C1",
   scale: "Técnico/a Especialista profesional",
-  status: "coming-soon",
-  covers: Object.freeze({}),
+  status: "available",
+  navigation: Object.freeze({
+    collectionSingular: "apartado",
+    collectionPlural: "apartados",
+    collectionTitle: "Apartados del temario",
+    searchPlaceholder: "Buscar en el temario",
+    showUnitNumber: false,
+    cardAction: "Ver recursos",
+    backLabel: "Volver al temario",
+    resourceBackLabel: "Recursos del temario",
+  }),
+  sections: Object.freeze([
+    Object.freeze({
+      id: "comun",
+      title: "Temario común",
+      order: 1,
+    }),
+    Object.freeze({
+      id: "especifico",
+      title: "Temario específico",
+      order: 2,
+    }),
+  ]),
+  covers: Object.freeze({
+    themes: "portada-recursos.jpg",
+    resources: "portada-recursos.jpg",
+  }),
 });
 
 export const oppositions = Object.freeze([

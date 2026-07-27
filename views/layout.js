@@ -12,14 +12,19 @@ export function backLink(href, label, { className = "", action = "" } = {}) {
 
 export function themeDisclosure(test) {
   const { clasificacion } = test;
+  const unitLabel =
+    clasificacion.tema.etiqueta ?? `Tema ${clasificacion.tema.numero}`;
+  const detailLabel = clasificacion.tema.etiqueta
+    ? "Apartado del temario"
+    : "Título del tema";
   return `
     <details class="theme-disclosure">
-      <summary title="Mostrar el título completo del tema">
-        <span>Tema ${escapeHtml(clasificacion.tema.numero)}</span>
+      <summary title="Mostrar la información del temario">
+        <span>${escapeHtml(unitLabel)}</span>
         <span class="theme-disclosure-cue" aria-hidden="true">i</span>
       </summary>
       <div class="theme-disclosure-content" role="note">
-        <span class="theme-disclosure-label">Título del tema</span>
+        <span class="theme-disclosure-label">${escapeHtml(detailLabel)}</span>
         <span class="theme-disclosure-title">${escapeHtml(clasificacion.tema.titulo)}</span>
       </div>
     </details>

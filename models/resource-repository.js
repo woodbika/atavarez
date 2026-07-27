@@ -15,6 +15,14 @@ function resourceDisplayOrder(resource) {
   return 1;
 }
 
+function combinedTestTitle(theme) {
+  const label = theme.etiqueta?.trim();
+  if (label && !/^tema\b/i.test(label)) {
+    return `Todas las preguntas del ${label.toLocaleLowerCase("es")}`;
+  }
+  return `Todas las preguntas del tema ${theme.numero}`;
+}
+
 export class ResourceRepository {
   constructor(resources, oppositions = []) {
     this.oppositionCatalog = oppositions;
@@ -42,7 +50,11 @@ export class ResourceRepository {
   buildCombinedResources(resources) {
     const groups = new Map();
     resources
-      .filter((resource) => resource.type === "test")
+      .filter(
+        (resource) =>
+          resource.type === "test" &&
+          resource.includeInCombinedTest !== false,
+      )
       .forEach((resource) => {
         const themeNumber = String(resource.classification.tema.numero);
         const key = `${oppositionId(resource)}:${themeNumber}`;
@@ -69,7 +81,7 @@ export class ResourceRepository {
         schemaVersion: 1,
         id,
         autor,
-        titulo: `Todas las preguntas del tema ${themeNumber}`,
+        titulo: combinedTestTitle(classification.tema),
         clasificacion: classification,
         fuente: {
           tipo: "recopilacion",
@@ -110,7 +122,9 @@ export class ResourceRepository {
           ...opposition,
           legacyIds: opposition.legacyIds ?? [],
           covers: opposition.covers ?? {},
-          themeNumbers: new Set(),
+          themeNumbers: new Set(
+            (opposition.sections ?? []).map((section) => String(section.id)),
+          ),
           resourceCount: 0,
         },
       ]),
@@ -130,7 +144,13 @@ export class ResourceRepository {
           scale: oppositionDefinition?.scale ?? classification.escala,
           status: oppositionDefinition?.status ?? "available",
           covers: oppositionDefinition?.covers ?? {},
-          themeNumbers: new Set(),
+          navigation: oppositionDefinition?.navigation,
+          sections: oppositionDefinition?.sections,
+          themeNumbers: new Set(
+            (oppositionDefinition?.sections ?? []).map(
+              (section) => String(section.id),
+            ),
+          ),
           resourceCount: 0,
         });
       }
@@ -154,8 +174,19 @@ export class ResourceRepository {
   }
 
   getThemes(oppositionIdValue) {
-    const canonicalId = this.getOpposition(oppositionIdValue)?.id ?? oppositionIdValue;
-    const themes = new Map();
+    const opposition = this.getOpposition(oppositionIdValue);
+    const canonicalId = opposition?.id ?? oppositionIdValue;
+    const themes = new Map(
+      (opposition?.sections ?? []).map((section) => [
+        String(section.id),
+        {
+          numero: String(section.id),
+          titulo: section.title,
+          order: section.order,
+          resourceCount: 0,
+        },
+      ]),
+    );
     this.resources
       .filter((resource) => oppositionId(resource) === canonicalId)
       .forEach((resource) => {
@@ -167,9 +198,12 @@ export class ResourceRepository {
         themes.get(key).resourceCount += 1;
       });
 
-    return [...themes.values()].sort((a, b) =>
-      a.numero.localeCompare(b.numero, "es", { numeric: true }),
-    );
+    return [...themes.values()].sort((a, b) => {
+      const byOrder = (a.order ?? Number.MAX_SAFE_INTEGER) -
+        (b.order ?? Number.MAX_SAFE_INTEGER);
+      return byOrder ||
+        a.numero.localeCompare(b.numero, "es", { numeric: true });
+    });
   }
 
   getTheme(oppositionIdValue, themeNumber) {

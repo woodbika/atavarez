@@ -1,8 +1,23 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
+import { coverImageUrl } from "../utils/assets.js";
 import { backLink } from "./layout.js";
 
 function plural(count, singular, pluralForm) {
   return `${count} ${count === 1 ? singular : pluralForm}`;
+}
+
+function navigationLabels(opposition) {
+  return {
+    collectionSingular: "tema",
+    collectionPlural: "temas",
+    collectionTitle: "Temas disponibles",
+    searchPlaceholder: "Buscar temas",
+    showUnitNumber: true,
+    cardAction: "Ver recursos",
+    backLabel: "Volver a temas",
+    resourceBackLabel: "Recursos del tema",
+    ...opposition.navigation,
+  };
 }
 
 export function renderOppositions(root, oppositions) {
@@ -10,7 +25,7 @@ export function renderOppositions(root, oppositions) {
     <section class="hero hero-home view-heading view-heading-cover" aria-labelledby="oppositions-title">
       <p class="eyebrow">Inicio</p>
       <h1 id="oppositions-title">Oposiciones disponibles</h1>
-      <p class="hero-copy">Elige una oposición para consultar sus temas y acceder a los recursos disponibles.</p>
+      <p class="hero-copy">Elige una oposición para consultar su temario y acceder a los recursos disponibles.</p>
     </section>
 
     <section class="catalog-section view-layout view-layout-wide" aria-labelledby="opposition-list-title">
@@ -26,6 +41,7 @@ export function renderOppositions(root, oppositions) {
           .map(
             (opposition) => {
               const isComingSoon = opposition.status === "coming-soon";
+              const labels = navigationLabels(opposition);
               return `
               <article class="navigation-card ${isComingSoon ? "navigation-card-upcoming" : ""}">
                 <p class="card-kicker">${escapeHtml(formatDisplayTitle(opposition.administration))}</p>
@@ -36,11 +52,11 @@ export function renderOppositions(root, oppositions) {
                 </dl>
                 <p class="card-summary">${isComingSoon
                   ? "Contenido en preparación"
-                  : `${plural(opposition.themeCount, "tema", "temas")} · ${plural(opposition.resourceCount, "recurso", "recursos")}`}</p>
+                  : `${plural(opposition.themeCount, labels.collectionSingular, labels.collectionPlural)} · ${plural(opposition.resourceCount, "recurso", "recursos")}`}</p>
                 ${isComingSoon
                   ? '<span class="card-link card-link-status">Próximamente</span>'
                   : `<a class="card-link" href="#/oposiciones/${encodeURIComponent(opposition.id)}">
-                      Ver temas <span aria-hidden="true">→</span>
+                      Ver temario <span aria-hidden="true">→</span>
                     </a>`}
               </article>
             `;
@@ -53,8 +69,9 @@ export function renderOppositions(root, oppositions) {
 }
 
 export function renderThemes(root, opposition, themes) {
+  const labels = navigationLabels(opposition);
   const coverStyle = opposition.covers.themes
-    ? ` style="--opposition-cover-image: url('./assets/images/${escapeHtml(opposition.covers.themes)}')"`
+    ? ` style="--opposition-cover-image: url('${escapeHtml(coverImageUrl(opposition.covers.themes))}')"`
     : "";
 
   root.innerHTML = `
@@ -69,7 +86,7 @@ export function renderThemes(root, opposition, themes) {
       <div class="section-heading view-section-heading">
         <div>
           <p class="eyebrow">Temario</p>
-          <h2 id="themes-title">Temas disponibles</h2>
+          <h2 id="themes-title">${escapeHtml(labels.collectionTitle)}</h2>
         </div>
         <p id="theme-results-count" class="result-count" aria-live="polite"></p>
       </div>
@@ -87,20 +104,26 @@ export function renderThemes(root, opposition, themes) {
   const count = root.querySelector("#theme-results-count");
 
   function updateList(filteredThemes) {
-    count.textContent = plural(filteredThemes.length, "tema", "temas");
+    count.textContent = plural(
+      filteredThemes.length,
+      labels.collectionSingular,
+      labels.collectionPlural,
+    );
     if (!filteredThemes.length) {
-      list.innerHTML = `<div class="empty-card"><h3>Sin temas</h3><p>Prueba con otra búsqueda.</p></div>`;
+      list.innerHTML = `<div class="empty-card"><h3>Sin ${escapeHtml(labels.collectionPlural)}</h3><p>Prueba con otra búsqueda.</p></div>`;
       return;
     }
 
     list.innerHTML = filteredThemes
           .map((theme) => `
               <article class="navigation-card theme-card">
-                <span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>
+                ${labels.showUnitNumber
+                  ? `<span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>`
+                  : ""}
                 <h3 class="theme-card-title">${escapeHtml(theme.titulo)}</h3>
                 <p class="card-summary">${plural(theme.resourceCount, "recurso disponible", "recursos disponibles")}</p>
                 <a class="card-link" href="#/oposiciones/${encodeURIComponent(opposition.id)}/temas/${encodeURIComponent(theme.numero)}">
-                  Ver recursos <span aria-hidden="true">→</span>
+                  ${escapeHtml(labels.cardAction)} <span aria-hidden="true">→</span>
                 </a>
               </article>
             `)
@@ -115,18 +138,33 @@ export function renderResources(
   root,
   { opposition, theme, resources },
 ) {
+  const labels = navigationLabels(opposition);
+  const currentUnitLabel = labels.showUnitNumber
+    ? `Tema ${theme.numero}`
+    : theme.titulo;
+  const testAuthors = new Map(
+    resources
+      .filter(
+        (resource) =>
+          resource.type === "test" &&
+          resource.variant !== "complete" &&
+          resource.author?.id &&
+          resource.author?.nombre,
+      )
+      .map((resource) => [resource.author.id, resource.author.nombre]),
+  );
   const coverStyle = opposition.covers.resources
-    ? ` style="--resource-cover-image: url('./assets/images/${escapeHtml(opposition.covers.resources)}')"`
+    ? ` style="--resource-cover-image: url('${escapeHtml(coverImageUrl(opposition.covers.resources))}')"`
     : "";
   root.innerHTML = `
     <nav class="breadcrumbs" aria-label="Migas de pan">
       <a href="#/">Oposiciones</a><span aria-hidden="true">/</span>
       <a href="#/oposiciones/${encodeURIComponent(opposition.id)}">${escapeHtml(formatDisplayTitle(opposition.title))}</a><span aria-hidden="true">/</span>
-      <span aria-current="page">Tema ${escapeHtml(theme.numero)}</span>
+      <span aria-current="page">${escapeHtml(currentUnitLabel)}</span>
     </nav>
 
     <section class="page-heading resource-hero view-heading view-heading-cover" aria-labelledby="theme-title"${coverStyle}>
-      <p class="eyebrow">Tema ${escapeHtml(theme.numero)}</p>
+      <p class="eyebrow">${escapeHtml(currentUnitLabel)}</p>
       <h1 id="theme-title">${escapeHtml(theme.titulo)}</h1>
     </section>
 
@@ -139,18 +177,26 @@ export function renderResources(
         <p id="results-count" class="result-count" aria-live="polite"></p>
       </div>
 
-      <div class="resource-filter-bar" role="group" aria-label="Filtrar por tipo de recurso">
-        <span>Filtrar por</span>
-        <div class="resource-filter-list">
-          <button id="ivot-tests-filter" class="filter-button" type="button" aria-pressed="false">Tests IVOT</button>
-        </div>
-      </div>
+      ${testAuthors.size
+        ? `<div class="resource-filter-bar" role="group" aria-label="Filtrar por autor del test">
+            <span>Filtrar por</span>
+            <div class="resource-filter-list">
+              ${[...testAuthors]
+                .map(([authorId, authorName]) => `
+                  <button class="filter-button" type="button" data-author-filter="${escapeHtml(authorId)}" aria-pressed="false">
+                    Tests ${escapeHtml(formatDisplayTitle(authorName))}
+                  </button>
+                `)
+                .join("")}
+            </div>
+          </div>`
+        : ""}
 
       <div id="resource-list" class="resource-grid"></div>
       <div class="portal-back-action">
         <a class="button button-secondary portal-back-button" href="#/oposiciones/${encodeURIComponent(opposition.id)}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
-          Volver a temas
+          ${escapeHtml(labels.backLabel)}
         </a>
       </div>
     </section>
@@ -162,7 +208,9 @@ export function renderResources(
   function updateList(filteredResources) {
     count.textContent = plural(filteredResources.length, "recurso", "recursos");
     if (!filteredResources.length) {
-      list.innerHTML = `<div class="empty-card"><h3>Sin resultados</h3><p>Prueba a cambiar la búsqueda o el filtro.</p></div>`;
+      list.innerHTML = resources.length
+        ? `<div class="empty-card"><h3>Sin resultados</h3><p>Prueba a cambiar la búsqueda o el filtro.</p></div>`
+        : `<div class="empty-card"><h3>Contenido en preparación</h3><p>Todavía no hay recursos disponibles en este apartado.</p></div>`;
       return;
     }
 
@@ -170,6 +218,7 @@ export function renderResources(
       .map((resource) => {
         const test = resource.data;
         const isComplete = resource.variant === "complete";
+        const hasOrderSelector = (resource.orderModes?.length ?? 0) > 1;
         const isTheory = resource.type === "teoria";
         const hasRelatedTheory = Boolean(resource.relatedTheory);
         const theoryNotice = resource.theoryNotice;
@@ -177,8 +226,8 @@ export function renderResources(
         const usesLightTestTitle = resource.type === "test" && !isComplete && !hasParts;
         const resourceTypeLabel = isComplete
           ? "Test completo"
-          : resource.type === "test" && resource.author?.id === "ivot"
-            ? "Test IVOT"
+          : resource.type === "test" && resource.author?.nombre
+            ? `Test ${formatDisplayTitle(resource.author.nombre)}`
             : resource.type === "test"
               ? "Test"
               : isTheory
@@ -208,7 +257,7 @@ export function renderResources(
                 : hasParts
                   ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
                   : ""}
-            ${isComplete
+            ${hasOrderSelector
               ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
                   <span>Elige el orden</span>
                   <div class="order-actions">

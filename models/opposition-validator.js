@@ -47,6 +47,47 @@ export function validateOppositions(oppositions) {
         errors.push(`${path}.covers.${cover}: debe ser un nombre de archivo seguro.`);
       }
     });
+    if (opposition.sections !== undefined) {
+      if (!Array.isArray(opposition.sections) || opposition.sections.length === 0) {
+        errors.push(`${path}.sections: debe contener al menos un apartado.`);
+      } else {
+        const sectionIds = new Set();
+        opposition.sections.forEach((section, sectionIndex) => {
+          const sectionPath = `${path}.sections[${sectionIndex}]`;
+          if (!isNonEmptyString(section?.id)) {
+            errors.push(`${sectionPath}.id: debe contener texto.`);
+          } else if (sectionIds.has(section.id)) {
+            errors.push(`${sectionPath}.id: está duplicado.`);
+          } else {
+            sectionIds.add(section.id);
+          }
+          if (!isNonEmptyString(section?.title)) {
+            errors.push(`${sectionPath}.title: debe contener texto.`);
+          }
+          if (!Number.isInteger(section?.order)) {
+            errors.push(`${sectionPath}.order: debe ser un entero.`);
+          }
+        });
+      }
+    }
+    if (opposition.navigation !== undefined) {
+      [
+        "collectionSingular",
+        "collectionPlural",
+        "collectionTitle",
+        "searchPlaceholder",
+        "cardAction",
+        "backLabel",
+        "resourceBackLabel",
+      ].forEach((field) => {
+        if (!isNonEmptyString(opposition.navigation[field])) {
+          errors.push(`${path}.navigation.${field}: debe contener texto.`);
+        }
+      });
+      if (typeof opposition.navigation.showUnitNumber !== "boolean") {
+        errors.push(`${path}.navigation.showUnitNumber: debe ser booleano.`);
+      }
+    }
   });
   return errors;
 }

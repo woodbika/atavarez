@@ -27,6 +27,12 @@ function validateClassification(classification, path, errors) {
   if (!isNonEmptyString(classification.tema.titulo)) {
     errors.push(`${path}.clasificacion.tema.titulo: debe contener texto.`);
   }
+  if (
+    classification.tema.etiqueta !== undefined &&
+    !isNonEmptyString(classification.tema.etiqueta)
+  ) {
+    errors.push(`${path}.clasificacion.tema.etiqueta: debe contener texto.`);
+  }
   if (classification.partes !== undefined && !Array.isArray(classification.partes)) {
     errors.push(`${path}.clasificacion.partes: debe ser una lista.`);
   } else if (

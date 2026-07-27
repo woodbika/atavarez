@@ -47,6 +47,7 @@ export function createOppositionResourceFactory(
         sourceClassification: test.clasificacion,
         ...(relatedTheory ? { relatedTheory } : {}),
         ...(theoryNotice ? { theoryNotice } : {}),
+        ...(test.estado ? { answerStatus: test.estado } : {}),
         data: { ...test, clasificacion: classification },
       };
     },

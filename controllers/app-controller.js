@@ -1,4 +1,5 @@
 import { TestSession } from "../models/test-session.js";
+import { coverImageUrl } from "../utils/assets.js";
 import { parseHashRoute } from "../utils/router.js";
 import { orderTestQuestions } from "../utils/test-order.js";
 import { renderNotFound } from "../views/layout.js";
@@ -97,7 +98,7 @@ export class AppController {
     }
 
     if (!filename) return;
-    const href = `./assets/images/${filename}`;
+    const href = coverImageUrl(filename);
     const preload = document.querySelector("#cover-preload");
     if (preload?.getAttribute("href") !== href) preload?.setAttribute("href", href);
   }
@@ -116,9 +117,12 @@ export class AppController {
     }
     const themes = this.repository.getThemes(oppositionId);
     const view = renderThemes(this.root, opposition, themes);
-    this.testControls.showSearch("Buscar temas", (query) => {
-      view.updateList(this.repository.searchThemes(themes, query));
-    });
+    this.testControls.showSearch(
+      opposition.navigation?.searchPlaceholder ?? "Buscar temas",
+      (query) => {
+        view.updateList(this.repository.searchThemes(themes, query));
+      },
+    );
   }
 
   showResources(oppositionId, themeNumber) {
@@ -126,7 +130,7 @@ export class AppController {
     const opposition = this.repository.getOpposition(oppositionId);
     const theme = this.repository.getTheme(oppositionId, themeNumber);
     if (!opposition) return renderNotFound(this.root, "La oposición solicitada no existe.");
-    if (!theme) return renderNotFound(this.root, "El tema solicitado no existe.");
+    if (!theme) return renderNotFound(this.root, "El apartado solicitado no existe.");
 
     const resources = this.repository.getResources(oppositionId, themeNumber);
 
@@ -137,27 +141,37 @@ export class AppController {
     });
 
     let query = "";
-    let onlyIvotTests = false;
-    const filterButton = this.root.querySelector("#ivot-tests-filter");
+    let authorFilter = "";
+    const filterButtons = [
+      ...this.root.querySelectorAll("[data-author-filter]"),
+    ];
     const applyResourceFilters = () => {
       const matchingResources = this.repository.searchResources(resources, query);
       view.updateList(
-        onlyIvotTests
+        authorFilter
           ? matchingResources.filter(
-              (resource) => resource.type === "test" && resource.author?.id === "ivot",
+              (resource) =>
+                resource.type === "test" &&
+                resource.author?.id === authorFilter,
             )
           : matchingResources,
       );
     };
 
-    filterButton.addEventListener("click", (event) => {
-      onlyIvotTests = !onlyIvotTests;
-      filterButton.setAttribute("aria-pressed", String(onlyIvotTests));
-      filterButton.classList.toggle("is-active", onlyIvotTests);
-      applyResourceFilters();
-      if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
-        filterButton.blur();
-      }
+    filterButtons.forEach((filterButton) => {
+      filterButton.addEventListener("click", (event) => {
+        const requestedAuthor = filterButton.dataset.authorFilter;
+        authorFilter = authorFilter === requestedAuthor ? "" : requestedAuthor;
+        filterButtons.forEach((button) => {
+          const isActive = button.dataset.authorFilter === authorFilter;
+          button.setAttribute("aria-pressed", String(isActive));
+          button.classList.toggle("is-active", isActive);
+        });
+        applyResourceFilters();
+        if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
+          filterButton.blur();
+        }
+      });
     });
 
     this.root.querySelector("#resource-list").addEventListener("click", (event) => {
@@ -182,10 +196,12 @@ export class AppController {
       });
     });
 
-    this.testControls.showSearch("Buscar recursos", (searchQuery) => {
-      query = searchQuery;
-      applyResourceFilters();
-    });
+    if (resources.length) {
+      this.testControls.showSearch("Buscar recursos", (searchQuery) => {
+        query = searchQuery;
+        applyResourceFilters();
+      });
+    }
   }
 
   showTest(id, requestedOrder = "") {
@@ -196,10 +212,10 @@ export class AppController {
       this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
-    const isComplete = resource.variant === "complete";
-    const orderMode = isComplete && requestedOrder === "aleatorio"
-      ? "aleatorio"
-      : "natural";
+    const availableOrderModes = resource?.orderModes ?? ["natural"];
+    const orderMode = availableOrderModes.includes(requestedOrder)
+      ? requestedOrder
+      : resource?.defaultOrder ?? "natural";
 
     const startsNewSession =
       !this.session || this.session.test.id !== id || this.sessionOrder !== orderMode;
@@ -225,10 +241,11 @@ export class AppController {
 
   resourceContext(test) {
     const oppositionId = this.repository.getOppositionForResource(test.id);
+    const opposition = this.repository.getOpposition(oppositionId);
     const themeNumber = String(test.clasificacion.tema.numero);
     return {
       backHref: `#/oposiciones/${encodeURIComponent(oppositionId)}/temas/${encodeURIComponent(themeNumber)}`,
-      backLabel: "Recursos del tema",
+      backLabel: opposition?.navigation?.resourceBackLabel ?? "Recursos del tema",
     };
   }
 
@@ -239,7 +256,7 @@ export class AppController {
     renderTest(this.root, this.session, {
       ...this.resourceContext(this.session.test),
       orderMode: this.sessionOrder,
-      showOrder: resource?.variant === "complete",
+      showOrder: (resource?.orderModes?.length ?? 0) > 1,
       showQuestionMap: this.testPreferences.questionMap,
       timer: this.testTimer.snapshot(),
     });
