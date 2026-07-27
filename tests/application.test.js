@@ -1,12 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
+import { authors } from "../data/authors.js";
 import { resources } from "../data/resources.js";
 import { oppositions } from "../data/oppositions.js";
 import { createOppositionResourceFactory } from "../data/resource-factory.js";
 import osakidetzaSpecificQuestions from "../data/tests/osakidetza-tecnico-especialista-informatica-c1/temario-especifico/tests-osakidetza/bateria-preguntas-temario-especifico.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
+import { validateAuthors } from "../models/author-validator.js";
 import {
   auditResources,
   findDuplicateQuestions,
@@ -59,7 +61,8 @@ test("las portadas se resuelven desde la raíz real de la aplicación", () => {
 test("el registro contiene todos los tests con un formato válido", () => {
   const registeredTests = resources.filter((resource) => resource.type === "test");
 
-  assert.deepEqual(validateResources(resources, oppositions), []);
+  assert.deepEqual(validateResources(resources, oppositions, authors), []);
+  assert.deepEqual(validateAuthors(authors), []);
   assert.deepEqual(validateOppositions(oppositions), []);
   assert.equal(tests.length, registeredTests.length);
   assert.deepEqual(
@@ -96,6 +99,67 @@ test("cada recurso pertenece a una oposición estable del catálogo", () => {
     assert.equal(resource.classification.grupo, resource.opposition.group);
     assert.equal(resource.classification.escala, resource.opposition.scale);
   });
+});
+
+test("los temas y autores visibles proceden de los catálogos centrales", () => {
+  const authorById = new Map(authors.map((author) => [author.id, author]));
+  const oppositionById = new Map(
+    oppositions.map((opposition) => [opposition.id, opposition]),
+  );
+
+  resources.forEach((resource) => {
+    const opposition = oppositionById.get(resource.opposition.id);
+    const section = opposition.sections.find(
+      (item) => String(item.id) === String(resource.classification.tema.numero),
+    );
+    assert.ok(section);
+    assert.equal(resource.classification.tema.titulo, section.title);
+
+    if (resource.type === "test") {
+      const author = authorById.get(resource.author.id);
+      assert.ok(author);
+      assert.equal(resource.author.nombre, author.name);
+      assert.equal(resource.data.autor.nombre, author.name);
+    }
+  });
+});
+
+test("la fábrica admite metadatos mínimos y los completa desde los catálogos", () => {
+  const opposition = oppositions[0];
+  const source = structuredClone(
+    resources.find(
+      (resource) =>
+        resource.type === "test" &&
+        resource.opposition.id === opposition.id,
+    ).data,
+  );
+  source.autor = { id: source.autor.id };
+  source.clasificacion = {
+    oposicionId: opposition.id,
+    tema: { numero: source.clasificacion.tema.numero },
+  };
+
+  const { testResource } = createOppositionResourceFactory(opposition);
+  const resource = testResource(source);
+  const section = opposition.sections.find(
+    (item) => item.id === source.clasificacion.tema.numero,
+  );
+
+  assert.equal(resource.author.nombre, "IVOT");
+  assert.equal(resource.classification.tema.titulo, section.title);
+  assert.deepEqual(validateResources([resource], oppositions, authors), []);
+});
+
+test("el catálogo de autores exige ids y nombres únicos", () => {
+  const errors = validateAuthors([
+    authors[0],
+    { ...authors[0] },
+    { id: "Autor no estable", name: "" },
+  ]);
+
+  assert.ok(errors.some((error) => error.includes("duplicado")));
+  assert.ok(errors.some((error) => error.includes("identificador estable")));
+  assert.ok(errors.some((error) => error.includes(".name")));
 });
 
 test("el banco específico de Osakidetza incorpora una plantilla provisional válida", () => {
@@ -237,11 +301,23 @@ test("el catálogo de oposiciones exige identificadores y portadas válidos", ()
       order: 1,
     })),
   };
-  const errors = validateOppositions([duplicate, invalid, invalidSections]);
+  const missingSections = {
+    ...oppositions[0],
+    id: "oposicion-sin-apartados",
+    legacyIds: [],
+    sections: undefined,
+  };
+  const errors = validateOppositions([
+    duplicate,
+    invalid,
+    invalidSections,
+    missingSections,
+  ]);
 
   assert.ok(errors.some((error) => error.includes("formato estable")));
   assert.ok(errors.some((error) => error.includes("duplicado")));
   assert.ok(errors.some((error) => error.includes(".order")));
+  assert.ok(errors.some((error) => error.includes("es obligatorio")));
   assert.ok(errors.some((error) => error.includes("nombre de archivo seguro")));
 });
 
@@ -747,7 +823,11 @@ test("el repositorio mantiene separadas dos oposiciones con temas coincidentes",
   const repository = new ResourceRepository([source, secondResource]);
 
   assert.equal(repository.getOppositions().length, 2);
-  assert.equal(repository.getThemes(source.opposition.id).length, 1);
+  assert.ok(
+    repository
+      .getThemes(source.opposition.id)
+      .some((theme) => theme.numero === "01"),
+  );
   assert.equal(repository.getThemes(secondOpposition.id).length, 1);
   assert.equal(repository.getResources(source.opposition.id, "01").length, 2);
   assert.equal(repository.getResources(secondOpposition.id, "01").length, 2);

@@ -47,6 +47,9 @@ export function validateOppositions(oppositions) {
         errors.push(`${path}.covers.${cover}: debe ser un nombre de archivo seguro.`);
       }
     });
+    if (opposition.status === "available" && opposition.sections === undefined) {
+      errors.push(`${path}.sections: es obligatorio para una oposición disponible.`);
+    }
     if (opposition.sections !== undefined) {
       if (!Array.isArray(opposition.sections) || opposition.sections.length === 0) {
         errors.push(`${path}.sections: debe contener al menos un apartado.`);

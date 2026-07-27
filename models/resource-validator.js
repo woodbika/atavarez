@@ -7,7 +7,12 @@ const SUPPORTED_ANSWER_STATUSES = new Set([
   "soluciones-oficiales",
 ]);
 
-function validateAuthor(author, path, errors, { required = true } = {}) {
+function validateAuthor(
+  author,
+  path,
+  errors,
+  { required = true, authorById = new Map() } = {},
+) {
   if (author === undefined && !required) return;
   if (
     !author ||
@@ -18,6 +23,30 @@ function validateAuthor(author, path, errors, { required = true } = {}) {
     errors.push(`${path}: debe incluir id y nombre.`);
   } else if (!isStableId(author.id)) {
     errors.push(`${path}.id: debe ser un identificador estable.`);
+  } else if (authorById.size) {
+    const catalogAuthor = authorById.get(author.id);
+    if (!catalogAuthor) {
+      errors.push(`${path}.id: no existe en el catálogo de autores.`);
+    } else if (author.nombre !== catalogAuthor.name) {
+      errors.push(`${path}.nombre: no coincide con el catálogo de autores.`);
+    }
+  }
+}
+
+function validateSourceAuthor(author, path, errors, authorById) {
+  if (!author || typeof author !== "object" || !isStableId(author.id)) {
+    errors.push(`${path}: debe incluir un id de autor estable.`);
+    return;
+  }
+  if (!authorById.size) return;
+  const catalogAuthor = authorById.get(author.id);
+  if (!catalogAuthor) {
+    errors.push(`${path}.id: no existe en el catálogo de autores.`);
+  } else if (
+    author.nombre !== undefined &&
+    author.nombre !== catalogAuthor.name
+  ) {
+    errors.push(`${path}.nombre: no coincide con el catálogo de autores.`);
   }
 }
 
@@ -185,9 +214,23 @@ function validateSourceClassification(resource, path, errors) {
       errors.push(`${path}.sourceClassification.${field}: no coincide con la oposición.`);
     }
   });
+  const sourceTheme = source.tema;
+  const canonicalTheme = resource.classification?.tema;
+  if (
+    sourceTheme?.numero !== undefined &&
+    String(sourceTheme.numero) !== String(canonicalTheme?.numero)
+  ) {
+    errors.push(`${path}.sourceClassification.tema.numero: no coincide con el catálogo.`);
+  }
+  if (
+    sourceTheme?.titulo !== undefined &&
+    sourceTheme.titulo !== canonicalTheme?.titulo
+  ) {
+    errors.push(`${path}.sourceClassification.tema.titulo: no coincide con el catálogo.`);
+  }
 }
 
-function validateTest(resource, path, errors) {
+function validateTest(resource, path, errors, authorById) {
   const test = resource.data;
   if (!test || typeof test !== "object") {
     errors.push(`${path}.data: falta el contenido del test.`);
@@ -196,7 +239,15 @@ function validateTest(resource, path, errors) {
   if (test.schemaVersion !== 1) errors.push(`${path}.data.schemaVersion: debe ser 1.`);
   if (test.id !== resource.id) errors.push(`${path}.data.id: debe coincidir con el recurso.`);
   if (!isNonEmptyString(test.titulo)) errors.push(`${path}.data.titulo: debe contener texto.`);
-  validateAuthor(test.autor, `${path}.data.autor`, errors);
+  validateAuthor(test.autor, `${path}.data.autor`, errors, { authorById });
+  if (resource.sourceAuthor !== undefined) {
+    validateSourceAuthor(
+      resource.sourceAuthor,
+      `${path}.sourceAuthor`,
+      errors,
+      authorById,
+    );
+  }
   if (test.titulo !== resource.title) {
     errors.push(`${path}.title: debe coincidir con el título del test.`);
   }
@@ -442,7 +493,7 @@ function validateTheoryLegalItem(item, path, errors) {
   validateTheoryTextContent(item, path, errors);
 }
 
-function validateTheory(resource, path, errors) {
+function validateTheory(resource, path, errors, authorById) {
   const theory = resource.data;
   if (!theory || typeof theory !== "object") {
     errors.push(`${path}.data: falta el contenido teórico.`);
@@ -463,7 +514,18 @@ function validateTheory(resource, path, errors) {
   validateDocumentSource(theory.fuente, `${path}.data.fuente`, errors, {
     requireUrl: true,
   });
-  validateAuthor(theory.autor, `${path}.data.autor`, errors, { required: false });
+  validateAuthor(theory.autor, `${path}.data.autor`, errors, {
+    required: false,
+    authorById,
+  });
+  if (resource.sourceAuthor !== undefined) {
+    validateSourceAuthor(
+      resource.sourceAuthor,
+      `${path}.sourceAuthor`,
+      errors,
+      authorById,
+    );
+  }
   if (theory.derechos !== undefined && !isNonEmptyString(theory.derechos)) {
     errors.push(`${path}.data.derechos: debe contener texto.`);
   }
@@ -544,7 +606,7 @@ function theoryArticleNumbers(theory) {
   return numbers;
 }
 
-export function validateResources(resources, oppositions = []) {
+export function validateResources(resources, oppositions = [], authors = []) {
   const errors = [];
   if (!Array.isArray(resources) || resources.length === 0) {
     return ["resources: debe contener al menos un recurso."];
@@ -553,6 +615,9 @@ export function validateResources(resources, oppositions = []) {
   const resourceIds = new Set();
   const oppositionById = new Map(
     oppositions.map((opposition) => [opposition?.id, opposition]),
+  );
+  const authorById = new Map(
+    authors.map((author) => [author?.id, author]),
   );
   resources.forEach((resource, index) => {
     const path = `resources[${index}]`;
@@ -580,10 +645,12 @@ export function validateResources(resources, oppositions = []) {
     validateSourceClassification(resource, path, errors);
     validateClassification(resource.classification, path, errors);
     if (resource.type === "test") {
-      validateTest(resource, path, errors);
+      validateTest(resource, path, errors, authorById);
       validateTestConfiguration(resource, path, errors);
     }
-    if (resource.type === "teoria") validateTheory(resource, path, errors);
+    if (resource.type === "teoria") {
+      validateTheory(resource, path, errors, authorById);
+    }
     if (resource.relatedTheory !== undefined) {
       validateRelatedTheory(resource.relatedTheory, `${path}.relatedTheory`, errors);
     }
@@ -640,8 +707,8 @@ export function validateResources(resources, oppositions = []) {
   return errors;
 }
 
-export function assertValidResources(resources, oppositions = []) {
-  const errors = validateResources(resources, oppositions);
+export function assertValidResources(resources, oppositions = [], authors = []) {
+  const errors = validateResources(resources, oppositions, authors);
   if (!errors.length) return;
   throw new AggregateError(errors.map((message) => new Error(message)), "Catálogo no válido");
 }

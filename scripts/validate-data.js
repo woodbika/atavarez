@@ -1,14 +1,17 @@
+import { authors } from "../data/authors.js";
 import { resources } from "../data/resources.js";
 import { oppositions } from "../data/oppositions.js";
 import { updates } from "../data/updates.js";
+import { validateAuthors } from "../models/author-validator.js";
 import { validateOppositions } from "../models/opposition-validator.js";
 import { auditResources } from "../models/resource-auditor.js";
 import { validateResources } from "../models/resource-validator.js";
 import { validateUpdates } from "../models/update-validator.js";
 
 const errors = [
+  ...validateAuthors(authors),
   ...validateOppositions(oppositions),
-  ...validateResources(resources, oppositions),
+  ...validateResources(resources, oppositions, authors),
   ...validateUpdates(updates),
 ];
 const notices = auditResources(resources);
@@ -34,7 +37,8 @@ if (errors.length) {
   const oppositionLabel =
     oppositions.length === 1 ? "oposición validada" : "oposiciones validadas";
   console.log(
-    `${oppositions.length} ${oppositionLabel}, ${resources.length} recursos, ` +
+    `${oppositions.length} ${oppositionLabel}, ${authors.length} autores, ` +
+      `${resources.length} recursos, ` +
       `${sourceQuestionCount} preguntas de origen, ${questionCount} asignaciones ` +
       `a recursos y ${updates.length} ${updateLabel}.`,
   );

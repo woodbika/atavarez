@@ -1,3 +1,13 @@
+import { getAuthorById } from "./authors.js";
+
+function canonicalAuthor(author) {
+  if (!author || typeof author !== "object") return undefined;
+  const catalogAuthor = getAuthorById(author.id);
+  return catalogAuthor
+    ? { id: catalogAuthor.id, nombre: catalogAuthor.name }
+    : author;
+}
+
 function canonicalClassification(opposition, classification) {
   const legacyFields = {
     administracion: opposition.administration,
@@ -8,11 +18,25 @@ function canonicalClassification(opposition, classification) {
   const source = classification && typeof classification === "object"
     ? classification
     : {};
+  const sourceTheme = source.tema && typeof source.tema === "object"
+    ? source.tema
+    : {};
+  const sectionId = String(sourceTheme.numero ?? "");
+  const section = opposition.sections?.find(
+    (item) => String(item.id) === sectionId,
+  );
+  const theme = section
+    ? {
+        numero: String(section.id),
+        titulo: section.title,
+        ...(sourceTheme.etiqueta ? { etiqueta: sourceTheme.etiqueta } : {}),
+      }
+    : sourceTheme;
 
   return {
     oposicionId: opposition.id,
     ...legacyFields,
-    tema: source.tema,
+    tema: theme,
   };
 }
 
@@ -37,21 +61,24 @@ export function createOppositionResourceFactory(
       const relatedTheory = relatedTheoryByTestId.get(test.id);
       const theoryNotice = theoryNoticeByTestId.get(test.id);
       const classification = canonicalClassification(opposition, test.clasificacion);
+      const author = canonicalAuthor(test.autor);
       return {
         id: test.id,
         type: "test",
         title: test.titulo,
-        author: test.autor,
+        author,
         opposition,
         classification,
         sourceClassification: test.clasificacion,
+        sourceAuthor: test.autor,
         ...(relatedTheory ? { relatedTheory } : {}),
         ...(theoryNotice ? { theoryNotice } : {}),
-        data: { ...test, clasificacion: classification },
+        data: { ...test, autor: author, clasificacion: classification },
       };
     },
     theoryResource(theory) {
       const classification = canonicalClassification(opposition, theory.clasificacion);
+      const author = canonicalAuthor(theory.autor);
       return {
         id: theory.id,
         type: "teoria",
@@ -59,8 +86,13 @@ export function createOppositionResourceFactory(
         opposition,
         classification,
         sourceClassification: theory.clasificacion,
+        ...(theory.autor ? { sourceAuthor: theory.autor } : {}),
         source: theory.fuente,
-        data: { ...theory, clasificacion: classification },
+        data: {
+          ...theory,
+          ...(author ? { autor: author } : {}),
+          clasificacion: classification,
+        },
       };
     },
   });

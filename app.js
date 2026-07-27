@@ -1,3 +1,4 @@
+import { authors } from "./data/authors.js";
 import { resources } from "./data/resources.js";
 import { oppositions } from "./data/oppositions.js";
 import { updates } from "./data/updates.js";
@@ -6,6 +7,7 @@ import { ThemeController } from "./controllers/theme-controller.js";
 import { SettingsController } from "./controllers/settings-controller.js";
 import { UpdatesController } from "./controllers/updates-controller.js";
 import { ResourceRepository } from "./models/resource-repository.js";
+import { assertValidAuthors } from "./models/author-validator.js";
 import { assertValidResources } from "./models/resource-validator.js";
 import { assertValidOppositions } from "./models/opposition-validator.js";
 import { assertValidUpdates } from "./models/update-validator.js";
@@ -19,8 +21,9 @@ const themeController = new ThemeController({
 
 try {
   assertValidUpdates(updates);
+  assertValidAuthors(authors);
   assertValidOppositions(oppositions);
-  assertValidResources(resources, oppositions);
+  assertValidResources(resources, oppositions, authors);
   new UpdatesController({
     trigger: document.querySelector("#updates-toggle"),
     panel: document.querySelector("#updates-panel"),

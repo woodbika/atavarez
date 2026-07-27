@@ -1,3 +1,8 @@
+import {
+  GOBIERNO_VASCO_ADMINISTRATIVO_C1_SECTIONS,
+  OSAKIDETZA_TECNICO_ESPECIALISTA_INFORMATICA_C1_SECTIONS,
+} from "./opposition-sections.js";
+
 export const GOBIERNO_VASCO_ADMINISTRATIVO_C1 = Object.freeze({
   id: "gobierno-vasco-administrativo-c1",
   legacyIds: Object.freeze([
@@ -8,6 +13,7 @@ export const GOBIERNO_VASCO_ADMINISTRATIVO_C1 = Object.freeze({
   group: "C1",
   scale: "Escala Administrativa",
   status: "available",
+  sections: GOBIERNO_VASCO_ADMINISTRATIVO_C1_SECTIONS,
   covers: Object.freeze({
     themes: "portada-temas-gobierno-vasco.jpg",
     resources: "portada-recursos.jpg",
@@ -32,18 +38,7 @@ export const OSAKIDETZA_TECNICO_ESPECIALISTA_INFORMATICA_C1 = Object.freeze({
     backLabel: "Volver al temario",
     resourceBackLabel: "Recursos del temario",
   }),
-  sections: Object.freeze([
-    Object.freeze({
-      id: "comun",
-      title: "Temario común",
-      order: 1,
-    }),
-    Object.freeze({
-      id: "especifico",
-      title: "Temario específico",
-      order: 2,
-    }),
-  ]),
+  sections: OSAKIDETZA_TECNICO_ESPECIALISTA_INFORMATICA_C1_SECTIONS,
   covers: Object.freeze({
     themes: "portada-recursos.jpg",
     resources: "portada-recursos.jpg",
