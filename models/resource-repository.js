@@ -101,6 +101,9 @@ export class ResourceRepository {
         author: autor,
         opposition: first.opposition,
         classification,
+        sourceClassification:
+          first.sourceClassification ?? first.classification,
+        includeInCombinedTest: false,
         orderModes: ["natural", "aleatorio"],
         defaultOrder: "natural",
         data: test,

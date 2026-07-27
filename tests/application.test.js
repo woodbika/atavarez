@@ -8,6 +8,10 @@ import osakidetzaSpecificQuestions from "../data/tests/osakidetza-tecnico-especi
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
 import {
+  auditResources,
+  findDuplicateQuestions,
+} from "../models/resource-auditor.js";
+import {
   createTestAttempt,
   restoreTestAttempt,
 } from "../models/test-attempt.js";
@@ -189,6 +193,16 @@ test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("los recursos de teoría declaran un título breve estable para su ficha", () => {
+  const theories = resources.filter((resource) => resource.type === "teoria");
+
+  assert.ok(theories.length > 0);
+  theories.forEach((resource) => {
+    assert.equal(resource.title, resource.data.cardTitle);
+    assert.equal(resource.data.numeroTema, undefined);
+  });
+});
+
 test("las novedades tienen identificadores y fechas válidas", () => {
   assert.deepEqual(validateUpdates(updates), []);
   assert.equal(new Set(updates.map((update) => update.id)).size, updates.length);
@@ -293,6 +307,67 @@ test("la validación protege la configuración de los tests configurables", () =
   assert.ok(errors.some((error) => error.includes("includeInCombinedTest")));
   assert.ok(errors.some((error) => error.includes("defaultOrder")));
   assert.ok(errors.some((error) => error.includes("questionSelection.count")));
+});
+
+test("la validación rechaza tipos, fuentes y estados de solución no soportados", () => {
+  const source = structuredClone(
+    resources.find((resource) => resource.type === "test"),
+  );
+  source.data.fuente.archivo = "documento.pdf.pdf";
+  source.data.fuente.paginas = 0;
+  source.data.estado = "pendiente";
+  const unsupported = {
+    ...structuredClone(source),
+    id: "recurso-no-soportado",
+    type: "video",
+  };
+
+  const errors = validateResources([source, unsupported]);
+
+  assert.ok(errors.some((error) => error.includes(".type: no está soportado")));
+  assert.ok(errors.some((error) => error.includes("extensión PDF repetida")));
+  assert.ok(errors.some((error) => error.includes(".paginas")));
+  assert.ok(errors.some((error) => error.includes(".estado")));
+});
+
+test("la auditoría informa de duplicados sin invalidar el catálogo", () => {
+  const original = structuredClone(
+    resources.find((resource) => resource.type === "test"),
+  );
+  original.data.preguntas = original.data.preguntas.slice(0, 1);
+  const repeated = structuredClone(original);
+  repeated.id = "test-duplicado-controlado";
+  repeated.data.id = repeated.id;
+  repeated.title = "Test duplicado controlado";
+  repeated.data.titulo = repeated.title;
+
+  const duplicates = findDuplicateQuestions([original, repeated]);
+  const notices = auditResources([original, repeated]);
+
+  assert.equal(duplicates.length, 1);
+  assert.equal(notices.length, 1);
+  assert.ok(
+    notices[0].includes(`${original.id}#${original.data.preguntas[0].id}`),
+  );
+  assert.deepEqual(validateResources(resources, oppositions), []);
+});
+
+test("los tests completos derivados respetan el contrato de recursos", () => {
+  const repository = new ResourceRepository(resources, oppositions);
+  const combined = repository.resources.filter(
+    (resource) => resource.variant === "complete",
+  );
+
+  assert.ok(combined.length > 0);
+  assert.ok(
+    combined.every(
+      (resource) =>
+        resource.includeInCombinedTest === false &&
+        resource.sourceClassification &&
+        resource.data.fuente.tipo === "recopilacion",
+    ),
+  );
+  assert.deepEqual(validateResources(repository.resources, oppositions), []);
 });
 
 test("la evaluación distingue aciertos, errores y preguntas sin responder", () => {

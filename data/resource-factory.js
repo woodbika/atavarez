@@ -17,6 +17,9 @@ function canonicalClassification(opposition, classification) {
 }
 
 function theoryCardTitle(theory) {
+  if (typeof theory.cardTitle === "string" && theory.cardTitle.trim()) {
+    return theory.cardTitle.trim();
+  }
   const title = theory.clasificacion.tema.titulo.trim();
   const firstPeriod = title.indexOf(".");
   return firstPeriod === -1 ? title : title.slice(0, firstPeriod + 1);

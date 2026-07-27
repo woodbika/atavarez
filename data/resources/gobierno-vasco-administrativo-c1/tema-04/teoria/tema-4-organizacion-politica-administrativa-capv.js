@@ -1,9 +1,10 @@
 const tema4OrganizacionPoliticaAdministrativaCapv = {
   schemaVersion: 1,
   id: "tema-04-organizacion-politica-administrativa-capv",
-  numeroTema: 4,
   titulo:
     "Tema 4: Organización política y administrativa de la Comunidad Autónoma del País Vasco: principios generales. Aspectos generales de la distribución de competencias entre el Estado y la Comunidad Autónoma del País Vasco. El Parlamento Vasco. El Gobierno Vasco y el lehendakari",
+  cardTitle:
+    "Organización política y administrativa de la Comunidad Autónoma del País Vasco: principios generales.",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",

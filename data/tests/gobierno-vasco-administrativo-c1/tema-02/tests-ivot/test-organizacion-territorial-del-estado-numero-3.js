@@ -1,5 +1,5 @@
 /**
- * Datos extraídos de "TEST TÍTULO VIII Nº 3.pdf.pdf".
+ * Datos extraídos de "TEST TÍTULO VIII Nº 3.pdf".
  * El contenido se conserva sin interpretaciones, salvo la solución de la pregunta 10,
  * corregida con autorización expresa a partir del artículo 150.2 de la Constitución Española.
  */
@@ -22,7 +22,7 @@ const test = {
     }
   },
   "fuente": {
-    "archivo": "TEST TÍTULO VIII Nº 3.pdf.pdf",
+    "archivo": "TEST TÍTULO VIII Nº 3.pdf",
     "paginas": 5
   },
   "preguntas": [

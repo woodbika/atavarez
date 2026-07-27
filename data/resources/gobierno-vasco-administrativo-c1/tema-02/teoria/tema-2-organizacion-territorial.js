@@ -3,6 +3,7 @@ const tema2OrganizacionTerritorial = {
   id: "tema-02-organizacion-territorial-del-estado",
   titulo:
     "Tema 2. La organización territorial del Estado. Aspectos generales. Las comunidades autónomas; su organización y competencia. Los Estatutos de Autonomía",
+  cardTitle: "La organización territorial del Estado.",
   autor: {
     id: "ivot",
     nombre: "IVOT",

@@ -1,5 +1,5 @@
 /**
- * Datos extraídos de "TEST TÍTULO VIII Nº 2.pdf.pdf".
+ * Datos extraídos de "TEST TÍTULO VIII Nº 2.pdf".
  * El contenido de las preguntas, opciones y soluciones se conserva sin interpretaciones.
  */
 const test = {
@@ -21,7 +21,7 @@ const test = {
     }
   },
   "fuente": {
-    "archivo": "TEST TÍTULO VIII Nº 2.pdf.pdf",
+    "archivo": "TEST TÍTULO VIII Nº 2.pdf",
     "paginas": 4
   },
   "preguntas": [

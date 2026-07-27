@@ -3,6 +3,7 @@ const tema9PersonalAlServicio = {
   id: "tema-09-personal-al-servicio-administraciones-publicas-vascas",
   titulo:
     "Tema 9. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco. Personal al servicio de las administraciones públicas vascas: clases de personal empleado público, derechos de este personal, principios que inspiran el código ético y de conducta del mismo, y régimen disciplinario",
+  cardTitle: "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco.",
   autor: {
     id: "ivot",
     nombre: "IVOT",

@@ -3,6 +3,7 @@ const tema1ConstitucionEspanola = {
   id: "tema-01-constitucion-espanola",
   titulo:
     "Tema 1. La Constitución española de 1978: Título Preliminar: estructura y principios generales. Título Primero: los derechos y deberes fundamentales en la Constitución Española",
+  cardTitle: "La Constitución Española de 1978",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",
