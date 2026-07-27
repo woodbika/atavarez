@@ -195,8 +195,9 @@ test("las novedades tienen identificadores y fechas válidas", () => {
   assert.ok(updates.every((update) => Number.isFinite(Date.parse(update.publishedAt))));
 
   const invalidUpdates = [
-    { ...updates[0], id: "ID no estable", publishedAt: "fecha-no-válida" },
+    { ...updates[0], publishedAt: "fecha-no-válida" },
     { ...updates[0] },
+    { ...updates[0], id: "ID no estable" },
   ];
   const errors = validateUpdates(invalidUpdates);
   assert.ok(errors.some((error) => error.includes("identificador estable")));
