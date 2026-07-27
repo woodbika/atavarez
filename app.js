@@ -1,4 +1,5 @@
 import { authors } from "./data/authors.js";
+import { questionBanks } from "./data/question-banks/index.js";
 import { resources } from "./data/resources.js";
 import { oppositions } from "./data/oppositions.js";
 import { updates } from "./data/updates.js";
@@ -8,6 +9,7 @@ import { SettingsController } from "./controllers/settings-controller.js";
 import { UpdatesController } from "./controllers/updates-controller.js";
 import { ResourceRepository } from "./models/resource-repository.js";
 import { assertValidAuthors } from "./models/author-validator.js";
+import { assertValidQuestionBanks } from "./models/question-bank-validator.js";
 import { assertValidResources } from "./models/resource-validator.js";
 import { assertValidOppositions } from "./models/opposition-validator.js";
 import { assertValidUpdates } from "./models/update-validator.js";
@@ -23,7 +25,8 @@ try {
   assertValidUpdates(updates);
   assertValidAuthors(authors);
   assertValidOppositions(oppositions);
-  assertValidResources(resources, oppositions, authors);
+  assertValidQuestionBanks(questionBanks, oppositions, authors);
+  assertValidResources(resources, oppositions, authors, questionBanks);
   new UpdatesController({
     trigger: document.querySelector("#updates-toggle"),
     panel: document.querySelector("#updates-panel"),
@@ -38,7 +41,7 @@ try {
   }).start();
   const controller = new AppController({
     root,
-    repository: new ResourceRepository(resources, oppositions),
+    repository: new ResourceRepository(resources, oppositions, questionBanks),
     testPreferences: settingsController.getTestPreferences(),
   });
   controller.start();

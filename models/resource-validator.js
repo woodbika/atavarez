@@ -1,11 +1,8 @@
 import { isNonEmptyString, isStableId } from "../utils/validation.js";
+import { validateQuestions } from "./question-validator.js";
+import { isSupportedAnswerStatus } from "./test-contract.js";
 
 const SUPPORTED_RESOURCE_TYPES = new Set(["test", "teoria"]);
-const SUPPORTED_ANSWER_STATUSES = new Set([
-  "soluciones-provisionales",
-  "soluciones-revisadas",
-  "soluciones-oficiales",
-]);
 
 function validateAuthor(
   author,
@@ -264,49 +261,13 @@ function validateTest(resource, path, errors, authorById) {
   validateDocumentSource(test.fuente, `${path}.data.fuente`, errors);
   if (
     test.estado !== undefined &&
-    !SUPPORTED_ANSWER_STATUSES.has(test.estado)
+    !isSupportedAnswerStatus(test.estado)
   ) {
     errors.push(
       `${path}.data.estado: debe identificar un estado de soluciones soportado.`,
     );
   }
-  if (!Array.isArray(test.preguntas) || test.preguntas.length === 0) {
-    errors.push(`${path}.data.preguntas: debe contener al menos una pregunta.`);
-    return;
-  }
-
-  const questionIds = new Set();
-  test.preguntas.forEach((question, questionIndex) => {
-    const questionPath = `${path}.data.preguntas[${questionIndex}]`;
-    const questionId = String(question?.id ?? "");
-    if (!questionId) errors.push(`${questionPath}.id: es obligatorio.`);
-    else if (questionIds.has(questionId)) errors.push(`${questionPath}.id: está duplicado.`);
-    else questionIds.add(questionId);
-
-    if (!isNonEmptyString(question?.enunciado)) {
-      errors.push(`${questionPath}.enunciado: debe contener texto.`);
-    }
-    if (!Array.isArray(question?.opciones) || question.opciones.length < 2) {
-      errors.push(`${questionPath}.opciones: debe contener al menos dos opciones.`);
-      return;
-    }
-
-    const optionIds = new Set();
-    question.opciones.forEach((option, optionIndex) => {
-      const optionPath = `${questionPath}.opciones[${optionIndex}]`;
-      const optionId = option?.id;
-      if (!isNonEmptyString(optionId)) errors.push(`${optionPath}.id: debe ser texto.`);
-      else if (optionIds.has(optionId)) errors.push(`${optionPath}.id: está duplicado.`);
-      else optionIds.add(optionId);
-      if (!isNonEmptyString(option?.texto)) {
-        errors.push(`${optionPath}.texto: debe contener texto.`);
-      }
-    });
-
-    if (!optionIds.has(question.respuestaCorrecta)) {
-      errors.push(`${questionPath}.respuestaCorrecta: no coincide con ninguna opción.`);
-    }
-  });
+  validateQuestions(test.preguntas, `${path}.data.preguntas`, errors);
 }
 
 function validateTestConfiguration(resource, path, errors) {
@@ -396,6 +357,76 @@ function validateTestConfiguration(resource, path, errors) {
     errors.push(
       `${path}.questionSelection: la selección por rango debe conservar el orden natural.`,
     );
+  }
+}
+
+function validateTestPreset(resource, path, errors, questionBankById) {
+  if (resource.variant !== "preset" && resource.questionBankId === undefined) {
+    return;
+  }
+  if (resource.variant !== "preset") {
+    errors.push(`${path}.variant: debe ser preset para usar un banco de preguntas.`);
+  }
+  if (!isStableId(resource.questionBankId)) {
+    errors.push(`${path}.questionBankId: debe ser un identificador estable.`);
+  }
+
+  const preset = resource.testPreset;
+  if (!preset || typeof preset !== "object") {
+    errors.push(`${path}.testPreset: debe contener la modalidad declarada.`);
+    return;
+  }
+  if (preset.kind !== "test-preset") {
+    errors.push(`${path}.testPreset.kind: debe ser test-preset.`);
+  }
+  if (preset.schemaVersion !== 1) {
+    errors.push(`${path}.testPreset.schemaVersion: debe ser 1.`);
+  }
+  if (preset.id !== resource.id) {
+    errors.push(`${path}.testPreset.id: debe coincidir con el recurso.`);
+  }
+  if (preset.title !== resource.title) {
+    errors.push(`${path}.testPreset.title: debe coincidir con el recurso.`);
+  }
+  if (preset.questionBankId !== resource.questionBankId) {
+    errors.push(`${path}.testPreset.questionBankId: debe coincidir con el recurso.`);
+  }
+  [
+    "includeInCombinedTest",
+    "orderModes",
+    "defaultOrder",
+    "questionSelection",
+    "questionCountLabel",
+    "description",
+    "actionLabel",
+  ].forEach((field) => {
+    if (
+      JSON.stringify(preset[field]) !== JSON.stringify(resource[field])
+    ) {
+      errors.push(`${path}.${field}: debe coincidir con la modalidad declarada.`);
+    }
+  });
+
+  if (!questionBankById.size) return;
+  const questionBank = questionBankById.get(resource.questionBankId);
+  if (!questionBank) {
+    errors.push(`${path}.questionBankId: no existe en el catálogo de bancos.`);
+    return;
+  }
+  if (resource.data.preguntas !== questionBank.preguntas) {
+    errors.push(`${path}.data.preguntas: debe proceder del banco registrado.`);
+  }
+  if (resource.data.fuente !== questionBank.fuente) {
+    errors.push(`${path}.data.fuente: debe proceder del banco registrado.`);
+  }
+  if (resource.data.estado !== questionBank.estado) {
+    errors.push(`${path}.data.estado: debe coincidir con el banco registrado.`);
+  }
+  if (resource.sourceClassification !== questionBank.clasificacion) {
+    errors.push(`${path}.sourceClassification: debe proceder del banco registrado.`);
+  }
+  if (resource.sourceAuthor !== questionBank.autor) {
+    errors.push(`${path}.sourceAuthor: debe proceder del banco registrado.`);
   }
 }
 
@@ -606,7 +637,12 @@ function theoryArticleNumbers(theory) {
   return numbers;
 }
 
-export function validateResources(resources, oppositions = [], authors = []) {
+export function validateResources(
+  resources,
+  oppositions = [],
+  authors = [],
+  questionBanks = [],
+) {
   const errors = [];
   if (!Array.isArray(resources) || resources.length === 0) {
     return ["resources: debe contener al menos un recurso."];
@@ -618,6 +654,9 @@ export function validateResources(resources, oppositions = [], authors = []) {
   );
   const authorById = new Map(
     authors.map((author) => [author?.id, author]),
+  );
+  const questionBankById = new Map(
+    questionBanks.map((bank) => [bank?.id, bank]),
   );
   resources.forEach((resource, index) => {
     const path = `resources[${index}]`;
@@ -647,6 +686,7 @@ export function validateResources(resources, oppositions = [], authors = []) {
     if (resource.type === "test") {
       validateTest(resource, path, errors, authorById);
       validateTestConfiguration(resource, path, errors);
+      validateTestPreset(resource, path, errors, questionBankById);
     }
     if (resource.type === "teoria") {
       validateTheory(resource, path, errors, authorById);
@@ -707,8 +747,18 @@ export function validateResources(resources, oppositions = [], authors = []) {
   return errors;
 }
 
-export function assertValidResources(resources, oppositions = [], authors = []) {
-  const errors = validateResources(resources, oppositions, authors);
+export function assertValidResources(
+  resources,
+  oppositions = [],
+  authors = [],
+  questionBanks = [],
+) {
+  const errors = validateResources(
+    resources,
+    oppositions,
+    authors,
+    questionBanks,
+  );
   if (!errors.length) return;
   throw new AggregateError(errors.map((message) => new Error(message)), "Catálogo no válido");
 }

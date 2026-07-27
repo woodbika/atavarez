@@ -3,7 +3,8 @@
  * El PDF no incluye soluciones oficiales.
  * Las respuestas incorporadas son una primera propuesta provisional pendiente de revisión.
  */
-const test = {
+const questionBank = {
+  "kind": "question-bank",
   "schemaVersion": 1,
   "id": "bateria-preguntas-temario-especifico-tecnico-especialista-informatica",
   "autor": {
@@ -4628,5 +4629,5 @@ const test = {
   ]
 };
 
-export { test };
-export default test;
+export { questionBank };
+export default questionBank;

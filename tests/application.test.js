@@ -2,10 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { authors } from "../data/authors.js";
+import {
+  osakidetzaSpecificQuestionBank,
+  questionBanks,
+} from "../data/question-banks/index.js";
 import { resources } from "../data/resources.js";
 import { oppositions } from "../data/oppositions.js";
 import { createOppositionResourceFactory } from "../data/resource-factory.js";
-import osakidetzaSpecificQuestions from "../data/tests/osakidetza-tecnico-especialista-informatica-c1/temario-especifico/tests-osakidetza/bateria-preguntas-temario-especifico.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
 import { validateAuthors } from "../models/author-validator.js";
@@ -18,6 +21,7 @@ import {
   restoreTestAttempt,
 } from "../models/test-attempt.js";
 import { validateOppositions } from "../models/opposition-validator.js";
+import { validateQuestionBanks } from "../models/question-bank-validator.js";
 import { validateResources } from "../models/resource-validator.js";
 import { validateUpdates } from "../models/update-validator.js";
 import { TestSession } from "../models/test-session.js";
@@ -61,8 +65,12 @@ test("las portadas se resuelven desde la raíz real de la aplicación", () => {
 test("el registro contiene todos los tests con un formato válido", () => {
   const registeredTests = resources.filter((resource) => resource.type === "test");
 
-  assert.deepEqual(validateResources(resources, oppositions, authors), []);
+  assert.deepEqual(
+    validateResources(resources, oppositions, authors, questionBanks),
+    [],
+  );
   assert.deepEqual(validateAuthors(authors), []);
+  assert.deepEqual(validateQuestionBanks(questionBanks, oppositions, authors), []);
   assert.deepEqual(validateOppositions(oppositions), []);
   assert.equal(tests.length, registeredTests.length);
   assert.deepEqual(
@@ -163,14 +171,15 @@ test("el catálogo de autores exige ids y nombres únicos", () => {
 });
 
 test("el banco específico de Osakidetza incorpora una plantilla provisional válida", () => {
-  assert.equal(osakidetzaSpecificQuestions.estado, "soluciones-provisionales");
-  assert.equal(osakidetzaSpecificQuestions.preguntas.length, 200);
+  assert.equal(osakidetzaSpecificQuestionBank.kind, "question-bank");
+  assert.equal(osakidetzaSpecificQuestionBank.estado, "soluciones-provisionales");
+  assert.equal(osakidetzaSpecificQuestionBank.preguntas.length, 200);
   assert.deepEqual(
-    osakidetzaSpecificQuestions.preguntas.map((question) => question.id),
+    osakidetzaSpecificQuestionBank.preguntas.map((question) => question.id),
     Array.from({ length: 200 }, (_, index) => index + 1),
   );
   assert.ok(
-    osakidetzaSpecificQuestions.preguntas.every(
+    osakidetzaSpecificQuestionBank.preguntas.every(
       (question) =>
         question.opciones.length === 4 &&
         new Set(question.opciones.map((option) => option.id)).size === 4 &&
@@ -179,6 +188,59 @@ test("el banco específico de Osakidetza incorpora una plantilla provisional vá
         ),
     ),
   );
+  assert.deepEqual(
+    validateQuestionBanks(questionBanks, oppositions, authors),
+    [],
+  );
+});
+
+test("la validación protege el contrato de los bancos de preguntas", () => {
+  const invalidBank = structuredClone(osakidetzaSpecificQuestionBank);
+  invalidBank.autor.nombre = "Autor no registrado";
+  invalidBank.clasificacion.tema.numero = "apartado-inexistente";
+  invalidBank.preguntas[0].respuestaCorrecta = "opcion-inexistente";
+
+  const errors = validateQuestionBanks([invalidBank], oppositions, authors);
+
+  assert.ok(errors.some((error) => error.includes("no coincide con el catálogo")));
+  assert.ok(errors.some((error) => error.includes("no existe en la oposición")));
+  assert.ok(errors.some((error) => error.includes("respuestaCorrecta")));
+});
+
+test("las modalidades de Osakidetza referencian una única batería", () => {
+  const presets = resources.filter(
+    (resource) =>
+      resource.questionBankId === osakidetzaSpecificQuestionBank.id,
+  );
+
+  assert.equal(presets.length, 3);
+  assert.ok(
+    presets.every(
+      (resource) =>
+        resource.variant === "preset" &&
+        resource.testPreset.kind === "test-preset" &&
+        resource.data.preguntas === osakidetzaSpecificQuestionBank.preguntas,
+    ),
+  );
+
+  const invalidPreset = {
+    ...presets[0],
+    defaultOrder: "aleatorio",
+    questionBankId: "banco-inexistente",
+    testPreset: {
+      ...presets[0].testPreset,
+      questionBankId: "banco-inexistente",
+    },
+  };
+  const errors = validateResources(
+    [invalidPreset],
+    oppositions,
+    authors,
+    questionBanks,
+  );
+
+  assert.ok(errors.some((error) => error.includes("modalidad declarada")));
+  assert.ok(errors.some((error) => error.includes("no existe en el catálogo")));
 });
 
 test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
@@ -429,7 +491,11 @@ test("la auditoría informa de duplicados sin invalidar el catálogo", () => {
 });
 
 test("los tests completos derivados respetan el contrato de recursos", () => {
-  const repository = new ResourceRepository(resources, oppositions);
+  const repository = new ResourceRepository(
+    resources,
+    oppositions,
+    questionBanks,
+  );
   const combined = repository.resources.filter(
     (resource) => resource.variant === "complete",
   );
@@ -443,7 +509,15 @@ test("los tests completos derivados respetan el contrato de recursos", () => {
         resource.data.fuente.tipo === "recopilacion",
     ),
   );
-  assert.deepEqual(validateResources(repository.resources, oppositions), []);
+  assert.deepEqual(
+    validateResources(
+      repository.resources,
+      oppositions,
+      authors,
+      questionBanks,
+    ),
+    [],
+  );
 });
 
 test("la evaluación distingue aciertos, errores y preguntas sin responder", () => {
@@ -562,7 +636,7 @@ test("el orden de preguntas admite una secuencia guardada y mezcla controlada", 
 });
 
 test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la batería", () => {
-  const source = osakidetzaSpecificQuestions;
+  const source = osakidetzaSpecificQuestionBank;
   const range = parseQuestionRange("103-109", source.preguntas.length);
   const rangedTest = selectQuestionRange(source, range);
   const randomTest = selectRandomQuestions(source, 50, () => 0);
@@ -588,7 +662,11 @@ test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la
 });
 
 test("la fábrica de intentos conserva selección, orden y ruta de repetición", () => {
-  const repository = new ResourceRepository(resources, oppositions);
+  const repository = new ResourceRepository(
+    resources,
+    oppositions,
+    questionBanks,
+  );
   const randomResource = resources.find(
     (resource) => resource.questionSelection?.type === "random-count",
   );
@@ -638,7 +716,11 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
 });
 
 test("el portal agrupa oposiciones, temas y recursos", () => {
-  const repository = new ResourceRepository(resources, oppositions);
+  const repository = new ResourceRepository(
+    resources,
+    oppositions,
+    questionBanks,
+  );
   const portalOppositions = repository.getOppositions();
   const expectedOppositionIds = new Set(
     oppositions.map((opposition) => opposition.id),
@@ -724,12 +806,12 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   assert.ok(
     osakidetzaSpecificResources.every(
       (resource) =>
-        resource.variant === undefined &&
+        resource.variant === "preset" &&
         resource.includeInCombinedTest === false,
     ),
   );
   const fullQuestionBank = osakidetzaSpecificResources.find(
-    (resource) => resource.id === osakidetzaSpecificQuestions.id,
+    (resource) => resource.id === osakidetzaSpecificQuestionBank.id,
   );
   const randomFifty = osakidetzaSpecificResources.find(
     (resource) => resource.questionSelection?.type === "random-count",
@@ -744,6 +826,17 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   assert.equal(randomFifty.questionSelection.count, 50);
   assert.deepEqual(randomFifty.orderModes, ["aleatorio"]);
   assert.equal(rangeBuilder.questionCountLabel, "200 disponibles");
+  assert.equal(
+    repository.getQuestionBankById(osakidetzaSpecificQuestionBank.id),
+    osakidetzaSpecificQuestionBank,
+  );
+  assert.ok(
+    osakidetzaSpecificResources.every(
+      (resource) =>
+        resource.questionBankId === osakidetzaSpecificQuestionBank.id &&
+        resource.data.preguntas === osakidetzaSpecificQuestionBank.preguntas,
+    ),
+  );
 
   const opposition = oppositions.find(
     (item) => repository.getTheme(item.id, "01") && repository.getTheme(item.id, "17"),

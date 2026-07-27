@@ -24,8 +24,11 @@ function combinedTestTitle(theme) {
 }
 
 export class ResourceRepository {
-  constructor(resources, oppositions = []) {
+  constructor(resources, oppositions = [], questionBanks = []) {
     this.oppositionCatalog = oppositions;
+    this.questionBankById = new Map(
+      questionBanks.map((bank) => [bank.id, bank]),
+    );
     const combinedResources = this.buildCombinedResources(resources);
     this.resources = [...combinedResources, ...resources].sort((a, b) => {
       const byTheme = String(a.classification.tema.numero).localeCompare(
@@ -118,6 +121,10 @@ export class ResourceRepository {
   getTestById(id) {
     const resource = this.getById(id);
     return resource?.type === "test" ? resource.data : null;
+  }
+
+  getQuestionBankById(id) {
+    return this.questionBankById.get(id) ?? null;
   }
 
   buildOppositions() {

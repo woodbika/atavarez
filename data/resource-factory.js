@@ -56,24 +56,46 @@ export function createOppositionResourceFactory(
     theoryNoticeByTestId = new Map(),
   } = {},
 ) {
+  function testResource(test) {
+    const relatedTheory = relatedTheoryByTestId.get(test.id);
+    const theoryNotice = theoryNoticeByTestId.get(test.id);
+    const classification = canonicalClassification(opposition, test.clasificacion);
+    const author = canonicalAuthor(test.autor);
+    return {
+      id: test.id,
+      type: "test",
+      title: test.titulo,
+      author,
+      opposition,
+      classification,
+      sourceClassification: test.clasificacion,
+      sourceAuthor: test.autor,
+      ...(relatedTheory ? { relatedTheory } : {}),
+      ...(theoryNotice ? { theoryNotice } : {}),
+      data: { ...test, autor: author, clasificacion: classification },
+    };
+  }
+
   return Object.freeze({
-    testResource(test) {
-      const relatedTheory = relatedTheoryByTestId.get(test.id);
-      const theoryNotice = theoryNoticeByTestId.get(test.id);
-      const classification = canonicalClassification(opposition, test.clasificacion);
-      const author = canonicalAuthor(test.autor);
+    testResource,
+    testPresetResource(preset, questionBank) {
+      const configuration = { ...preset };
+      ["kind", "schemaVersion", "id", "title", "questionBankId"].forEach(
+        (field) => delete configuration[field],
+      );
+      const bankData = { ...questionBank };
+      delete bankData.kind;
+      const resource = testResource({
+        ...bankData,
+        id: preset.id,
+        titulo: preset.title,
+      });
       return {
-        id: test.id,
-        type: "test",
-        title: test.titulo,
-        author,
-        opposition,
-        classification,
-        sourceClassification: test.clasificacion,
-        sourceAuthor: test.autor,
-        ...(relatedTheory ? { relatedTheory } : {}),
-        ...(theoryNotice ? { theoryNotice } : {}),
-        data: { ...test, autor: author, clasificacion: classification },
+        ...resource,
+        ...configuration,
+        variant: "preset",
+        questionBankId: preset.questionBankId,
+        testPreset: preset,
       };
     },
     theoryResource(theory) {

@@ -8,9 +8,15 @@ export const OSAKIDETZA = Object.freeze({
   name: "OSAKIDETZA",
 });
 
+export const THEME_COMPILATION = Object.freeze({
+  id: "recopilacion-tema",
+  name: "Recopilación del tema",
+});
+
 export const authors = Object.freeze([
   IVOT,
   OSAKIDETZA,
+  THEME_COMPILATION,
 ]);
 
 const authorById = new Map(authors.map((author) => [author.id, author]));
