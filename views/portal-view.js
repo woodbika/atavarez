@@ -219,6 +219,7 @@ export function renderResources(
         const test = resource.data;
         const isComplete = resource.variant === "complete";
         const hasOrderSelector = (resource.orderModes?.length ?? 0) > 1;
+        const isRangeBuilder = resource.questionSelection?.type === "range";
         const isTheory = resource.type === "teoria";
         const hasRelatedTheory = Boolean(resource.relatedTheory);
         const theoryNotice = resource.theoryNotice;
@@ -236,8 +237,12 @@ export function renderResources(
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
           : resource.href;
+        const directHref =
+          resource.defaultOrder && resource.defaultOrder !== "natural"
+            ? `${href}/${encodeURIComponent(resource.defaultOrder)}`
+            : href;
         const actionLabel = resource.type === "test"
-          ? "Empezar test"
+          ? resource.actionLabel ?? "Empezar test"
           : isTheory
             ? "Consultar teoría"
             : resource.actionLabel ?? "Abrir recurso";
@@ -246,7 +251,7 @@ export function renderResources(
             <div class="card-topline">
               <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""}">${escapeHtml(resourceTypeLabel)}</span>
               ${resource.type === "test"
-                ? `<span class="question-count">${test.preguntas.length} preguntas</span>`
+                ? `<span class="question-count">${escapeHtml(resource.questionCountLabel ?? `${test.preguntas.length} preguntas`)}</span>`
                 : ""}
             </div>
             <h3 class="${usesLightTestTitle ? "resource-test-title" : ""}">${escapeHtml(formatDisplayTitle(resource.title))}</h3>
@@ -256,8 +261,20 @@ export function renderResources(
                 ? '<p class="complete-description">Consulta el contenido del tema en formato de lectura estructurada o accede al PDF original.</p>'
                 : hasParts
                   ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
-                  : ""}
-            ${hasOrderSelector
+                  : resource.description
+                    ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
+                    : ""}
+            ${isRangeBuilder
+              ? `<form class="range-test-builder" data-range-test-form data-test-id="${escapeHtml(resource.id)}" data-total-questions="${test.preguntas.length}" novalidate>
+                  <label for="range-${escapeHtml(resource.id)}">Rango de preguntas</label>
+                  <div class="range-test-controls">
+                    <input id="range-${escapeHtml(resource.id)}" data-question-range type="text" inputmode="numeric" autocomplete="off" placeholder="Ej. 10-50" aria-describedby="range-help-${escapeHtml(resource.id)} range-error-${escapeHtml(resource.id)}">
+                    <button class="resource-action" type="submit">Crear test</button>
+                  </div>
+                  <p id="range-help-${escapeHtml(resource.id)}" class="range-test-help">Desde la pregunta 1 hasta la ${test.preguntas.length}.</p>
+                  <p id="range-error-${escapeHtml(resource.id)}" class="range-test-error" data-range-error role="alert" hidden>Escribe un rango válido, por ejemplo 10-50.</p>
+                </form>`
+              : hasOrderSelector
               ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
                   <span>Elige el orden</span>
                   <div class="order-actions">
@@ -282,7 +299,7 @@ export function renderResources(
                       : theoryNotice
                         ? `<span class="resource-theory-notice">${escapeHtml(theoryNotice)}</span>`
                       : ""}
-                    <a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>
+                    <a class="resource-action" href="${escapeHtml(directHref)}">${escapeHtml(actionLabel)}</a>
                   </div>`}
           </article>
         `;

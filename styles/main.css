@@ -1555,6 +1555,67 @@ h3 {
   gap: 7px;
 }
 
+.range-test-builder {
+  display: grid;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.range-test-builder label,
+.range-test-help,
+.range-test-error {
+  font-size: 0.72rem;
+}
+
+.range-test-builder label {
+  color: var(--muted);
+}
+
+.range-test-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px;
+}
+
+.range-test-controls input {
+  min-width: 0;
+  height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.78rem;
+}
+
+.range-test-controls input:focus {
+  border-color: var(--brand);
+  outline: 2px solid color-mix(in srgb, var(--brand) 18%, transparent);
+  outline-offset: 1px;
+}
+
+.range-test-controls input[aria-invalid="true"] {
+  border-color: var(--incorrect);
+}
+
+.range-test-help,
+.range-test-error {
+  margin: 0;
+}
+
+.range-test-help {
+  color: var(--muted);
+}
+
+.range-test-error {
+  color: var(--incorrect);
+}
+
+.range-test-error[hidden] {
+  display: none;
+}
+
 .resource-action {
   display: flex;
   min-height: 38px;

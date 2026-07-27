@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "tests-configurables-osakidetza",
+    category: "Nuevos tests",
+    publishedAt: "2026-07-27T09:05:14+02:00",
+    title: "Tests configurables en Osakidetza",
+    description:
+      "El temario específico permite crear un test aleatorio de 50 preguntas o seleccionar el intervalo de preguntas que se quiere realizar.",
+  }),
+  Object.freeze({
     id: "osakidetza-tecnico-especialista-informatica",
     category: "Nueva oposición",
     publishedAt: "2026-07-27T08:52:48+02:00",

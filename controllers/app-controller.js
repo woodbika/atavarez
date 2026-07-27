@@ -1,7 +1,13 @@
 import { TestSession } from "../models/test-session.js";
 import { coverImageUrl } from "../utils/assets.js";
 import { parseHashRoute } from "../utils/router.js";
-import { orderTestQuestions } from "../utils/test-order.js";
+import {
+  orderTestQuestions,
+  parseQuestionRange,
+  selectQuestionRange,
+  selectQuestionsByOrder,
+  selectRandomQuestions,
+} from "../utils/test-order.js";
 import { renderNotFound } from "../views/layout.js";
 import { renderOppositions, renderResources, renderThemes } from "../views/portal-view.js";
 import { renderResults } from "../views/results-view.js";
@@ -18,6 +24,8 @@ export class AppController {
     this.root = root;
     this.repository = repository;
     this.session = null;
+    this.sessionSelectionKey = "";
+    this.sessionRouteSuffix = "";
     this.currentResult = null;
     this.testControls = new TestControlsController(root);
     this.testTimer = new TestTimerController(root, {
@@ -72,7 +80,7 @@ export class AppController {
     else if (section === "oposiciones" && id && !subsection) this.showThemes(id);
     else if (section === "oposiciones" && id && subsection === "temas" && subId) {
       this.showResources(id, subId);
-    } else if (section === "test" && id) this.showTest(id, subsection);
+    } else if (section === "test" && id) this.showTest(id, subsection, subId);
     else if (section === "resultados" && id) this.showResults(id);
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
@@ -174,7 +182,8 @@ export class AppController {
       });
     });
 
-    this.root.querySelector("#resource-list").addEventListener("click", (event) => {
+    const resourceList = this.root.querySelector("#resource-list");
+    resourceList.addEventListener("click", (event) => {
       const trigger = event.target.closest("[data-theory-resource], [data-related-theory]");
       if (!trigger) return;
       if (trigger.dataset.theoryResource) {
@@ -195,6 +204,32 @@ export class AppController {
         contextTitle: testResource.title,
       });
     });
+    resourceList.addEventListener("submit", (event) => {
+      const form = event.target.closest("[data-range-test-form]");
+      if (!form) return;
+      event.preventDefault();
+      const input = form.querySelector("[data-question-range]");
+      const error = form.querySelector("[data-range-error]");
+      const range = parseQuestionRange(input.value, Number(form.dataset.totalQuestions));
+      if (!range) {
+        input.setAttribute("aria-invalid", "true");
+        error.hidden = false;
+        input.focus();
+        return;
+      }
+
+      input.removeAttribute("aria-invalid");
+      error.hidden = true;
+      location.hash =
+        `#/test/${encodeURIComponent(form.dataset.testId)}/rango/${range.from}-${range.to}`;
+    });
+    resourceList.addEventListener("input", (event) => {
+      const input = event.target.closest("[data-question-range]");
+      if (!input) return;
+      input.removeAttribute("aria-invalid");
+      const error = input.form?.querySelector("[data-range-error]");
+      if (error) error.hidden = true;
+    });
 
     if (resources.length) {
       this.testControls.showSearch("Buscar recursos", (searchQuery) => {
@@ -204,7 +239,7 @@ export class AppController {
     }
   }
 
-  showTest(id, requestedOrder = "") {
+  showTest(id, requestedOrder = "", requestedSelection = "") {
     const resource = this.repository.getById(id);
     const test = this.repository.getTestById(id);
     if (!test) {
@@ -212,15 +247,50 @@ export class AppController {
       this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
-    const availableOrderModes = resource?.orderModes ?? ["natural"];
-    const orderMode = availableOrderModes.includes(requestedOrder)
-      ? requestedOrder
-      : resource?.defaultOrder ?? "natural";
+    const selection = resource?.questionSelection;
+    let selectedTest = test;
+    let selectionKey = "";
+    let routeSuffix = "";
+    let orderMode;
+
+    if (selection?.type === "random-count") {
+      orderMode = "aleatorio";
+      selectedTest = selectRandomQuestions(test, selection.count);
+      selectionKey = `random-${selection.count}`;
+      routeSuffix = "/aleatorio";
+    } else if (selection?.type === "range") {
+      const range = requestedOrder === "rango"
+        ? parseQuestionRange(requestedSelection, test.preguntas.length)
+        : null;
+      if (!range) {
+        this.testTimer.reset();
+        this.testControls.setTestRouteActive(false);
+        return renderNotFound(
+          this.root,
+          `Selecciona un rango válido entre 1 y ${test.preguntas.length}.`,
+        );
+      }
+      orderMode = "natural";
+      selectedTest = selectQuestionRange(test, range);
+      selectionKey = `${range.from}-${range.to}`;
+      routeSuffix = `/rango/${selectionKey}`;
+    } else {
+      const availableOrderModes = resource?.orderModes ?? ["natural"];
+      orderMode = availableOrderModes.includes(requestedOrder)
+        ? requestedOrder
+        : resource?.defaultOrder ?? "natural";
+      routeSuffix = `/${orderMode}`;
+    }
 
     const startsNewSession =
-      !this.session || this.session.test.id !== id || this.sessionOrder !== orderMode;
+      !this.session ||
+      this.session.test.id !== id ||
+      this.sessionOrder !== orderMode ||
+      this.sessionSelectionKey !== selectionKey;
     if (startsNewSession) {
-      const orderedTest = orderTestQuestions(test, orderMode);
+      const orderedTest = selection
+        ? selectedTest
+        : orderTestQuestions(test, orderMode);
       this.session = new TestSession(orderedTest);
       this.session.setLiveResponseEnabled(this.testPreferences.liveResponse);
       this.session.setAutoAdvanceEnabled(this.testPreferences.autoAdvance);
@@ -230,6 +300,8 @@ export class AppController {
         this.testPreferences.timerEnabled,
         this.testPreferences.timerSecondsPerQuestion,
       );
+      this.sessionSelectionKey = selectionKey;
+      this.sessionRouteSuffix = routeSuffix;
     }
     this.renderCurrentQuestion();
     if (startsNewSession) {
@@ -482,6 +554,7 @@ export class AppController {
     this.testTimer.reset();
     const result = this.session.calculateResult();
     result.orderMode = this.sessionOrder;
+    result.routeSuffix = this.sessionRouteSuffix;
     this.currentResult = result;
     location.hash = `#/resultados/${encodeURIComponent(this.session.test.id)}`;
   }
@@ -524,12 +597,14 @@ export class AppController {
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para consultarlo.");
 
     this.session = null;
-    renderResults(this.root, test, result, this.resourceContext(test));
+    const attemptedTest = selectQuestionsByOrder(test, result.questionOrder);
+    renderResults(this.root, attemptedTest, result, this.resourceContext(test));
     this.root.querySelector('[data-action="repeat"]').addEventListener("click", () => {
       this.currentResult = null;
       this.session = null;
-      const orderPath = result.orderMode === "aleatorio" ? "/aleatorio" : "/natural";
-      location.hash = `#/test/${encodeURIComponent(id)}${orderPath}`;
+      const routeSuffix = result.routeSuffix ??
+        (result.orderMode === "aleatorio" ? "/aleatorio" : "/natural");
+      location.hash = `#/test/${encodeURIComponent(id)}${routeSuffix}`;
     });
   }
 
@@ -539,7 +614,7 @@ export class AppController {
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
     this.session = null;
-    const orderedTest = orderTestQuestions(test, result.orderMode, result.questionOrder);
+    const orderedTest = selectQuestionsByOrder(test, result.questionOrder);
     renderReview(this.root, orderedTest, result, this.resourceContext(test));
     new ReviewController(this.root).start();
   }

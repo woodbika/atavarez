@@ -14,7 +14,13 @@ import { validateUpdates } from "../models/update-validator.js";
 import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
 import { assetUrl, coverImageUrl } from "../utils/assets.js";
-import { orderTestQuestions } from "../utils/test-order.js";
+import {
+  orderTestQuestions,
+  parseQuestionRange,
+  selectQuestionRange,
+  selectQuestionsByOrder,
+  selectRandomQuestions,
+} from "../utils/test-order.js";
 import {
   DEFAULT_PREFERENCES,
   PREFERENCES_STORAGE_KEY,
@@ -356,6 +362,32 @@ test("el orden de preguntas admite una secuencia guardada y mezcla controlada", 
   assert.deepEqual(source.preguntas, tests[0].preguntas.slice(0, 3));
 });
 
+test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la batería", () => {
+  const source = osakidetzaSpecificQuestions;
+  const range = parseQuestionRange("103-109", source.preguntas.length);
+  const rangedTest = selectQuestionRange(source, range);
+  const randomTest = selectRandomQuestions(source, 50, () => 0);
+  const restoredTest = selectQuestionsByOrder(
+    source,
+    randomTest.preguntas.map((question) => question.id),
+  );
+
+  assert.deepEqual(range, { from: 103, to: 109 });
+  assert.equal(parseQuestionRange("109-103", source.preguntas.length), null);
+  assert.equal(parseQuestionRange("1-201", source.preguntas.length), null);
+  assert.deepEqual(
+    rangedTest.preguntas.map((question) => question.id),
+    [103, 104, 105, 106, 107, 108, 109],
+  );
+  assert.equal(randomTest.preguntas.length, 50);
+  assert.equal(new Set(randomTest.preguntas.map((question) => question.id)).size, 50);
+  assert.deepEqual(
+    restoredTest.preguntas.map((question) => question.id),
+    randomTest.preguntas.map((question) => question.id),
+  );
+  assert.equal(source.preguntas.length, 200);
+});
+
 test("las rutas hash se interpretan sin romper segmentos mal codificados", () => {
   assert.deepEqual(parseHashRoute("#/oposiciones/cuerpo%20administrativo"), [
     "oposiciones",
@@ -448,13 +480,30 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
     osakidetza.id,
     "especifico",
   );
-  assert.equal(osakidetzaSpecificResources.length, 1);
-  assert.equal(osakidetzaSpecificResources[0].variant, undefined);
-  assert.equal(osakidetzaSpecificResources[0].includeInCombinedTest, false);
+  assert.equal(osakidetzaSpecificResources.length, 3);
+  assert.ok(
+    osakidetzaSpecificResources.every(
+      (resource) =>
+        resource.variant === undefined &&
+        resource.includeInCombinedTest === false,
+    ),
+  );
+  const fullQuestionBank = osakidetzaSpecificResources.find(
+    (resource) => resource.id === osakidetzaSpecificQuestions.id,
+  );
+  const randomFifty = osakidetzaSpecificResources.find(
+    (resource) => resource.questionSelection?.type === "random-count",
+  );
+  const rangeBuilder = osakidetzaSpecificResources.find(
+    (resource) => resource.questionSelection?.type === "range",
+  );
   assert.deepEqual(
-    osakidetzaSpecificResources[0].orderModes,
+    fullQuestionBank.orderModes,
     ["natural", "aleatorio"],
   );
+  assert.equal(randomFifty.questionSelection.count, 50);
+  assert.deepEqual(randomFifty.orderModes, ["aleatorio"]);
+  assert.equal(rangeBuilder.questionCountLabel, "200 disponibles");
 
   const opposition = oppositions.find(
     (item) => repository.getTheme(item.id, "01") && repository.getTheme(item.id, "17"),
