@@ -48,6 +48,7 @@ const rangeTestResource = Object.freeze({
     ),
   ),
   includeInCombinedTest: false,
+  orderModes: Object.freeze(["natural"]),
   defaultOrder: "natural",
   questionSelection: Object.freeze({
     type: "range",

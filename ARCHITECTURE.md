@@ -4,13 +4,22 @@ OPOSAKETAK es una aplicación estática con módulos ES, sin framework, backend 
 
 ## Capas
 
-- `data/`: fuentes estáticas. Los tests y materiales se agrupan por oposición, tema y autor.
+- `data/`: fuentes estáticas. Los tests y materiales se agrupan por oposición, apartado y autor.
 - `models/`: reglas de negocio, acceso al catálogo y validación de datos.
 - `views/`: funciones puras de representación que generan el HTML de cada pantalla.
 - `controllers/`: navegación y coordinación de eventos del navegador.
 - `utils/`: operaciones puras reutilizables, sin acceso al DOM.
 
-`AppController` coordina rutas y transiciones entre pantallas. Los comportamientos con ciclo de vida propio, como la revisión y los controles del test, se mantienen en controladores específicos para evitar listeners huérfanos.
+`AppController` coordina rutas, el ciclo de vida del intento y las transiciones entre
+pantallas. `ResourceController` encapsula la búsqueda, los filtros, el acceso a teoría
+y la creación de tests por rango. Los demás comportamientos con ciclo de vida propio,
+como la revisión y los controles del test, se mantienen en controladores específicos
+para evitar listeners huérfanos.
+
+`test-attempt.js` traduce la configuración declarativa de un recurso en las preguntas
+y la ruta de un intento. Así, una oposición puede ofrecer orden natural, aleatorio,
+una muestra de tamaño fijo o un rango sin introducir condiciones específicas en las
+vistas.
 
 Los paneles laterales de configuración y novedades comparten `SidePanelController`, que centraliza el bloqueo del fondo, la restauración del foco, el cierre con Escape y la navegación cíclica por teclado. El contenido de las novedades reside en `data/updates.js` y se representa desde una vista específica.
 
@@ -34,9 +43,12 @@ Antes de iniciar la aplicación, `opposition-validator.js` y
 - clasificación y autoría obligatorias;
 - preguntas y opciones con texto;
 - opciones sin identificadores duplicados;
-- existencia de la respuesta correcta.
+- existencia de la respuesta correcta;
+- coherencia entre modos de orden, selección de preguntas y recopilaciones automáticas.
 
-El mismo control puede ejecutarse con `npm run validate:data` y forma parte de la integración continua.
+El mismo control puede ejecutarse con `npm run validate:data` y forma parte de la
+integración continua. `npm run validate:assets` comprueba además que todas las
+portadas y fuentes teóricas locales referenciadas existen antes de publicar.
 
 Las novedades tienen un esquema independiente y se validan con `update-validator.js`;
 la verificación conjunta cubre oposiciones, recursos, preguntas y novedades antes de
@@ -46,8 +58,9 @@ arrancar o publicar.
 
 Las rutas usan fragmentos (`#/...`) para ser compatibles con GitHub Pages sin reglas
 de redirección. El primer segmento de catálogo utiliza el `id` estable de la oposición;
-los alias de `legacyIds` mantienen compatibles los enlaces históricos. Los resultados
-solo son accesibles mientras el intento finalizado permanezca en memoria.
+el segundo identifica un apartado, que puede ser un tema numerado o una sección con
+nombre. Los alias de `legacyIds` mantienen compatibles los enlaces históricos. Los
+resultados solo son accesibles mientras el intento finalizado permanezca en memoria.
 
 ## Criterios de evolución
 

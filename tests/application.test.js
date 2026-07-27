@@ -5,9 +5,12 @@ import { resources } from "../data/resources.js";
 import { oppositions } from "../data/oppositions.js";
 import { createOppositionResourceFactory } from "../data/resource-factory.js";
 import osakidetzaSpecificQuestions from "../data/tests/osakidetza-tecnico-especialista-informatica-c1/temario-especifico/tests-osakidetza/bateria-preguntas-temario-especifico.js";
-import { tests } from "../data/tests.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
+import {
+  createTestAttempt,
+  restoreTestAttempt,
+} from "../models/test-attempt.js";
 import { validateOppositions } from "../models/opposition-validator.js";
 import { validateResources } from "../models/resource-validator.js";
 import { validateUpdates } from "../models/update-validator.js";
@@ -31,6 +34,10 @@ import {
 } from "../utils/preferences.js";
 import { parseHashRoute } from "../utils/router.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
+
+const tests = resources
+  .filter((resource) => resource.type === "test")
+  .map((resource) => resource.data);
 
 test("las portadas se resuelven desde la raíz real de la aplicación", () => {
   const pageUrl = "https://woodbika.github.io/atavarez/index.html";
@@ -65,9 +72,6 @@ test("el registro contiene todos los tests con un formato válido", () => {
     assert.ok(item.titulo);
     assert.ok(item.clasificacion.tema.numero);
     assert.ok(item.clasificacion.tema.titulo);
-    assert.ok(
-      item.clasificacion.partes === undefined || Array.isArray(item.clasificacion.partes),
-    );
     assert.ok(item.preguntas.length > 0);
 
     item.preguntas.forEach((question) => {
@@ -191,10 +195,11 @@ test("las novedades tienen identificadores y fechas válidas", () => {
   assert.ok(updates.every((update) => Number.isFinite(Date.parse(update.publishedAt))));
 
   const invalidUpdates = [
-    { ...updates[0], publishedAt: "fecha-no-válida" },
+    { ...updates[0], id: "ID no estable", publishedAt: "fecha-no-válida" },
     { ...updates[0] },
   ];
   const errors = validateUpdates(invalidUpdates);
+  assert.ok(errors.some((error) => error.includes("identificador estable")));
   assert.ok(errors.some((error) => error.includes("publishedAt")));
   assert.ok(errors.some((error) => error.includes("duplicado")));
 });
@@ -206,13 +211,22 @@ test("el catálogo de oposiciones exige identificadores y portadas válidos", ()
   };
   const invalid = {
     ...oppositions[0],
-    id: "otra-oposicion",
+    id: "Otra oposición",
     legacyIds: [oppositions[0].id],
     covers: { ...oppositions[0].covers, themes: "../portada.jpg" },
   };
-  const errors = validateOppositions([duplicate, invalid]);
+  const invalidSections = {
+    ...oppositions[1],
+    sections: oppositions[1].sections.map((section) => ({
+      ...section,
+      order: 1,
+    })),
+  };
+  const errors = validateOppositions([duplicate, invalid, invalidSections]);
 
+  assert.ok(errors.some((error) => error.includes("formato estable")));
   assert.ok(errors.some((error) => error.includes("duplicado")));
+  assert.ok(errors.some((error) => error.includes(".order")));
   assert.ok(errors.some((error) => error.includes("nombre de archivo seguro")));
 });
 
@@ -245,6 +259,39 @@ test("la validación exige que autor y clasificación coincidan con el test", ()
   assert.ok(errors.some((error) => error.includes(".author")));
   assert.ok(errors.some((error) => error.includes(".classification")));
   assert.ok(errors.some((error) => error.includes(".sourceClassification")));
+});
+
+test("la validación vincula cada recurso con un apartado declarado", () => {
+  const invalidResource = structuredClone(
+    resources.find(
+      (resource) =>
+        resource.opposition.id ===
+        "osakidetza-tecnico-especialista-informatica-c1",
+    ),
+  );
+  invalidResource.classification.tema.numero = "apartado-inexistente";
+  invalidResource.data.clasificacion.tema.numero = "apartado-inexistente";
+  const errors = validateResources([invalidResource], oppositions);
+
+  assert.ok(
+    errors.some((error) =>
+      error.includes("no existe en los apartados de la oposición"),
+    ),
+  );
+});
+
+test("la validación protege la configuración de los tests configurables", () => {
+  const configurable = structuredClone(
+    resources.find((resource) => resource.questionSelection?.type === "random-count"),
+  );
+  configurable.includeInCombinedTest = true;
+  configurable.defaultOrder = "natural";
+  configurable.questionSelection.count = configurable.data.preguntas.length + 1;
+  const errors = validateResources([configurable]);
+
+  assert.ok(errors.some((error) => error.includes("includeInCombinedTest")));
+  assert.ok(errors.some((error) => error.includes("defaultOrder")));
+  assert.ok(errors.some((error) => error.includes("questionSelection.count")));
 });
 
 test("la evaluación distingue aciertos, errores y preguntas sin responder", () => {
@@ -388,6 +435,47 @@ test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la
   assert.equal(source.preguntas.length, 200);
 });
 
+test("la fábrica de intentos conserva selección, orden y ruta de repetición", () => {
+  const repository = new ResourceRepository(resources, oppositions);
+  const randomResource = resources.find(
+    (resource) => resource.questionSelection?.type === "random-count",
+  );
+  const rangeResource = resources.find(
+    (resource) => resource.questionSelection?.type === "range",
+  );
+  const randomAttempt = createTestAttempt(
+    randomResource,
+    randomResource.data,
+    { random: () => 0 },
+  );
+  const rangeAttempt = createTestAttempt(rangeResource, rangeResource.data, {
+    requestedOrder: "rango",
+    requestedSelection: "103-109",
+  });
+  const invalidAttempt = createTestAttempt(rangeResource, rangeResource.data, {
+    requestedOrder: "rango",
+    requestedSelection: "109-103",
+  });
+  const restored = restoreTestAttempt(
+    repository.getTestById(randomResource.id),
+    randomAttempt.test.preguntas.map((question) => question.id),
+  );
+
+  assert.equal(randomAttempt.test.preguntas.length, 50);
+  assert.equal(randomAttempt.orderMode, "aleatorio");
+  assert.equal(randomAttempt.routeSuffix, "/aleatorio");
+  assert.deepEqual(
+    rangeAttempt.test.preguntas.map((question) => question.id),
+    [103, 104, 105, 106, 107, 108, 109],
+  );
+  assert.equal(rangeAttempt.routeSuffix, "/rango/103-109");
+  assert.ok(invalidAttempt.error);
+  assert.deepEqual(
+    restored.preguntas.map((question) => question.id),
+    randomAttempt.test.preguntas.map((question) => question.id),
+  );
+});
+
 test("las rutas hash se interpretan sin romper segmentos mal codificados", () => {
   assert.deepEqual(parseHashRoute("#/oposiciones/cuerpo%20administrativo"), [
     "oposiciones",
@@ -517,7 +605,6 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
 
   const theme01Resources = repository.getResources(opposition.id, "01");
   const theme17Resources = repository.getResources(opposition.id, "17");
-  const theme01Tests = theme01Resources.filter((resource) => resource.type === "test");
   const theme17SourceTests = theme17Resources.filter(
     (resource) => resource.type === "test" && resource.variant !== "complete",
   );
@@ -545,10 +632,6 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   });
   assert.ok(repository.searchResources(theme01Resources, "IVOT").length >= 6);
   assert.ok(repository.searchResources(theme17Resources, "IVOT").length >= 4);
-  assert.ok(theme01Tests.every((resource) => resource.classification.partes === undefined));
-  assert.ok(
-    theme17SourceTests.every((resource) => resource.classification.partes === undefined),
-  );
   assert.equal(
     new Set(theme17SourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
@@ -646,7 +729,6 @@ test("el tema 04 reúne sus tests IVOT en un test completo", () => {
     "./data/resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-04-organizacion-politica-administrativa-capv.pdf",
   );
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   assert.equal(
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
@@ -702,7 +784,6 @@ test("el tema 09 reúne sus tests IVOT en un test completo", () => {
   assert.ok(theme09);
   assert.ok(completeTest);
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   assert.equal(
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
@@ -750,7 +831,6 @@ test("el tema 18 reúne sus tests IVOT en un test completo", () => {
   assert.ok(theme18);
   assert.ok(completeTest);
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   assert.equal(
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
@@ -787,7 +867,6 @@ test("el tema 28 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme28);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   assert.ok(sourceTestIds.has("test-de-fuentes-del-derecho-1"));
   assert.ok(sourceTestIds.has("test-de-fuentes-del-derecho-2"));
   assert.equal(sourceQuestionCount, 47);
@@ -829,7 +908,6 @@ test("el tema 29 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme29);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),
@@ -874,7 +952,6 @@ test("el tema 30 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme30);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.equal(sourceQuestionCount, 96);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
@@ -913,7 +990,6 @@ test("el tema 31 reúne sus tests IVOT en un test completo", () => {
 
   assert.ok(theme31);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),
@@ -967,7 +1043,6 @@ test("el tema 32 reúne y ordena sus tests IVOT en un test completo", () => {
 
   assert.ok(theme32);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),
@@ -1011,7 +1086,6 @@ test("el tema 33 reúne y ordena sus tests IVOT en un test completo", () => {
 
   assert.ok(theme33);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),
@@ -1053,7 +1127,6 @@ test("el tema 34 reúne y ordena sus tests IVOT en un test completo", () => {
 
   assert.ok(theme34);
   assert.ok(completeTest);
-  assert.ok(sourceTests.every((resource) => resource.classification.partes === undefined));
   requiredTestIds.forEach((id) => assert.ok(sourceTestIds.has(id)));
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),

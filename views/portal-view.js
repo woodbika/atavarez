@@ -223,8 +223,7 @@ export function renderResources(
         const isTheory = resource.type === "teoria";
         const hasRelatedTheory = Boolean(resource.relatedTheory);
         const theoryNotice = resource.theoryNotice;
-        const hasParts = (resource.classification.partes ?? []).length > 0;
-        const usesLightTestTitle = resource.type === "test" && !isComplete && !hasParts;
+        const usesLightTestTitle = resource.type === "test" && !isComplete;
         const resourceTypeLabel = isComplete
           ? "Test completo"
           : resource.type === "test" && resource.author?.nombre
@@ -259,11 +258,9 @@ export function renderResources(
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
               : isTheory
                 ? '<p class="complete-description">Consulta el contenido del tema en formato de lectura estructurada o accede al PDF original.</p>'
-                : hasParts
-                  ? `<p class="parts"><span class="parts-label">Incluye</span> ${resource.classification.partes.map((part) => escapeHtml(formatDisplayTitle(part))).join(" · ")}</p>`
-                  : resource.description
-                    ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
-                    : ""}
+                : resource.description
+                  ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
+                  : ""}
             ${isRangeBuilder
               ? `<form class="range-test-builder" data-range-test-form data-test-id="${escapeHtml(resource.id)}" data-total-questions="${test.preguntas.length}" novalidate>
                   <label for="range-${escapeHtml(resource.id)}">Rango de preguntas</label>

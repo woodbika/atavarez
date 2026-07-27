@@ -1434,8 +1434,7 @@ h3 {
 }
 
 .question-count,
-.card-kicker,
-.parts {
+.card-kicker {
   color: var(--muted);
   font-size: 0.82rem;
 }
@@ -1526,10 +1525,6 @@ h3 {
 .card-link-status {
   color: var(--muted);
   font-weight: 600;
-}
-
-.parts {
-  margin: 0 0 18px;
 }
 
 .complete-description {
@@ -1638,12 +1633,6 @@ h3 {
   border-color: var(--brand);
   background: var(--brand-soft-hover);
   color: var(--brand);
-}
-
-.parts-label {
-  margin-right: 4px;
-  color: #78847f;
-  font-weight: 500;
 }
 
 .resource-card > .resource-action {
@@ -3979,10 +3968,6 @@ html[data-theme="dark"] .resource-action:focus-visible {
   border-color: var(--brand);
   background: #2d3733;
   color: var(--brand);
-}
-
-html[data-theme="dark"] .parts-label {
-  color: #87938e;
 }
 
 html[data-theme="dark"] .button-secondary {

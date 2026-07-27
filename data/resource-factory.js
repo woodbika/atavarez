@@ -13,9 +13,6 @@ function canonicalClassification(opposition, classification) {
     oposicionId: opposition.id,
     ...legacyFields,
     tema: source.tema,
-    ...(source.partes !== undefined
-      ? { partes: source.partes }
-      : {}),
   };
 }
 
@@ -47,7 +44,6 @@ export function createOppositionResourceFactory(
         sourceClassification: test.clasificacion,
         ...(relatedTheory ? { relatedTheory } : {}),
         ...(theoryNotice ? { theoryNotice } : {}),
-        ...(test.estado ? { answerStatus: test.estado } : {}),
         data: { ...test, clasificacion: classification },
       };
     },

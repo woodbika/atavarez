@@ -45,6 +45,9 @@ export class ResourceRepository {
       );
     });
     this.resourceById = new Map(this.resources.map((resource) => [resource.id, resource]));
+    this.oppositions = Object.freeze(
+      this.buildOppositions().map((opposition) => Object.freeze(opposition)),
+    );
   }
 
   buildCombinedResources(resources) {
@@ -114,7 +117,7 @@ export class ResourceRepository {
     return resource?.type === "test" ? resource.data : null;
   }
 
-  getOppositions() {
+  buildOppositions() {
     const groups = new Map(
       this.oppositionCatalog.map((opposition) => [
         opposition.id,
@@ -167,8 +170,12 @@ export class ResourceRepository {
       .sort((a, b) => a.title.localeCompare(b.title, "es"));
   }
 
+  getOppositions() {
+    return this.oppositions;
+  }
+
   getOpposition(id) {
-    return this.getOppositions().find(
+    return this.oppositions.find(
       (opposition) => opposition.id === id || opposition.legacyIds.includes(id),
     );
   }
@@ -244,7 +251,6 @@ export class ResourceRepository {
           classification.grupo,
           classification.escala,
           classification.tema.titulo,
-          ...(classification.partes ?? []),
         ].join(" "),
       );
       return !term || searchable.includes(term);

@@ -11,12 +11,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "npm run check:source && npm run validate:data && npm test",
+    "check": "npm run check:source && npm run validate:data && npm run validate:assets && npm test",
     "check:source": "find app.js controllers data models scripts utils views -name '*.js' -exec node --check {} \\;",
     "test": "node --test",
-    "validate:data": "node scripts/validate-data.js"
+    "validate:data": "node scripts/validate-data.js",
+    "validate:assets": "node scripts/validate-assets.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

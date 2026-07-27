@@ -1,6 +1,4 @@
-function isNonEmptyString(value) {
-  return typeof value === "string" && value.trim().length > 0;
-}
+import { isNonEmptyString, isStableId } from "../utils/validation.js";
 
 export function validateOppositions(oppositions) {
   if (!Array.isArray(oppositions) || oppositions.length === 0) {
@@ -28,6 +26,8 @@ export function validateOppositions(oppositions) {
     identifiers.forEach((id) => {
       if (!isNonEmptyString(id)) {
         errors.push(`${path}.legacyIds: solo puede contener identificadores válidos.`);
+      } else if (!isStableId(id)) {
+        errors.push(`${path}: el identificador ${id} no tiene un formato estable.`);
       } else if (knownIds.has(id)) {
         errors.push(`${path}: el identificador ${id} está duplicado.`);
       } else {
@@ -52,10 +52,13 @@ export function validateOppositions(oppositions) {
         errors.push(`${path}.sections: debe contener al menos un apartado.`);
       } else {
         const sectionIds = new Set();
+        const sectionOrders = new Set();
         opposition.sections.forEach((section, sectionIndex) => {
           const sectionPath = `${path}.sections[${sectionIndex}]`;
           if (!isNonEmptyString(section?.id)) {
             errors.push(`${sectionPath}.id: debe contener texto.`);
+          } else if (!isStableId(section.id)) {
+            errors.push(`${sectionPath}.id: debe ser un identificador estable.`);
           } else if (sectionIds.has(section.id)) {
             errors.push(`${sectionPath}.id: está duplicado.`);
           } else {
@@ -66,6 +69,10 @@ export function validateOppositions(oppositions) {
           }
           if (!Number.isInteger(section?.order)) {
             errors.push(`${sectionPath}.order: debe ser un entero.`);
+          } else if (sectionOrders.has(section.order)) {
+            errors.push(`${sectionPath}.order: está duplicado.`);
+          } else {
+            sectionOrders.add(section.order);
           }
         });
       }

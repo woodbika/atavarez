@@ -1,6 +1,4 @@
-function isNonEmptyString(value) {
-  return typeof value === "string" && value.trim().length > 0;
-}
+import { isNonEmptyString, isStableId } from "../utils/validation.js";
 
 export function validateUpdates(updates) {
   if (!Array.isArray(updates)) return ["updates: debe ser una lista."];
@@ -14,7 +12,9 @@ export function validateUpdates(updates) {
       return;
     }
     if (!isNonEmptyString(update.id)) errors.push(`${path}.id: debe contener texto.`);
-    else if (ids.has(update.id)) errors.push(`${path}.id: está duplicado.`);
+    else if (!isStableId(update.id)) {
+      errors.push(`${path}.id: debe ser un identificador estable.`);
+    } else if (ids.has(update.id)) errors.push(`${path}.id: está duplicado.`);
     else ids.add(update.id);
     ["category", "title", "description"].forEach((field) => {
       if (!isNonEmptyString(update[field])) {

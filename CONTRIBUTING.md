@@ -2,7 +2,7 @@
 
 ## Requisitos
 
-- Node.js 20 o posterior para validaciones y pruebas.
+- Node.js 22 o posterior para validaciones y pruebas.
 - Un servidor HTTP estático para abrir la aplicación localmente.
 
 ## Flujo recomendado
@@ -13,12 +13,16 @@
 4. Comprueba manualmente modo claro, oscuro, móvil y navegación por teclado.
 5. Usa mensajes de commit descriptivos y no incluyas datos locales.
 
-`npm run check` verifica la sintaxis de los módulos de producción, valida el catálogo completo y ejecuta las pruebas de lógica. No publiques directamente si alguna de estas comprobaciones falla.
+`npm run check` verifica la sintaxis de los módulos de producción, valida el catálogo
+y sus archivos locales, y ejecuta las pruebas de lógica. No publiques directamente
+si alguna de estas comprobaciones falla.
 
 Las novedades se mantienen en `data/updates.js`. Usa fechas ISO completas con zona horaria para que el aviso de 24 horas sea determinista.
 
 ## Añadir tests
 
-Guarda cada banco en la carpeta de su tema y autor. Regístralo después en `data/resources.js`. La validación automática debe completarse sin errores antes de publicar.
+Guarda cada banco en la carpeta de su oposición, apartado y autor. Regístralo después
+en `data/<id-de-oposicion>-resources.js`; `data/resources.js` solo agrega esos
+registros. La validación automática debe completarse sin errores antes de publicar.
 
 No incluyas información personal, credenciales, resultados de usuarios ni material cuya distribución no esté autorizada.

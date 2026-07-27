@@ -1,20 +1,17 @@
 import { TestSession } from "../models/test-session.js";
+import {
+  createTestAttempt,
+  restoreTestAttempt,
+} from "../models/test-attempt.js";
 import { coverImageUrl } from "../utils/assets.js";
 import { parseHashRoute } from "../utils/router.js";
-import {
-  orderTestQuestions,
-  parseQuestionRange,
-  selectQuestionRange,
-  selectQuestionsByOrder,
-  selectRandomQuestions,
-} from "../utils/test-order.js";
 import { renderNotFound } from "../views/layout.js";
-import { renderOppositions, renderResources, renderThemes } from "../views/portal-view.js";
+import { renderOppositions, renderThemes } from "../views/portal-view.js";
 import { renderResults } from "../views/results-view.js";
 import { renderReview } from "../views/review-view.js";
 import { renderTest } from "../views/test-view.js";
-import { openTheoryModal } from "../views/theory-view.js";
 import { ReviewController } from "./review-controller.js";
+import { ResourceController } from "./resource-controller.js";
 import { ScrollTopController } from "./scroll-top-controller.js";
 import { TestControlsController } from "./test-controls-controller.js";
 import { TestTimerController } from "./test-timer-controller.js";
@@ -28,6 +25,11 @@ export class AppController {
     this.sessionRouteSuffix = "";
     this.currentResult = null;
     this.testControls = new TestControlsController(root);
+    this.resourceController = new ResourceController({
+      root,
+      repository,
+      testControls: this.testControls,
+    });
     this.testTimer = new TestTimerController(root, {
       onPause: () => this.clearAutoAdvance(),
       onExpire: () => this.completeTest(),
@@ -141,102 +143,7 @@ export class AppController {
     if (!theme) return renderNotFound(this.root, "El apartado solicitado no existe.");
 
     const resources = this.repository.getResources(oppositionId, themeNumber);
-
-    const view = renderResources(this.root, {
-      opposition,
-      theme,
-      resources,
-    });
-
-    let query = "";
-    let authorFilter = "";
-    const filterButtons = [
-      ...this.root.querySelectorAll("[data-author-filter]"),
-    ];
-    const applyResourceFilters = () => {
-      const matchingResources = this.repository.searchResources(resources, query);
-      view.updateList(
-        authorFilter
-          ? matchingResources.filter(
-              (resource) =>
-                resource.type === "test" &&
-                resource.author?.id === authorFilter,
-            )
-          : matchingResources,
-      );
-    };
-
-    filterButtons.forEach((filterButton) => {
-      filterButton.addEventListener("click", (event) => {
-        const requestedAuthor = filterButton.dataset.authorFilter;
-        authorFilter = authorFilter === requestedAuthor ? "" : requestedAuthor;
-        filterButtons.forEach((button) => {
-          const isActive = button.dataset.authorFilter === authorFilter;
-          button.setAttribute("aria-pressed", String(isActive));
-          button.classList.toggle("is-active", isActive);
-        });
-        applyResourceFilters();
-        if (event.detail > 0 && window.matchMedia("(hover: none)").matches) {
-          filterButton.blur();
-        }
-      });
-    });
-
-    const resourceList = this.root.querySelector("#resource-list");
-    resourceList.addEventListener("click", (event) => {
-      const trigger = event.target.closest("[data-theory-resource], [data-related-theory]");
-      if (!trigger) return;
-      if (trigger.dataset.theoryResource) {
-        const resource = this.repository.getById(trigger.dataset.theoryResource);
-        if (!resource || resource.type !== "teoria") return;
-        openTheoryModal(this.root, resource, trigger);
-        return;
-      }
-
-      const testResource = this.repository.getById(trigger.dataset.relatedTheory);
-      const reference = testResource?.relatedTheory;
-      const theoryResource = reference
-        ? this.repository.getById(reference.resourceId)
-        : null;
-      if (!testResource || theoryResource?.type !== "teoria") return;
-      openTheoryModal(this.root, theoryResource, trigger, {
-        selection: reference.selection,
-        contextTitle: testResource.title,
-      });
-    });
-    resourceList.addEventListener("submit", (event) => {
-      const form = event.target.closest("[data-range-test-form]");
-      if (!form) return;
-      event.preventDefault();
-      const input = form.querySelector("[data-question-range]");
-      const error = form.querySelector("[data-range-error]");
-      const range = parseQuestionRange(input.value, Number(form.dataset.totalQuestions));
-      if (!range) {
-        input.setAttribute("aria-invalid", "true");
-        error.hidden = false;
-        input.focus();
-        return;
-      }
-
-      input.removeAttribute("aria-invalid");
-      error.hidden = true;
-      location.hash =
-        `#/test/${encodeURIComponent(form.dataset.testId)}/rango/${range.from}-${range.to}`;
-    });
-    resourceList.addEventListener("input", (event) => {
-      const input = event.target.closest("[data-question-range]");
-      if (!input) return;
-      input.removeAttribute("aria-invalid");
-      const error = input.form?.querySelector("[data-range-error]");
-      if (error) error.hidden = true;
-    });
-
-    if (resources.length) {
-      this.testControls.showSearch("Buscar recursos", (searchQuery) => {
-        query = searchQuery;
-        applyResourceFilters();
-      });
-    }
+    this.resourceController.show(opposition, theme, resources);
   }
 
   showTest(id, requestedOrder = "", requestedSelection = "") {
@@ -247,61 +154,33 @@ export class AppController {
       this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
-    const selection = resource?.questionSelection;
-    let selectedTest = test;
-    let selectionKey = "";
-    let routeSuffix = "";
-    let orderMode;
-
-    if (selection?.type === "random-count") {
-      orderMode = "aleatorio";
-      selectedTest = selectRandomQuestions(test, selection.count);
-      selectionKey = `random-${selection.count}`;
-      routeSuffix = "/aleatorio";
-    } else if (selection?.type === "range") {
-      const range = requestedOrder === "rango"
-        ? parseQuestionRange(requestedSelection, test.preguntas.length)
-        : null;
-      if (!range) {
-        this.testTimer.reset();
-        this.testControls.setTestRouteActive(false);
-        return renderNotFound(
-          this.root,
-          `Selecciona un rango válido entre 1 y ${test.preguntas.length}.`,
-        );
-      }
-      orderMode = "natural";
-      selectedTest = selectQuestionRange(test, range);
-      selectionKey = `${range.from}-${range.to}`;
-      routeSuffix = `/rango/${selectionKey}`;
-    } else {
-      const availableOrderModes = resource?.orderModes ?? ["natural"];
-      orderMode = availableOrderModes.includes(requestedOrder)
-        ? requestedOrder
-        : resource?.defaultOrder ?? "natural";
-      routeSuffix = `/${orderMode}`;
+    const attempt = createTestAttempt(resource, test, {
+      requestedOrder,
+      requestedSelection,
+    });
+    if (attempt.error) {
+      this.testTimer.reset();
+      this.testControls.setTestRouteActive(false);
+      return renderNotFound(this.root, attempt.error);
     }
 
     const startsNewSession =
       !this.session ||
       this.session.test.id !== id ||
-      this.sessionOrder !== orderMode ||
-      this.sessionSelectionKey !== selectionKey;
+      this.sessionOrder !== attempt.orderMode ||
+      this.sessionSelectionKey !== attempt.selectionKey;
     if (startsNewSession) {
-      const orderedTest = selection
-        ? selectedTest
-        : orderTestQuestions(test, orderMode);
-      this.session = new TestSession(orderedTest);
+      this.session = new TestSession(attempt.test);
       this.session.setLiveResponseEnabled(this.testPreferences.liveResponse);
       this.session.setAutoAdvanceEnabled(this.testPreferences.autoAdvance);
-      this.sessionOrder = orderMode;
+      this.sessionOrder = attempt.orderMode;
       this.testTimer.start(
-        orderedTest.preguntas.length,
+        attempt.test.preguntas.length,
         this.testPreferences.timerEnabled,
         this.testPreferences.timerSecondsPerQuestion,
       );
-      this.sessionSelectionKey = selectionKey;
-      this.sessionRouteSuffix = routeSuffix;
+      this.sessionSelectionKey = attempt.selectionKey;
+      this.sessionRouteSuffix = attempt.routeSuffix;
     }
     this.renderCurrentQuestion();
     if (startsNewSession) {
@@ -597,7 +476,7 @@ export class AppController {
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para consultarlo.");
 
     this.session = null;
-    const attemptedTest = selectQuestionsByOrder(test, result.questionOrder);
+    const attemptedTest = restoreTestAttempt(test, result.questionOrder);
     renderResults(this.root, attemptedTest, result, this.resourceContext(test));
     this.root.querySelector('[data-action="repeat"]').addEventListener("click", () => {
       this.currentResult = null;
@@ -614,7 +493,7 @@ export class AppController {
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
     this.session = null;
-    const orderedTest = selectQuestionsByOrder(test, result.questionOrder);
+    const orderedTest = restoreTestAttempt(test, result.questionOrder);
     renderReview(this.root, orderedTest, result, this.resourceContext(test));
     new ReviewController(this.root).start();
   }

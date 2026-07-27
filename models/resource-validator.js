@@ -1,6 +1,4 @@
-function isNonEmptyString(value) {
-  return typeof value === "string" && value.trim().length > 0;
-}
+import { isNonEmptyString, isStableId } from "../utils/validation.js";
 
 function validateClassification(classification, path, errors) {
   if (!classification || typeof classification !== "object") {
@@ -8,7 +6,7 @@ function validateClassification(classification, path, errors) {
     return;
   }
 
-  if (!isNonEmptyString(classification.oposicionId)) {
+  if (!isStableId(classification.oposicionId)) {
     errors.push(`${path}.clasificacion.oposicionId: debe contener un identificador estable.`);
   }
   ["administracion", "oposicion", "grupo", "escala"].forEach((field) => {
@@ -21,8 +19,10 @@ function validateClassification(classification, path, errors) {
     errors.push(`${path}.clasificacion.tema: es obligatorio.`);
     return;
   }
-  if (!isNonEmptyString(String(classification.tema.numero ?? ""))) {
-    errors.push(`${path}.clasificacion.tema.numero: es obligatorio.`);
+  if (!isStableId(String(classification.tema.numero ?? ""))) {
+    errors.push(
+      `${path}.clasificacion.tema.numero: debe contener un identificador estable.`,
+    );
   }
   if (!isNonEmptyString(classification.tema.titulo)) {
     errors.push(`${path}.clasificacion.tema.titulo: debe contener texto.`);
@@ -32,14 +32,6 @@ function validateClassification(classification, path, errors) {
     !isNonEmptyString(classification.tema.etiqueta)
   ) {
     errors.push(`${path}.clasificacion.tema.etiqueta: debe contener texto.`);
-  }
-  if (classification.partes !== undefined && !Array.isArray(classification.partes)) {
-    errors.push(`${path}.clasificacion.partes: debe ser una lista.`);
-  } else if (
-    Array.isArray(classification.partes) &&
-    classification.partes.some((part) => !isNonEmptyString(part))
-  ) {
-    errors.push(`${path}.clasificacion.partes: solo puede contener texto.`);
   }
 }
 
@@ -53,16 +45,7 @@ function classificationsMatch(resourceClassification, testClassification) {
     String(resourceClassification.tema?.numero ?? "") ===
       String(testClassification.tema?.numero ?? "") &&
     resourceClassification.tema?.titulo === testClassification.tema?.titulo;
-  const resourceParts = resourceClassification.partes;
-  const testParts = testClassification.partes;
-  const bothOmitParts = resourceParts === undefined && testParts === undefined;
-  const sameParts = bothOmitParts || (
-    Array.isArray(resourceParts) &&
-    Array.isArray(testParts) &&
-    resourceParts.length === testParts.length &&
-    resourceParts.every((part, index) => part === testParts[index])
-  );
-  return sameFields && sameTheme && sameParts;
+  return sameFields && sameTheme;
 }
 
 function validateResourceOpposition(resource, path, errors, oppositionById) {
@@ -99,6 +82,21 @@ function validateResourceOpposition(resource, path, errors, oppositionById) {
           errors.push(`${path}.opposition.${field}: no coincide con el catálogo.`);
         }
       });
+      if (Array.isArray(catalogOpposition.sections)) {
+        const section = catalogOpposition.sections.find(
+          (item) =>
+            String(item.id) === String(resource.classification?.tema?.numero),
+        );
+        if (!section) {
+          errors.push(
+            `${path}.classification.tema.numero: no existe en los apartados de la oposición.`,
+          );
+        } else if (section.title !== resource.classification?.tema?.titulo) {
+          errors.push(
+            `${path}.classification.tema.titulo: no coincide con el apartado de la oposición.`,
+          );
+        }
+      }
     }
   }
 }
@@ -136,6 +134,8 @@ function validateTest(resource, path, errors) {
   if (!isNonEmptyString(test.titulo)) errors.push(`${path}.data.titulo: debe contener texto.`);
   if (!isNonEmptyString(test.autor?.id) || !isNonEmptyString(test.autor?.nombre)) {
     errors.push(`${path}.data.autor: debe incluir id y nombre.`);
+  } else if (!isStableId(test.autor.id)) {
+    errors.push(`${path}.data.autor.id: debe ser un identificador estable.`);
   }
   if (test.titulo !== resource.title) {
     errors.push(`${path}.title: debe coincidir con el título del test.`);
@@ -187,6 +187,96 @@ function validateTest(resource, path, errors) {
       errors.push(`${questionPath}.respuestaCorrecta: no coincide con ninguna opción.`);
     }
   });
+}
+
+function validateTestConfiguration(resource, path, errors) {
+  const allowedOrderModes = new Set(["natural", "aleatorio"]);
+  if (
+    resource.includeInCombinedTest !== undefined &&
+    typeof resource.includeInCombinedTest !== "boolean"
+  ) {
+    errors.push(`${path}.includeInCombinedTest: debe ser booleano.`);
+  }
+
+  const orderModes = resource.orderModes;
+  if (orderModes !== undefined) {
+    if (
+      !Array.isArray(orderModes) ||
+      orderModes.length === 0 ||
+      orderModes.some((mode) => !allowedOrderModes.has(mode)) ||
+      new Set(orderModes).size !== orderModes.length
+    ) {
+      errors.push(
+        `${path}.orderModes: debe contener modos únicos natural o aleatorio.`,
+      );
+    }
+  }
+
+  if (
+    resource.defaultOrder !== undefined &&
+    !allowedOrderModes.has(resource.defaultOrder)
+  ) {
+    errors.push(`${path}.defaultOrder: debe ser natural o aleatorio.`);
+  } else if (
+    Array.isArray(orderModes) &&
+    resource.defaultOrder !== undefined &&
+    !orderModes.includes(resource.defaultOrder)
+  ) {
+    errors.push(`${path}.defaultOrder: debe estar incluido en orderModes.`);
+  }
+
+  ["questionCountLabel", "description", "actionLabel"].forEach((field) => {
+    if (resource[field] !== undefined && !isNonEmptyString(resource[field])) {
+      errors.push(`${path}.${field}: debe contener texto.`);
+    }
+  });
+
+  const selection = resource.questionSelection;
+  if (selection === undefined) return;
+  if (!selection || typeof selection !== "object") {
+    errors.push(`${path}.questionSelection: debe ser un objeto.`);
+    return;
+  }
+  if (!["random-count", "range"].includes(selection.type)) {
+    errors.push(
+      `${path}.questionSelection.type: debe ser random-count o range.`,
+    );
+    return;
+  }
+  if (resource.includeInCombinedTest !== false) {
+    errors.push(
+      `${path}.includeInCombinedTest: un test configurable no puede formar parte del test completo.`,
+    );
+  }
+  if (selection.type === "random-count") {
+    if (
+      !Number.isInteger(selection.count) ||
+      selection.count < 1 ||
+      selection.count > resource.data.preguntas.length
+    ) {
+      errors.push(
+        `${path}.questionSelection.count: debe ser un entero dentro de la batería.`,
+      );
+    }
+    if (
+      resource.defaultOrder !== "aleatorio" ||
+      !Array.isArray(orderModes) ||
+      !orderModes.includes("aleatorio")
+    ) {
+      errors.push(
+        `${path}.questionSelection: la selección aleatoria debe usar orden aleatorio.`,
+      );
+    }
+  }
+  if (
+    selection.type === "range" &&
+    resource.defaultOrder !== undefined &&
+    resource.defaultOrder !== "natural"
+  ) {
+    errors.push(
+      `${path}.questionSelection: la selección por rango debe conservar el orden natural.`,
+    );
+  }
 }
 
 function validateTheoryStructureItem(item, path, errors) {
@@ -399,8 +489,13 @@ export function validateResources(resources, oppositions = []) {
       return;
     }
     if (!isNonEmptyString(resource.id)) errors.push(`${path}.id: es obligatorio.`);
-    else if (resourceIds.has(resource.id)) errors.push(`${path}.id: está duplicado.`);
-    else resourceIds.add(resource.id);
+    else if (!isStableId(resource.id)) {
+      errors.push(`${path}.id: debe ser un identificador estable.`);
+    } else if (resourceIds.has(resource.id)) {
+      errors.push(`${path}.id: está duplicado.`);
+    } else {
+      resourceIds.add(resource.id);
+    }
     if (!isNonEmptyString(resource.type)) errors.push(`${path}.type: es obligatorio.`);
     if (!isNonEmptyString(resource.title)) errors.push(`${path}.title: debe contener texto.`);
     if (resource.theoryNotice !== undefined && !isNonEmptyString(resource.theoryNotice)) {
@@ -409,7 +504,10 @@ export function validateResources(resources, oppositions = []) {
     validateResourceOpposition(resource, path, errors, oppositionById);
     validateSourceClassification(resource, path, errors);
     validateClassification(resource.classification, path, errors);
-    if (resource.type === "test") validateTest(resource, path, errors);
+    if (resource.type === "test") {
+      validateTest(resource, path, errors);
+      validateTestConfiguration(resource, path, errors);
+    }
     if (resource.type === "teoria") validateTheory(resource, path, errors);
     if (resource.relatedTheory !== undefined) {
       validateRelatedTheory(resource.relatedTheory, `${path}.relatedTheory`, errors);

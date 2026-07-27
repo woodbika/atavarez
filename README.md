@@ -1,14 +1,15 @@
 # OPOSAKETAK
 
-Aplicación web estática para organizar oposiciones, temas y recursos de estudio. Funciona íntegramente en el navegador, sin backend, base de datos, dependencias externas ni proceso de compilación. La interfaz está en español y se adapta a móvil, tableta y escritorio.
+Aplicación web estática para organizar oposiciones, apartados del temario y recursos de estudio. Funciona íntegramente en el navegador, sin backend, base de datos, dependencias externas ni proceso de compilación. La interfaz está en español y se adapta a móvil, tableta y escritorio.
 
 ## Funcionalidades
 
-- Navegación jerárquica por tarjetas: oposiciones, temas y recursos.
+- Navegación jerárquica por tarjetas: oposiciones, apartados del temario y recursos.
 - Recursos teóricos estructurados, con navegación por capítulos y fragmentos relacionados desde los tests.
 - Recursos tipados para admitir tests y otros materiales progresivamente.
-- Test completo generado automáticamente por tema, con orden natural o aleatorio.
-- Búsqueda de recursos integrada en la cabecera de cada tema.
+- Test completo generado automáticamente en los apartados que lo admiten, con orden natural o aleatorio.
+- Tests configurables por orden, selección aleatoria o intervalo de preguntas.
+- Búsqueda de recursos integrada en la cabecera de cada apartado.
 - Una pregunta por pantalla, navegación anterior/siguiente y cambio de respuestas.
 - Modo concentración para centrar la pregunta y sus controles sobre un fondo suavemente difuminado.
 - Ajuste temporal del tamaño del texto de las preguntas y respuestas.
@@ -30,20 +31,19 @@ Aplicación web estática para organizar oposiciones, temas y recursos de estudi
 ├── index.html                 # Documento principal
 ├── app.js                     # Punto de entrada
 ├── assets/images/             # Imágenes y atribución de procedencia
-├── controllers/              # Enrutado e interacción
+├── controllers/              # Enrutado e interacción de cada pantalla
 ├── data/
 │   ├── oppositions.js        # Catálogo de oposiciones e identificadores estables
 │   ├── resources.js          # Agregador de los registros de cada oposición
 │   ├── resource-factory.js   # Normalización común de tests y teorías
 │   ├── *-resources.js        # Registro propio de cada oposición
 │   ├── updates.js            # Novedades visibles en la cabecera
-│   ├── resources/            # Materiales agrupados por oposición y tema
-│   ├── tests.js              # Export derivado de tests
+│   ├── resources/            # Materiales agrupados por oposición y apartado
 │   └── tests/                # Bancos de preguntas agrupados por oposición
-│       └── gobierno-vasco-administrativo-c1/
-│           └── tema-01/
-│               └── tests-ivot/ # Tests cuyo autor es IVOT
-├── models/                   # Portal y lógica del intento activo
+│       └── <oposicion>/
+│           └── <apartado>/
+│               └── tests-<autor>/
+├── models/                   # Catálogo, validación e intento activo
 ├── scripts/                  # Validaciones ejecutables desde Node.js
 ├── views/                    # Oposiciones, temas, recursos y cuestionarios
 ├── styles/main.css           # Sistema visual responsive
@@ -65,27 +65,32 @@ python3 -m http.server 8000
 
 Después abre `http://localhost:8000/`. También sirve cualquier servidor HTTP estático equivalente.
 
-Para ejecutar todas las verificaciones automatizadas (requiere Node.js 20 o posterior):
+Para ejecutar todas las verificaciones automatizadas (requiere Node.js 22 o posterior):
 
 ```bash
 npm run check
 ```
 
-Este comando comprueba la sintaxis del código de producción, valida todos los bancos de preguntas y ejecuta las pruebas. También pueden lanzarse por separado con `npm run check:source`, `npm run validate:data` y `npm test`. No es necesario ejecutar `npm install`: el proyecto no tiene dependencias.
+Este comando comprueba la sintaxis del código de producción, valida los bancos de
+preguntas y los archivos locales referenciados, y ejecuta las pruebas. También pueden
+lanzarse por separado con `npm run check:source`, `npm run validate:data`,
+`npm run validate:assets` y `npm test`. No es necesario ejecutar `npm install`: el
+proyecto no tiene dependencias.
 
 Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante GitHub Actions.
 
 ## Añadir una oposición
 
-1. Declara la oposición en `data/oppositions.js` con un `id` estable, sus datos visibles y las portadas de temas y recursos.
+1. Declara la oposición en `data/oppositions.js` con un `id` estable, sus datos visibles, sus portadas y, si no usa temas numerados, la colección `sections`.
 2. Crea un registro `data/<id>-resources.js`.
 3. Usa `createOppositionResourceFactory()` para convertir sus tests y teorías en recursos normalizados.
 4. Importa ese registro desde `data/resources.js`.
-5. Guarda sus bancos en `data/tests/<id>/tema-XX/` y sus materiales en `data/resources/<id>/tema-XX/`.
+5. Guarda sus bancos en `data/tests/<id>/<apartado>/` y sus materiales en `data/resources/<id>/<apartado>/`.
 
-El `id` no depende de los textos visibles. Los nombres de la administración, cuerpo,
-grupo o escala pueden corregirse sin cambiar las rutas de la aplicación. `legacyIds`
-permite conservar enlaces publicados antes de una modificación.
+El `id` no depende de los textos visibles y usa minúsculas, números y guiones. Los
+nombres de la administración, cuerpo, grupo o escala pueden corregirse sin cambiar
+las rutas de la aplicación. `legacyIds` permite conservar enlaces publicados antes
+de una modificación.
 
 Una oposición puede declararse con `status: "coming-soon"` para mostrar su ficha en
 la pantalla inicial sin permitir todavía el acceso. Cuando disponga de recursos debe
@@ -93,7 +98,7 @@ cambiarse a `status: "available"` y configurar sus portadas.
 
 ## Añadir un recurso
 
-1. Añade el archivo `.js` dentro de la carpeta de su oposición y tema.
+1. Añade el archivo `.js` dentro de la carpeta de su oposición y apartado.
 2. Abre el archivo `data/<id>-resources.js` de esa oposición.
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
 4. Para otro material, añade una entrada con `id`, `type`, `title`, `classification`, `href` y, opcionalmente, `actionLabel`.
@@ -116,6 +121,12 @@ clasificacion: {
 
 Los identificadores de tests, teorías y otros recursos deben ser únicos en todo el
 catálogo, aunque pertenezcan a oposiciones diferentes.
+
+El registro puede especializar cómo se inicia un test sin modificar el controlador
+general: `orderModes` y `defaultOrder` definen el orden disponible;
+`questionSelection` admite una selección aleatoria de cantidad fija o un intervalo;
+y `includeInCombinedTest: false` excluye el banco de la recopilación automática.
+Estas propiedades forman parte del esquema validado.
 
 Un test puede enlazar un fragmento de teoría mediante `relatedTheory`, indicando el `resourceId` de la teoría y una selección por `blockIds` o por intervalo de artículos. El modal reutiliza y filtra ese contenido original; no mantiene copias parciales de la teoría.
 
@@ -147,7 +158,7 @@ El archivo `.nojekyll` indica a GitHub Pages que publique el repositorio como co
 - JavaScript moderno con ES Modules, sin framework ni compilación.
 - Registro estático explícito: GitHub Pages no puede descubrir archivos del repositorio en tiempo de ejecución.
 - Hash routing para no depender de redirecciones del servidor.
-- Validación preventiva del catálogo tanto en el navegador como en integración continua.
+- Validación preventiva de oposiciones, recursos y configuraciones de test tanto en el navegador como en integración continua.
 - No se guarda progreso, historial ni resultados. El resultado calculado solo está disponible en las pantallas de resultado y revisión del intento recién finalizado; únicamente las preferencias del panel se conservan en `localStorage`.
 - Los datos de preguntas, opciones y soluciones se importan directamente y no se modifican.
 
