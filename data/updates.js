@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-estructura-empleo-publico-tema-17",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-28T10:53:38+02:00",
+    title: "Teoría de la estructura del empleo público",
+    description:
+      "El Tema 17 incorpora una lectura estructurada, acceso al PDF y los artículos correspondientes para cada test IVOT.",
+  }),
+  Object.freeze({
     id: "tests-configurables-osakidetza",
     category: "Nuevos tests",
     publishedAt: "2026-07-27T09:05:14+02:00",

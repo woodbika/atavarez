@@ -320,6 +320,35 @@ test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 17 relaciona cada test con su intervalo de teoría", () => {
+  const theory = resources.find(
+    (resource) => resource.id === "tema-17-empleo-publico-vasco",
+  );
+  const expectedSelections = new Map([
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-40-a-44", { from: 40, to: 44 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50", { from: 45, to: 50 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52", { from: 51, to: 52 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-53-a-62", { from: 53, to: 62 }],
+  ]);
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(
+    theory.title,
+    "Estructura y organización del empleo en las administraciones públicas vascas.",
+  );
+  assert.equal(theory.classification.tema.numero, "17");
+  assert.equal(theory.data.fuente.archivo, "tema-17-empleo-publico-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 16);
+  assert.equal(theory.data.bloques.length, 1);
+  expectedSelections.forEach((articles, resourceId) => {
+    const resource = resources.find((item) => item.id === resourceId);
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(resource.relatedTheory.selection, { articles });
+  });
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("los recursos de teoría declaran un título breve estable para su ficha", () => {
   const theories = resources.filter((resource) => resource.type === "teoria");
 
