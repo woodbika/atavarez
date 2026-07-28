@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import { authors } from "../data/authors.js";
 import {
+  osakidetzaCommonQuestionBank,
   osakidetzaSpecificQuestionBank,
   questionBanks,
 } from "../data/question-banks/index.js";
@@ -171,23 +172,51 @@ test("el catálogo de autores exige ids y nombres únicos", () => {
   assert.ok(errors.some((error) => error.includes(".name")));
 });
 
-test("el banco específico de Osakidetza incorpora una plantilla provisional válida", () => {
-  assert.equal(osakidetzaSpecificQuestionBank.kind, "question-bank");
-  assert.equal(osakidetzaSpecificQuestionBank.estado, "soluciones-provisionales");
-  assert.equal(osakidetzaSpecificQuestionBank.preguntas.length, 200);
-  assert.deepEqual(
-    osakidetzaSpecificQuestionBank.preguntas.map((question) => question.id),
-    Array.from({ length: 200 }, (_, index) => index + 1),
+test("las baterías de Osakidetza incorporan soluciones válidas", () => {
+  [
+    [osakidetzaCommonQuestionBank, 300, "soluciones-definitivas"],
+    [osakidetzaSpecificQuestionBank, 200, "soluciones-definitivas"],
+  ].forEach(([questionBank, questionCount, answerStatus]) => {
+    assert.equal(questionBank.kind, "question-bank");
+    assert.equal(questionBank.estado, answerStatus);
+    assert.equal(questionBank.preguntas.length, questionCount);
+    assert.deepEqual(
+      questionBank.preguntas.map((question) => question.id),
+      Array.from({ length: questionCount }, (_, index) => index + 1),
+    );
+    assert.ok(
+      questionBank.preguntas.every(
+        (question) =>
+          question.opciones.length === 4 &&
+          new Set(question.opciones.map((option) => option.id)).size === 4 &&
+          question.opciones.some(
+            (option) => option.id === question.respuestaCorrecta,
+          ),
+      ),
+    );
+  });
+  const commonAnswerCounts = osakidetzaCommonQuestionBank.preguntas.reduce(
+    (counts, question) => ({
+      ...counts,
+      [question.respuestaCorrecta]:
+        (counts[question.respuestaCorrecta] ?? 0) + 1,
+    }),
+    {},
   );
-  assert.ok(
-    osakidetzaSpecificQuestionBank.preguntas.every(
-      (question) =>
-        question.opciones.length === 4 &&
-        new Set(question.opciones.map((option) => option.id)).size === 4 &&
-        question.opciones.some(
-          (option) => option.id === question.respuestaCorrecta,
-        ),
-    ),
+  assert.deepEqual(commonAnswerCounts, { a: 65, b: 96, c: 90, d: 49 });
+  assert.equal(
+    osakidetzaCommonQuestionBank.preguntas
+      .slice(0, 10)
+      .map((question) => question.respuestaCorrecta)
+      .join(""),
+    "abcaaccabb",
+  );
+  assert.equal(
+    osakidetzaCommonQuestionBank.preguntas
+      .slice(-10)
+      .map((question) => question.respuestaCorrecta)
+      .join(""),
+    "bcbcbbcacb",
   );
   assert.deepEqual(
     validateQuestionBanks(questionBanks, oppositions, authors),
@@ -208,28 +237,33 @@ test("la validación protege el contrato de los bancos de preguntas", () => {
   assert.ok(errors.some((error) => error.includes("respuestaCorrecta")));
 });
 
-test("las modalidades de Osakidetza referencian una única batería", () => {
-  const presets = resources.filter(
+test("las modalidades de Osakidetza permanecen vinculadas a su propia batería", () => {
+  questionBanks.forEach((questionBank) => {
+    const presets = resources.filter(
+      (resource) => resource.questionBankId === questionBank.id,
+    );
+
+    assert.equal(presets.length, 3);
+    assert.ok(
+      presets.every(
+        (resource) =>
+          resource.variant === "preset" &&
+          resource.testPreset.kind === "test-preset" &&
+          resource.data.preguntas === questionBank.preguntas,
+      ),
+    );
+  });
+
+  const [invalidSource] = resources.filter(
     (resource) =>
       resource.questionBankId === osakidetzaSpecificQuestionBank.id,
   );
-
-  assert.equal(presets.length, 3);
-  assert.ok(
-    presets.every(
-      (resource) =>
-        resource.variant === "preset" &&
-        resource.testPreset.kind === "test-preset" &&
-        resource.data.preguntas === osakidetzaSpecificQuestionBank.preguntas,
-    ),
-  );
-
   const invalidPreset = {
-    ...presets[0],
+    ...invalidSource,
     defaultOrder: "aleatorio",
     questionBankId: "banco-inexistente",
     testPreset: {
-      ...presets[0].testPreset,
+      ...invalidSource.testPreset,
       questionBankId: "banco-inexistente",
     },
   };
@@ -666,29 +700,32 @@ test("el orden de preguntas admite una secuencia guardada y mezcla controlada", 
 });
 
 test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la batería", () => {
-  const source = osakidetzaSpecificQuestionBank;
-  const range = parseQuestionRange("103-109", source.preguntas.length);
-  const rangedTest = selectQuestionRange(source, range);
-  const randomTest = selectRandomQuestions(source, 50, () => 0);
-  const restoredTest = selectQuestionsByOrder(
-    source,
-    randomTest.preguntas.map((question) => question.id),
-  );
+  questionBanks.forEach((source) => {
+    const range = parseQuestionRange("103-109", source.preguntas.length);
+    const rangedTest = selectQuestionRange(source, range);
+    const randomTest = selectRandomQuestions(source, 50, () => 0);
+    const restoredTest = selectQuestionsByOrder(
+      source,
+      randomTest.preguntas.map((question) => question.id),
+    );
 
-  assert.deepEqual(range, { from: 103, to: 109 });
-  assert.equal(parseQuestionRange("109-103", source.preguntas.length), null);
-  assert.equal(parseQuestionRange("1-201", source.preguntas.length), null);
-  assert.deepEqual(
-    rangedTest.preguntas.map((question) => question.id),
-    [103, 104, 105, 106, 107, 108, 109],
-  );
-  assert.equal(randomTest.preguntas.length, 50);
-  assert.equal(new Set(randomTest.preguntas.map((question) => question.id)).size, 50);
-  assert.deepEqual(
-    restoredTest.preguntas.map((question) => question.id),
-    randomTest.preguntas.map((question) => question.id),
-  );
-  assert.equal(source.preguntas.length, 200);
+    assert.deepEqual(range, { from: 103, to: 109 });
+    assert.equal(parseQuestionRange("109-103", source.preguntas.length), null);
+    assert.equal(
+      parseQuestionRange(`1-${source.preguntas.length + 1}`, source.preguntas.length),
+      null,
+    );
+    assert.deepEqual(
+      rangedTest.preguntas.map((question) => question.id),
+      [103, 104, 105, 106, 107, 108, 109],
+    );
+    assert.equal(randomTest.preguntas.length, 50);
+    assert.equal(new Set(randomTest.preguntas.map((question) => question.id)).size, 50);
+    assert.deepEqual(
+      restoredTest.preguntas.map((question) => question.id),
+      randomTest.preguntas.map((question) => question.id),
+    );
+  });
 });
 
 test("la fábrica de intentos conserva selección, orden y ruta de repetición", () => {
@@ -701,7 +738,9 @@ test("la fábrica de intentos conserva selección, orden y ruta de repetición",
     (resource) => resource.questionSelection?.type === "random-count",
   );
   const rangeResource = resources.find(
-    (resource) => resource.questionSelection?.type === "range",
+    (resource) =>
+      resource.questionSelection?.type === "range" &&
+      resource.questionBankId === randomResource.questionBankId,
   );
   const randomAttempt = createTestAttempt(
     randomResource,

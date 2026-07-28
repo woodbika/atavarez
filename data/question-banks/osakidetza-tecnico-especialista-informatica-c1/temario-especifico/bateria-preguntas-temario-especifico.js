@@ -1,8 +1,3 @@
-/**
- * Datos extraídos de "TEC ESP INFORMATICA_cas.pdf".
- * El PDF no incluye soluciones oficiales.
- * Las respuestas incorporadas son una primera propuesta provisional pendiente de revisión.
- */
 const questionBank = {
   "kind": "question-bank",
   "schemaVersion": 1,
@@ -12,7 +7,7 @@ const questionBank = {
     "nombre": "OSAKIDETZA"
   },
   "titulo": "Batería de preguntas - Temario específico",
-  "estado": "soluciones-provisionales",
+  "estado": "soluciones-definitivas",
   "clasificacion": {
     "oposicionId": "osakidetza-tecnico-especialista-informatica-c1",
     "tema": {

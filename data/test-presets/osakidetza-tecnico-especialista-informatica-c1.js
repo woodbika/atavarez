@@ -1,6 +1,9 @@
-import { osakidetzaSpecificQuestionBank } from "../question-banks/index.js";
+import {
+  osakidetzaCommonQuestionBank,
+  osakidetzaSpecificQuestionBank,
+} from "../question-banks/index.js";
 
-function testPreset({
+function testPreset(questionBank, {
   id,
   title,
   orderModes,
@@ -14,7 +17,7 @@ function testPreset({
     schemaVersion: 1,
     id,
     title,
-    questionBankId: osakidetzaSpecificQuestionBank.id,
+    questionBankId: questionBank.id,
     includeInCombinedTest: false,
     orderModes: Object.freeze(orderModes),
     defaultOrder,
@@ -26,37 +29,48 @@ function testPreset({
   });
 }
 
-export const osakidetzaSpecificTestPresets = Object.freeze([
-  testPreset({
-    id: osakidetzaSpecificQuestionBank.id,
-    title: osakidetzaSpecificQuestionBank.titulo,
-    orderModes: ["natural", "aleatorio"],
-    defaultOrder: "natural",
-  }),
-  testPreset({
-    id: "test-aleatorio-50-temario-especifico-osakidetza",
-    title: "Test aleatorio de 50 preguntas",
-    orderModes: ["aleatorio"],
-    defaultOrder: "aleatorio",
-    questionSelection: {
-      type: "random-count",
-      count: 50,
-    },
-    questionCountLabel: "50 preguntas",
-    description:
-      "Crea un intento nuevo con 50 preguntas elegidas al azar de toda la batería.",
-  }),
-  testPreset({
-    id: "test-por-rango-temario-especifico-osakidetza",
-    title: "Test por rango de preguntas",
-    orderModes: ["natural"],
-    defaultOrder: "natural",
-    questionSelection: {
-      type: "range",
-    },
-    questionCountLabel:
-      `${osakidetzaSpecificQuestionBank.preguntas.length} disponibles`,
-    description:
-      "Selecciona la primera y la última pregunta que quieres incluir en el intento.",
-  }),
-]);
+function createTestPresets(questionBank, sectionId) {
+  return Object.freeze([
+    testPreset(questionBank, {
+      id: questionBank.id,
+      title: questionBank.titulo,
+      orderModes: ["natural", "aleatorio"],
+      defaultOrder: "natural",
+    }),
+    testPreset(questionBank, {
+      id: `test-aleatorio-50-temario-${sectionId}-osakidetza`,
+      title: "Test aleatorio de 50 preguntas",
+      orderModes: ["aleatorio"],
+      defaultOrder: "aleatorio",
+      questionSelection: {
+        type: "random-count",
+        count: 50,
+      },
+      questionCountLabel: "50 preguntas",
+      description:
+        "Crea un intento nuevo con 50 preguntas elegidas al azar de toda la batería.",
+    }),
+    testPreset(questionBank, {
+      id: `test-por-rango-temario-${sectionId}-osakidetza`,
+      title: "Test por rango de preguntas",
+      orderModes: ["natural"],
+      defaultOrder: "natural",
+      questionSelection: {
+        type: "range",
+      },
+      questionCountLabel: `${questionBank.preguntas.length} disponibles`,
+      description:
+        "Selecciona la primera y la última pregunta que quieres incluir en el intento.",
+    }),
+  ]);
+}
+
+export const osakidetzaCommonTestPresets = createTestPresets(
+  osakidetzaCommonQuestionBank,
+  "comun",
+);
+
+export const osakidetzaSpecificTestPresets = createTestPresets(
+  osakidetzaSpecificQuestionBank,
+  "especifico",
+);

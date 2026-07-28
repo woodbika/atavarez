@@ -1,6 +1,6 @@
 const SUPPORTED_ANSWER_STATUSES = new Set([
-  "soluciones-provisionales",
   "soluciones-revisadas",
+  "soluciones-definitivas",
   "soluciones-oficiales",
 ]);
 
