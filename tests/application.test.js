@@ -383,6 +383,39 @@ test("el tema 17 relaciona cada test con su intervalo de teoría", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 18 relaciona cada test con su intervalo de teoría", () => {
+  const theory = resources.find(
+    (resource) => resource.id === "tema-18-acceso-empleo-publico-provision-puestos",
+  );
+  const expectedSelections = new Map([
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138", { from: 136, to: 138 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-139-y-140", { from: 139, to: 140 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-141-y-142", { from: 141, to: 142 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-143-a-145", { from: 143, to: 145 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-146-a-148", { from: 146, to: 148 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-149-a-152", { from: 149, to: 152 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-153-a-155", { from: 153, to: 155 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-156-a-160", { from: 156, to: 160 }],
+  ]);
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(
+    theory.title,
+    "Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas.",
+  );
+  assert.equal(theory.classification.tema.numero, "18");
+  assert.equal(theory.data.fuente.archivo, "tema-18-empleo-publico-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 39);
+  assert.equal(theory.data.bloques.length, 3);
+  expectedSelections.forEach((articles, resourceId) => {
+    const resource = resources.find((item) => item.id === resourceId);
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(resource.relatedTheory.selection, { articles });
+  });
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("los recursos de teoría declaran un título breve estable para su ficha", () => {
   const theories = resources.filter((resource) => resource.type === "teoria");
 

@@ -71,6 +71,7 @@ import teoriaOrganizacionTerritorial from "./resources/gobierno-vasco-administra
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
+import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
 
 const relatedTheoryByTestId = new Map([
   [testEstructura.id, {
@@ -157,6 +158,38 @@ const relatedTheoryByTestId = new Map([
     resourceId: teoriaEmpleoPublicoVasco.id,
     selection: { articles: { from: 53, to: 62 } },
   }],
+  [testEmpleoPublico136a138.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 136, to: 138 } },
+  }],
+  [testEmpleoPublico139y140.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 139, to: 140 } },
+  }],
+  [testEmpleoPublico141y142.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 141, to: 142 } },
+  }],
+  [testEmpleoPublico143a145.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 143, to: 145 } },
+  }],
+  [testEmpleoPublico146a148.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 146, to: 148 } },
+  }],
+  [testEmpleoPublico149a152.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 149, to: 152 } },
+  }],
+  [testEmpleoPublico153a155.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 153, to: 155 } },
+  }],
+  [testEmpleoPublico156a160.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 156, to: 160 } },
+  }],
 ]);
 
 const theoryNoticeByTestId = new Map([
@@ -198,6 +231,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico45a50),
   testResource(testEmpleoPublico51y52),
   testResource(testEmpleoPublico53a62),
+  theoryResource(teoriaAccesoEmpleoPublicoVasco),
   testResource(testEmpleoPublico136a138),
   testResource(testEmpleoPublico139y140),
   testResource(testEmpleoPublico141y142),
