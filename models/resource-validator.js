@@ -2,7 +2,7 @@ import { isNonEmptyString, isStableId } from "../utils/validation.js";
 import { validateQuestions } from "./question-validator.js";
 import { isSupportedAnswerStatus } from "./test-contract.js";
 
-const SUPPORTED_RESOURCE_TYPES = new Set(["test", "teoria"]);
+const SUPPORTED_RESOURCE_TYPES = new Set(["test", "teoria", "resumen"]);
 
 function validateAuthor(
   author,
@@ -590,6 +590,132 @@ function validateTheory(resource, path, errors, authorById) {
   });
 }
 
+function validateSummaryNotes(notes, path, errors) {
+  if (!Array.isArray(notes)) {
+    errors.push(`${path}: debe ser una lista.`);
+    return;
+  }
+  notes.forEach((note, index) => {
+    const notePath = `${path}[${index}]`;
+    if (!note || typeof note !== "object") {
+      errors.push(`${notePath}: debe ser un objeto.`);
+      return;
+    }
+    ["titulo", "articulos", "texto"].forEach((field) => {
+      if (!isNonEmptyString(note[field])) {
+        errors.push(`${notePath}.${field}: debe contener texto.`);
+      }
+    });
+  });
+}
+
+function validateSummary(resource, path, errors) {
+  const summary = resource.data;
+  if (!summary || typeof summary !== "object") {
+    errors.push(`${path}.data: falta el contenido del resumen.`);
+    return;
+  }
+  if (summary.schemaVersion !== 1) {
+    errors.push(`${path}.data.schemaVersion: debe ser 1.`);
+  }
+  if (summary.id !== resource.id) {
+    errors.push(`${path}.data.id: debe coincidir con el recurso.`);
+  }
+  if (!isNonEmptyString(summary.titulo)) {
+    errors.push(`${path}.data.titulo: debe contener texto.`);
+  } else if (summary.titulo.trim() !== resource.title) {
+    errors.push(`${path}.title: debe coincidir con el título del resumen.`);
+  }
+  if (!isNonEmptyString(summary.descripcion)) {
+    errors.push(`${path}.data.descripcion: debe contener texto.`);
+  }
+  if (!classificationsMatch(resource.classification, summary.clasificacion)) {
+    errors.push(`${path}.classification: debe coincidir con la clasificación del resumen.`);
+  }
+  validateClassification(summary.clasificacion, `${path}.data`, errors);
+
+  const source = summary.fuente;
+  if (!source || typeof source !== "object") {
+    errors.push(`${path}.data.fuente: debe identificar la teoría de origen.`);
+  } else {
+    if (!isStableId(source.resourceId)) {
+      errors.push(`${path}.data.fuente.resourceId: debe ser un identificador estable.`);
+    }
+    const { desde, hasta } = source.articulos ?? {};
+    if (
+      !Number.isInteger(desde) ||
+      !Number.isInteger(hasta) ||
+      desde < 1 ||
+      hasta < desde
+    ) {
+      errors.push(`${path}.data.fuente.articulos: debe definir un intervalo válido.`);
+    }
+  }
+
+  if (!Array.isArray(summary.columnas) || summary.columnas.length < 2) {
+    errors.push(`${path}.data.columnas: debe contener al menos dos columnas.`);
+  }
+  const columnIds = new Set();
+  (summary.columnas ?? []).forEach((column, index) => {
+    const columnPath = `${path}.data.columnas[${index}]`;
+    if (!column || typeof column !== "object") {
+      errors.push(`${columnPath}: debe ser un objeto.`);
+      return;
+    }
+    if (!isStableId(column.id)) {
+      errors.push(`${columnPath}.id: debe ser un identificador estable.`);
+    } else if (columnIds.has(column.id)) {
+      errors.push(`${columnPath}.id: está duplicado.`);
+    } else {
+      columnIds.add(column.id);
+    }
+    if (!isNonEmptyString(column.titulo)) {
+      errors.push(`${columnPath}.titulo: debe contener texto.`);
+    }
+  });
+
+  if (!Array.isArray(summary.filas) || summary.filas.length === 0) {
+    errors.push(`${path}.data.filas: debe contener al menos una fila.`);
+  }
+  (summary.filas ?? []).forEach((row, index) => {
+    const rowPath = `${path}.data.filas[${index}]`;
+    if (!row || typeof row !== "object") {
+      errors.push(`${rowPath}: debe ser un objeto.`);
+      return;
+    }
+    if (!isNonEmptyString(row.articulos)) {
+      errors.push(`${rowPath}.articulos: debe contener texto.`);
+    }
+    columnIds.forEach((columnId) => {
+      if (!isNonEmptyString(row[columnId])) {
+        errors.push(`${rowPath}.${columnId}: debe contener texto.`);
+      }
+    });
+  });
+
+  validateSummaryNotes(summary.reglasComunes, `${path}.data.reglasComunes`, errors);
+  const priority = summary.prioridadReingreso;
+  if (!priority || typeof priority !== "object") {
+    errors.push(`${path}.data.prioridadReingreso: debe ser un objeto.`);
+  } else {
+    ["titulo", "articulos", "introduccion"].forEach((field) => {
+      if (!isNonEmptyString(priority[field])) {
+        errors.push(`${path}.data.prioridadReingreso.${field}: debe contener texto.`);
+      }
+    });
+    if (
+      !Array.isArray(priority.situaciones) ||
+      priority.situaciones.length === 0 ||
+      priority.situaciones.some((situation) => !isNonEmptyString(situation))
+    ) {
+      errors.push(
+        `${path}.data.prioridadReingreso.situaciones: debe contener situaciones.`,
+      );
+    }
+  }
+  validateSummaryNotes(summary.alcance, `${path}.data.alcance`, errors);
+}
+
 function validateRelatedTheory(reference, path, errors) {
   if (!reference || typeof reference !== "object") {
     errors.push(`${path}: debe ser un objeto.`);
@@ -691,6 +817,9 @@ export function validateResources(
     if (resource.type === "teoria") {
       validateTheory(resource, path, errors, authorById);
     }
+    if (resource.type === "resumen") {
+      validateSummary(resource, path, errors);
+    }
     if (resource.relatedTheory !== undefined) {
       validateRelatedTheory(resource.relatedTheory, `${path}.relatedTheory`, errors);
     }
@@ -698,6 +827,25 @@ export function validateResources(
 
   const resourcesById = new Map(resources.map((resource) => [resource?.id, resource]));
   resources.forEach((resource, index) => {
+    if (resource?.type === "resumen") {
+      const path = `resources[${index}].data.fuente`;
+      const theory = resourcesById.get(resource.data?.fuente?.resourceId);
+      if (theory?.type !== "teoria") {
+        errors.push(`${path}.resourceId: no corresponde a un recurso de teoría.`);
+      } else if (!classificationsMatch(resource.classification, theory.classification)) {
+        errors.push(`${path}: la teoría debe pertenecer al mismo tema que el resumen.`);
+      } else {
+        const availableArticles = theoryArticleNumbers(theory.data);
+        const { desde, hasta } = resource.data.fuente.articulos ?? {};
+        if (Number.isInteger(desde) && Number.isInteger(hasta)) {
+          for (let number = desde; number <= hasta; number += 1) {
+            if (!availableArticles.has(number)) {
+              errors.push(`${path}.articulos: el artículo ${number} no existe.`);
+            }
+          }
+        }
+      }
+    }
     if (!resource?.relatedTheory?.resourceId) return;
     const path = `resources[${index}].relatedTheory`;
     const theory = resourcesById.get(resource.relatedTheory.resourceId);

@@ -117,5 +117,21 @@ export function createOppositionResourceFactory(
         },
       };
     },
+    summaryResource(summary) {
+      const classification = canonicalClassification(opposition, summary.clasificacion);
+      return {
+        id: summary.id,
+        type: "resumen",
+        title: summary.titulo,
+        description: summary.descripcion,
+        opposition,
+        classification,
+        sourceClassification: summary.clasificacion,
+        data: {
+          ...summary,
+          clasificacion: classification,
+        },
+      };
+    },
   });
 }

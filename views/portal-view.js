@@ -215,6 +215,7 @@ export function renderResources(
         const hasOrderSelector = (resource.orderModes?.length ?? 0) > 1;
         const isRangeBuilder = resource.questionSelection?.type === "range";
         const isTheory = resource.type === "teoria";
+        const isSummary = resource.type === "resumen";
         const hasRelatedTheory = Boolean(resource.relatedTheory);
         const theoryNotice = resource.theoryNotice;
         const usesLightTestTitle = resource.type === "test" && !isComplete;
@@ -226,7 +227,9 @@ export function renderResources(
               ? "Test"
               : isTheory
                 ? "Teoría"
-                : resource.type;
+                : isSummary
+                  ? "Resumen"
+                  : resource.type;
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
           : resource.href;
@@ -238,11 +241,13 @@ export function renderResources(
           ? resource.actionLabel ?? "Empezar test"
           : isTheory
             ? "Consultar teoría"
+            : isSummary
+              ? "Consultar resumen"
             : resource.actionLabel ?? "Abrir recurso";
         return `
-          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isTheory ? "resource-card-theory" : ""}">
+          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isTheory ? "resource-card-theory" : ""} ${isSummary ? "resource-card-summary" : ""}">
             <div class="card-topline">
-              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""}">${escapeHtml(resourceTypeLabel)}</span>
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""} ${isSummary ? "resource-type-summary" : ""}">${escapeHtml(resourceTypeLabel)}</span>
               ${resource.type === "test"
                 ? `<span class="question-count">${escapeHtml(resource.questionCountLabel ?? `${test.preguntas.length} preguntas`)}</span>`
                 : ""}
@@ -252,6 +257,8 @@ export function renderResources(
               ? '<p class="complete-description">Reúne todas las preguntas disponibles de este tema.</p>'
               : isTheory
                 ? '<p class="complete-description">Consulta el contenido del tema en formato de lectura estructurada o accede al PDF original.</p>'
+                : isSummary
+                  ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
                 : resource.description
                   ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
                   : ""}
@@ -284,6 +291,8 @@ export function renderResources(
                       <span>PDF</span>
                     </a>
                   </div>`
+                : isSummary
+                  ? `<button class="resource-action" type="button" data-summary-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
                 : `<div class="resource-card-actions">
                     ${hasRelatedTheory
                       ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`

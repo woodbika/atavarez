@@ -11,8 +11,9 @@ function firstArticleNumber(title) {
 
 function resourceDisplayOrder(resource) {
   if (resource.type === "teoria") return 0;
-  if (resource.variant === "complete") return 2;
-  return 1;
+  if (resource.type === "resumen") return 1;
+  if (resource.variant === "complete") return 3;
+  return 2;
 }
 
 function combinedTestTitle(theme) {
@@ -255,6 +256,7 @@ export class ResourceRepository {
       const searchable = normalizeText(
         [
           resource.title,
+          resource.description,
           resource.author?.nombre,
           classification.administracion,
           classification.oposicion,

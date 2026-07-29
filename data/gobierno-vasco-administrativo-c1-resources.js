@@ -72,6 +72,7 @@ import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administr
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
 import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
+import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-administrativo-c1/tema-18/resumen/resumen-situaciones-administrativas.js";
 
 const relatedTheoryByTestId = new Map([
   [testEstructura.id, {
@@ -197,7 +198,7 @@ const theoryNoticeByTestId = new Map([
   [testOrganizacionTerritorial3.id, "Sin vínculo teórico directo"],
 ]);
 
-const { testResource, theoryResource } = createOppositionResourceFactory(
+const { summaryResource, testResource, theoryResource } = createOppositionResourceFactory(
   GOBIERNO_VASCO_ADMINISTRATIVO_C1,
   { relatedTheoryByTestId, theoryNoticeByTestId },
 );
@@ -232,6 +233,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico51y52),
   testResource(testEmpleoPublico53a62),
   theoryResource(teoriaAccesoEmpleoPublicoVasco),
+  summaryResource(resumenSituacionesAdministrativas),
   testResource(testEmpleoPublico136a138),
   testResource(testEmpleoPublico139y140),
   testResource(testEmpleoPublico141y142),

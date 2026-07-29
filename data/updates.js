@@ -1,5 +1,21 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "resumen-situaciones-administrativas-tema-18",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-29T09:18:08+02:00",
+    title: "Resumen de situaciones administrativas",
+    description:
+      "El Tema 18 incorpora una comparativa de las situaciones administrativas, sus plazos, efectos, reglas comunes y prioridad de reingreso.",
+  }),
+  Object.freeze({
+    id: "teoria-acceso-provision-empleo-publico-tema-18",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-29T08:39:15+02:00",
+    title: "Teoría del acceso y la provisión de empleo público",
+    description:
+      "El Tema 18 incorpora una lectura estructurada, acceso al PDF y la teoría correspondiente para cada uno de sus ocho tests IVOT.",
+  }),
+  Object.freeze({
     id: "teoria-estructura-empleo-publico-tema-17",
     category: "Nuevo recurso",
     publishedAt: "2026-07-28T10:53:38+02:00",

@@ -416,6 +416,34 @@ test("el tema 18 relaciona cada test con su intervalo de teoría", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 18 incluye un resumen comparativo vinculado a su teoría", () => {
+  const repository = new ResourceRepository(resources);
+  const summary = resources.find(
+    (resource) => resource.id === "resumen-tema-18-situaciones-administrativas",
+  );
+  const themeResources = repository.getResources(
+    "gobierno-vasco-administrativo-c1",
+    "18",
+  );
+
+  assert.ok(summary);
+  assert.equal(summary.type, "resumen");
+  assert.equal(summary.classification.tema.numero, "18");
+  assert.equal(
+    summary.data.fuente.resourceId,
+    "tema-18-acceso-empleo-publico-provision-puestos",
+  );
+  assert.deepEqual(summary.data.fuente.articulos, { desde: 136, hasta: 160 });
+  assert.equal(summary.data.columnas.length, 6);
+  assert.equal(summary.data.filas.length, 16);
+  assert.equal(summary.data.reglasComunes.length, 6);
+  assert.equal(summary.data.prioridadReingreso.situaciones.length, 12);
+  assert.equal(summary.data.alcance.length, 2);
+  assert.equal(themeResources[0].type, "teoria");
+  assert.equal(themeResources[1].id, summary.id);
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("los recursos de teoría declaran un título breve estable para su ficha", () => {
   const theories = resources.filter((resource) => resource.type === "teoria");
 
