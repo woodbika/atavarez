@@ -73,6 +73,7 @@ import testLey40Articulos32y33 from "./tests/gobierno-vasco-administrativo-c1/te
 import testLey40Articulos34a37 from "./tests/gobierno-vasco-administrativo-c1/tema-34/tests-ivot/test-ley-40-2015-articulos-34-a-37.js";
 import teoriaConstitucion from "./resources/gobierno-vasco-administrativo-c1/tema-01/teoria/tema-1-la-constitucion-espanola.js";
 import teoriaOrganizacionTerritorial from "./resources/gobierno-vasco-administrativo-c1/tema-02/teoria/tema-2-organizacion-territorial.js";
+import teoriaUnionEuropea from "./resources/gobierno-vasco-administrativo-c1/tema-03/teoria/tema-03-union-europea.js";
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
@@ -201,6 +202,11 @@ const relatedTheoryByTestId = new Map([
 const theoryNoticeByTestId = new Map([
   [testOrganizacionTerritorial2.id, "Sin vínculo teórico directo"],
   [testOrganizacionTerritorial3.id, "Sin vínculo teórico directo"],
+  [testEspacioEuropeo1.id, "Sin vínculo teórico directo"],
+  [testEspacioEuropeo2.id, "Sin vínculo teórico directo"],
+  [testEspacioEuropeo3.id, "Sin vínculo teórico directo"],
+  [testInstitucionesUnionEuropea1.id, "Sin vínculo teórico directo"],
+  [testInstitucionesUnionEuropea2.id, "Sin vínculo teórico directo"],
 ]);
 
 const { summaryResource, testResource, theoryResource } = createOppositionResourceFactory(
@@ -221,6 +227,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testOrganizacionTerritorial2),
   testResource(testOrganizacionTerritorial3),
   testResource(testOrganizacionTerritorial4),
+  theoryResource(teoriaUnionEuropea),
   testResource(testEspacioEuropeo1),
   testResource(testEspacioEuropeo2),
   testResource(testEspacioEuropeo3),

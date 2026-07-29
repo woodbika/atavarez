@@ -2116,6 +2116,69 @@ h3 {
   gap: 30px;
 }
 
+.theory-thematic-content {
+  display: grid;
+  gap: 12px;
+  max-width: 860px;
+}
+
+.theory-thematic-content > p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.68;
+}
+
+.theory-thematic-content > h4 {
+  margin: 14px 0 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--brand);
+  font-size: 0.9rem;
+  font-weight: 670;
+  line-height: 1.45;
+}
+
+.theory-thematic-list {
+  display: grid;
+  gap: 7px;
+  margin: 2px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.theory-thematic-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+}
+
+.theory-thematic-list li > span {
+  padding-top: 2px;
+  color: var(--brand);
+  font-size: 0.74rem;
+  font-weight: 680;
+  text-align: right;
+}
+
+.theory-thematic-list p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.62;
+}
+
+.theory-thematic-data {
+  margin: 2px 0;
+  padding: 11px 13px;
+  border-left: 2px solid color-mix(in srgb, var(--brand) 58%, var(--line));
+  border-radius: 0 7px 7px 0;
+  background: color-mix(in srgb, var(--brand-soft) 38%, var(--surface));
+  color: var(--ink);
+  font-size: 0.79rem;
+  line-height: 1.55;
+}
+
 .theory-legal-group {
   padding: 0;
 }

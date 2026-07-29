@@ -524,6 +524,40 @@ function validateTheoryLegalItem(item, path, errors) {
   validateTheoryTextContent(item, path, errors);
 }
 
+const SUPPORTED_THEMATIC_NODE_TYPES = new Set([
+  "parrafo",
+  "subtitulo",
+  "dato",
+  "elemento-numerado",
+  "elemento-letra",
+  "elemento-lista",
+]);
+
+function validateTheoryThematicItem(item, path, errors) {
+  if (!item || typeof item !== "object") {
+    errors.push(`${path}: debe ser un objeto.`);
+    return;
+  }
+  if (!SUPPORTED_THEMATIC_NODE_TYPES.has(item.tipo)) {
+    errors.push(`${path}.tipo: no está soportado.`);
+  }
+  if (!isNonEmptyString(item.texto)) {
+    errors.push(`${path}.texto: debe contener texto.`);
+  }
+  if (
+    item.tipo === "elemento-numerado" &&
+    !isNonEmptyString(String(item.numero ?? ""))
+  ) {
+    errors.push(`${path}.numero: es obligatorio.`);
+  }
+  if (
+    item.tipo === "elemento-letra" &&
+    !isNonEmptyString(String(item.letra ?? ""))
+  ) {
+    errors.push(`${path}.letra: es obligatoria.`);
+  }
+}
+
 function validateTheory(resource, path, errors, authorById) {
   const theory = resource.data;
   if (!theory || typeof theory !== "object") {
@@ -582,6 +616,18 @@ function validateTheory(resource, path, errors, authorById) {
       } else {
         block.contenido.forEach((item, itemIndex) => {
           validateTheoryLegalItem(item, `${blockPath}.contenido[${itemIndex}]`, errors);
+        });
+      }
+    } else if (block?.tipo === "contenido-tematico") {
+      if (!Array.isArray(block.contenido) || block.contenido.length === 0) {
+        errors.push(`${blockPath}.contenido: debe contener elementos.`);
+      } else {
+        block.contenido.forEach((item, itemIndex) => {
+          validateTheoryThematicItem(
+            item,
+            `${blockPath}.contenido[${itemIndex}]`,
+            errors,
+          );
         });
       }
     } else {

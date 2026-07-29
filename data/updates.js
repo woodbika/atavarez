@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-union-europea-tema-03",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-29T15:30:40+02:00",
+    title: "Teoría del espacio europeo",
+    description:
+      "El Tema 3 incorpora una lectura estructurada, navegación por bloques y acceso al PDF original. Sus cinco tests indican que no disponen de un vínculo teórico directo.",
+  }),
+  Object.freeze({
     id: "tests-ivot-espacio-europeo-tema-03",
     category: "Nuevos tests",
     publishedAt: "2026-07-29T14:29:36+02:00",

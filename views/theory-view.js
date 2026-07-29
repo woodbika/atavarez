@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/text.js";
+import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 
 function renderTextContent(node) {
   const paragraphs = [];
@@ -97,7 +97,7 @@ function selectedTheory(theory, selection) {
     return {
       ...theory,
       bloques: theory.bloques
-        .filter((block) => block.tipo !== "estructura")
+        .filter((block) => block.tipo === "titulo" || block.tipo === "apartado-tematico")
         .map((block) => ({
           ...block,
           contenido: block.contenido
@@ -207,15 +207,24 @@ function renderTheorySideNav(theory) {
   if (!legalBlocks.length) return "";
   return `
     <aside class="theory-side-nav" aria-label="Navegar por el contenido de la teoría">
-      ${legalBlocks.map((block) => `
-        <div>
-          <span>${block.tipo === "titulo" && block.numero != null
-            ? `Título ${escapeHtml(block.numero)}`
-            : "Bloque temático"}</span>
-          <strong>${escapeHtml(block.titulo)}</strong>
-        </div>
-        <ul>${theoryNavigationItems(block.contenido, block.id).map(renderTheoryNavItem).join("")}</ul>
-      `).join("")}
+      ${legalBlocks.map((block) => {
+        const isThematic = block.tipo === "contenido-tematico";
+        return `
+          <div>
+            <span>${block.tipo === "titulo" && block.numero != null
+              ? `Título ${escapeHtml(block.numero)}`
+              : "Bloque temático"}</span>
+            <strong>${escapeHtml(formatDisplayTitle(block.titulo))}</strong>
+          </div>
+          <ul>${isThematic
+            ? `<li>
+                <button type="button" data-theory-target="theory-block-${escapeHtml(block.id)}">
+                  <span>Consultar apartado</span>
+                </button>
+              </li>`
+            : theoryNavigationItems(block.contenido, block.id).map(renderTheoryNavItem).join("")}</ul>
+        `;
+      }).join("")}
     </aside>
   `;
 }
@@ -242,6 +251,55 @@ function renderStructureItem(item) {
   `;
 }
 
+function thematicMarker(item) {
+  if (item.tipo === "elemento-numerado") return `${item.numero}.`;
+  if (item.tipo === "elemento-letra") return `${item.letra})`;
+  return "•";
+}
+
+function renderThematicContent(items) {
+  const fragments = [];
+  let index = 0;
+
+  while (index < items.length) {
+    const item = items[index];
+    if (item.tipo === "parrafo") {
+      fragments.push(`<p>${escapeHtml(item.texto)}</p>`);
+      index += 1;
+      continue;
+    }
+    if (item.tipo === "subtitulo") {
+      fragments.push(`<h4>${escapeHtml(formatDisplayTitle(item.texto))}</h4>`);
+      index += 1;
+      continue;
+    }
+    if (item.tipo === "dato") {
+      fragments.push(`<aside class="theory-thematic-data">${escapeHtml(item.texto)}</aside>`);
+      index += 1;
+      continue;
+    }
+
+    const listType = item.tipo;
+    const listItems = [];
+    while (items[index]?.tipo === listType) {
+      listItems.push(items[index]);
+      index += 1;
+    }
+    fragments.push(`
+      <ul class="theory-thematic-list">
+        ${listItems.map((entry) => `
+          <li>
+            <span>${escapeHtml(thematicMarker(entry))}</span>
+            <p>${escapeHtml(entry.texto)}</p>
+          </li>
+        `).join("")}
+      </ul>
+    `);
+  }
+
+  return fragments.join("");
+}
+
 function renderTheoryBlock(block) {
   if (block.tipo === "estructura") {
     return `
@@ -257,6 +315,20 @@ function renderTheoryBlock(block) {
         ${block.promulgacion
           ? `<aside class="theory-note"><strong>Fechas esenciales</strong><p>${escapeHtml(block.promulgacion)}</p></aside>`
           : ""}
+      </section>
+    `;
+  }
+
+  if (block.tipo === "contenido-tematico") {
+    return `
+      <section id="theory-block-${escapeHtml(block.id)}" class="theory-block theory-thematic-block">
+        <header class="theory-block-heading">
+          <span>Bloque temático</span>
+          <h3>${escapeHtml(formatDisplayTitle(block.titulo))}</h3>
+        </header>
+        <div class="theory-thematic-content">
+          ${renderThematicContent(block.contenido)}
+        </div>
       </section>
     `;
   }

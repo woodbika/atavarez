@@ -328,6 +328,39 @@ test("el tema 02 relaciona solo los tests con un intervalo teórico directo", ()
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 03 identifica los tests sin vínculo teórico directo", () => {
+  const theory = resources.find(
+    (resource) => resource.id === "tema-03-union-europea",
+  );
+  const themeTests = resources.filter(
+    (resource) =>
+      resource.type === "test" && resource.classification.tema.numero === "03",
+  );
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(
+    theory.title,
+    "El espacio europeo y las instituciones de la Unión Europea.",
+  );
+  assert.equal(theory.classification.tema.numero, "03");
+  assert.equal(theory.data.fuente.archivo, "tema-03-union-europea.pdf");
+  assert.equal(theory.data.fuente.paginas, 12);
+  assert.equal(theory.data.bloques.length, 7);
+  assert.ok(
+    theory.data.bloques.every(
+      (block) => block.tipo === "contenido-tematico",
+    ),
+  );
+  assert.ok(themeTests.every((resource) => resource.relatedTheory === undefined));
+  assert.ok(
+    themeTests.every(
+      (resource) => resource.theoryNotice === "Sin vínculo teórico directo",
+    ),
+  );
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
   const theory = resources.find(
     (resource) => resource.id === "tema-09-personal-al-servicio-administraciones-publicas-vascas",

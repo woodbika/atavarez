@@ -9,7 +9,7 @@ const test = {
     "id": "ivot",
     "nombre": "IVOT"
   },
-  "titulo": "Espacio europeo II.",
+  "titulo": "El espacio europeo (II).",
   "clasificacion": {
     "administracion": "EUSKO JAURLARITZA / GOBIERNO VASCO",
     "oposicion": "Cuerpo Administrativo",

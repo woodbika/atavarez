@@ -9,7 +9,7 @@ const test = {
     "id": "ivot",
     "nombre": "IVOT"
   },
-  "titulo": "Instituciones de la Unión Europea I.",
+  "titulo": "Las instituciones de la Unión Europea (I).",
   "clasificacion": {
     "administracion": "EUSKO JAURLARITZA / GOBIERNO VASCO",
     "oposicion": "Cuerpo Administrativo",
