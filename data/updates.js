@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "tests-ivot-espacio-europeo-tema-03",
+    category: "Nuevos tests",
+    publishedAt: "2026-07-29T14:29:36+02:00",
+    title: "Tests del espacio europeo",
+    description:
+      "El Tema 3 incorpora cinco tests IVOT sobre el espacio europeo y sus instituciones, además de un test completo con las 121 preguntas disponibles.",
+  }),
+  Object.freeze({
     id: "resumen-situaciones-administrativas-tema-18",
     category: "Nuevo recurso",
     publishedAt: "2026-07-29T09:18:08+02:00",

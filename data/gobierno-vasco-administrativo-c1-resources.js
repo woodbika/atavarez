@@ -10,6 +10,11 @@ import testOrganizacionTerritorial1 from "./tests/gobierno-vasco-administrativo-
 import testOrganizacionTerritorial2 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-2.js";
 import testOrganizacionTerritorial3 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-3.js";
 import testOrganizacionTerritorial4 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-4-competencias.js";
+import testEspacioEuropeo1 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-espacio-europeo-i.js";
+import testEspacioEuropeo2 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-espacio-europeo-ii.js";
+import testEspacioEuropeo3 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-espacio-europeo-iii.js";
+import testInstitucionesUnionEuropea1 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-instituciones-union-europea-i.js";
+import testInstitucionesUnionEuropea2 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-instituciones-union-europea-ii.js";
 import testEstatutoVascoTituloPreliminar from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-titulo-preliminar.js";
 import testEstatutoVascoCompetencias1 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-1.js";
 import testEstatutoVascoCompetencias2 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-2.js";
@@ -216,6 +221,11 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testOrganizacionTerritorial2),
   testResource(testOrganizacionTerritorial3),
   testResource(testOrganizacionTerritorial4),
+  testResource(testEspacioEuropeo1),
+  testResource(testEspacioEuropeo2),
+  testResource(testEspacioEuropeo3),
+  testResource(testInstitucionesUnionEuropea1),
+  testResource(testInstitucionesUnionEuropea2),
   theoryResource(teoriaOrganizacionPoliticaCapv),
   testResource(testEstatutoVascoTituloPreliminar),
   testResource(testEstatutoVascoCompetencias1),

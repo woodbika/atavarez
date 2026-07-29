@@ -1117,6 +1117,51 @@ test("los enlaces anteriores de la oposición siguen resolviéndose", () => {
   });
 });
 
+test("el tema 03 reúne sus cinco tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository
+    .getOppositions()
+    .find((item) => repository.getTheme(item.id, "03"));
+  assert.ok(opposition);
+  const theme03 = repository.getTheme(opposition.id, "03");
+  const theme03Resources = repository.getResources(opposition.id, "03");
+  const sourceTests = theme03Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme03Resources.find((resource) => resource.variant === "complete");
+  const expectedTestIds = [
+    "test-espacio-europeo-i",
+    "test-espacio-europeo-ii",
+    "test-espacio-europeo-iii",
+    "test-instituciones-union-europea-i",
+    "test-instituciones-union-europea-ii",
+  ];
+
+  assert.ok(theme03);
+  assert.ok(completeTest);
+  assert.equal(sourceTests.length, 5);
+  assert.equal(
+    sourceTests.reduce(
+      (total, resource) => total + resource.data.preguntas.length,
+      0,
+    ),
+    121,
+  );
+  assert.deepEqual(
+    sourceTests.map((resource) => resource.id),
+    expectedTestIds,
+  );
+  assert.equal(completeTest.data.preguntas.length, 121);
+  assert.deepEqual(
+    new Set(completeTest.data.fuente.tests),
+    new Set(expectedTestIds),
+  );
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    121,
+  );
+});
+
 test("el tema 04 reúne sus tests IVOT en un test completo", () => {
   const repository = new ResourceRepository(resources);
   const opposition = repository
