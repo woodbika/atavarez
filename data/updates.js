@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-fuentes-derecho-tema-28",
+    category: "Nuevo recurso",
+    publishedAt: "2026-07-30T17:38:25+02:00",
+    title: "Teoría de las fuentes del derecho administrativo",
+    description:
+      "El Tema 28 incorpora una lectura estructurada, navegación por bloques y acceso al PDF original. Sus dos tests IVOT permiten consultar directamente la teoría relacionada.",
+  }),
+  Object.freeze({
     id: "tests-ivot-acceso-provision-tema-18",
     category: "Nuevos tests",
     publishedAt: "2026-07-30T15:21:48+02:00",

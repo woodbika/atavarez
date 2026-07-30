@@ -530,6 +530,7 @@ const SUPPORTED_THEMATIC_NODE_TYPES = new Set([
   "dato",
   "elemento-numerado",
   "elemento-letra",
+  "elemento-mayuscula",
   "elemento-lista",
 ]);
 
@@ -551,7 +552,7 @@ function validateTheoryThematicItem(item, path, errors) {
     errors.push(`${path}.numero: es obligatorio.`);
   }
   if (
-    item.tipo === "elemento-letra" &&
+    (item.tipo === "elemento-letra" || item.tipo === "elemento-mayuscula") &&
     !isNonEmptyString(String(item.letra ?? ""))
   ) {
     errors.push(`${path}.letra: es obligatoria.`);

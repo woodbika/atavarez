@@ -253,7 +253,9 @@ function renderStructureItem(item) {
 
 function thematicMarker(item) {
   if (item.tipo === "elemento-numerado") return `${item.numero}.`;
-  if (item.tipo === "elemento-letra") return `${item.letra})`;
+  if (item.tipo === "elemento-letra" || item.tipo === "elemento-mayuscula") {
+    return `${item.letra})`;
+  }
   return "•";
 }
 

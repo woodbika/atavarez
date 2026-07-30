@@ -487,6 +487,58 @@ test("el tema 18 incluye un resumen comparativo vinculado a su teoría", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 28 relaciona cada test con sus bloques teóricos", () => {
+  const theory = resources.find(
+    (resource) => resource.id === "tema-28-fuentes-derecho-administrativo",
+  );
+  const themeTests = resources.filter(
+    (resource) =>
+      resource.type === "test" && resource.classification.tema.numero === "28",
+  );
+  const expectedSelections = new Map([
+    [
+      "test-de-fuentes-del-derecho-1",
+      [
+        "jerarquia-y-enumeracion-de-las-fuentes-del-derecho-administrativo",
+        "especial-referencia-a-la-ley",
+      ],
+    ],
+    [
+      "test-de-fuentes-del-derecho-2",
+      [
+        "especial-referencia-a-la-ley",
+        "especial-referencia-al-reglamento",
+        "el-principio-de-legalidad-en-la-administracion-publica",
+      ],
+    ],
+  ]);
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.title, "Fuentes del derecho administrativo.");
+  assert.equal(theory.classification.tema.numero, "28");
+  assert.equal(
+    theory.data.fuente.archivo,
+    "tema-28-fuentes-derecho-administrativo.pdf",
+  );
+  assert.equal(theory.data.fuente.paginas, 10);
+  assert.equal(theory.data.bloques.length, 4);
+  assert.ok(
+    theory.data.bloques.every(
+      (block) => block.tipo === "contenido-tematico",
+    ),
+  );
+  assert.equal(themeTests.length, expectedSelections.size);
+  themeTests.forEach((resource) => {
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(
+      resource.relatedTheory.selection,
+      { blockIds: expectedSelections.get(resource.id) },
+    );
+  });
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("los recursos de teoría declaran un título breve estable para su ficha", () => {
   const theories = resources.filter((resource) => resource.type === "teoria");
 

@@ -89,6 +89,7 @@ import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administra
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
 import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
 import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-administrativo-c1/tema-18/resumen/resumen-situaciones-administrativas.js";
+import teoriaFuentesDerechoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-28/teoria/tema-28-fuentes-derecho-administrativo.js";
 
 const relatedTheoryByTestId = new Map([
   [testEstructura.id, {
@@ -247,6 +248,25 @@ const relatedTheoryByTestId = new Map([
     resourceId: teoriaAccesoEmpleoPublicoVasco.id,
     selection: { articles: { from: 156, to: 160 } },
   }],
+  [testFuentesDerecho1.id, {
+    resourceId: teoriaFuentesDerechoAdministrativo.id,
+    selection: {
+      blockIds: [
+        "jerarquia-y-enumeracion-de-las-fuentes-del-derecho-administrativo",
+        "especial-referencia-a-la-ley",
+      ],
+    },
+  }],
+  [testFuentesDerecho2.id, {
+    resourceId: teoriaFuentesDerechoAdministrativo.id,
+    selection: {
+      blockIds: [
+        "especial-referencia-a-la-ley",
+        "especial-referencia-al-reglamento",
+        "el-principio-de-legalidad-en-la-administracion-publica",
+      ],
+    },
+  }],
 ]);
 
 const theoryNoticeByTestId = new Map([
@@ -319,6 +339,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico149a152),
   testResource(testEmpleoPublico153a155),
   testResource(testEmpleoPublico156a160),
+  theoryResource(teoriaFuentesDerechoAdministrativo),
   testResource(testFuentesDerecho1),
   testResource(testFuentesDerecho2),
   testResource(testLey40Articulos5a7),
