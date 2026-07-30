@@ -421,6 +421,16 @@ test("el tema 18 relaciona cada test con su intervalo de teoría", () => {
     (resource) => resource.id === "tema-18-acceso-empleo-publico-provision-puestos",
   );
   const expectedSelections = new Map([
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-76-y-77", { from: 76, to: 77 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-78-y-79", { from: 78, to: 79 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-80-a-82", { from: 80, to: 82 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-94-a-96", { from: 94, to: 96 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-97-a-99", { from: 97, to: 99 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-100-y-101", { from: 100, to: 101 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-102-a-104", { from: 102, to: 104 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105", { from: 105, to: 105 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-106-a-111", { from: 106, to: 111 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-112-y-113", { from: 112, to: 113 }],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138", { from: 136, to: 138 }],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-139-y-140", { from: 139, to: 140 }],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-141-y-142", { from: 141, to: 142 }],
@@ -1317,6 +1327,16 @@ test("el tema 18 reúne sus tests IVOT en un test completo", () => {
     0,
   );
   const requiredTestIds = [
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-76-y-77",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-78-y-79",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-80-a-82",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-94-a-96",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-97-a-99",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-100-y-101",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-102-a-104",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-106-a-111",
+    "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-112-y-113",
     "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138",
     "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-139-y-140",
     "test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-141-y-142",
@@ -1335,7 +1355,7 @@ test("el tema 18 reúne sus tests IVOT en un test completo", () => {
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
   );
-  assert.equal(sourceQuestionCount, 113);
+  assert.equal(sourceQuestionCount, 235);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(
     new Set(completeTest.data.fuente.tests),

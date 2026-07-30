@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "tests-ivot-acceso-provision-tema-18",
+    category: "Nuevos tests",
+    publishedAt: "2026-07-30T15:21:48+02:00",
+    title: "Nuevos tests de acceso y provisión de empleo público",
+    description:
+      "El Tema 18 incorpora diez tests IVOT y 122 preguntas sobre los artículos 76 a 82 y 94 a 113, con acceso a la teoría correspondiente. El test completo reúne ahora 235 preguntas.",
+  }),
+  Object.freeze({
     id: "teoria-union-europea-tema-03",
     category: "Nuevo recurso",
     publishedAt: "2026-07-29T15:30:40+02:00",

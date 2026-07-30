@@ -28,6 +28,16 @@ import testEmpleoPublico40a44 from "./tests/gobierno-vasco-administrativo-c1/tem
 import testEmpleoPublico45a50 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
 import testEmpleoPublico53a62 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-53-a-62.js";
+import testEmpleoPublico76y77 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-76-y-77.js";
+import testEmpleoPublico78y79 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-78-y-79.js";
+import testEmpleoPublico80a82 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-80-a-82.js";
+import testEmpleoPublico94a96 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-94-a-96.js";
+import testEmpleoPublico97a99 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-97-a-99.js";
+import testEmpleoPublico100y101 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-100-y-101.js";
+import testEmpleoPublico102a104 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-102-a-104.js";
+import testEmpleoPublico105 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105.js";
+import testEmpleoPublico106a111 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-106-a-111.js";
+import testEmpleoPublico112y113 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-112-y-113.js";
 import testEmpleoPublico136a138 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138.js";
 import testEmpleoPublico139y140 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-139-y-140.js";
 import testEmpleoPublico141y142 from "./tests/gobierno-vasco-administrativo-c1/tema-18/tests-ivot/test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-141-y-142.js";
@@ -165,6 +175,46 @@ const relatedTheoryByTestId = new Map([
     resourceId: teoriaEmpleoPublicoVasco.id,
     selection: { articles: { from: 53, to: 62 } },
   }],
+  [testEmpleoPublico76y77.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 76, to: 77 } },
+  }],
+  [testEmpleoPublico78y79.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 78, to: 79 } },
+  }],
+  [testEmpleoPublico80a82.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 80, to: 82 } },
+  }],
+  [testEmpleoPublico94a96.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 94, to: 96 } },
+  }],
+  [testEmpleoPublico97a99.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 97, to: 99 } },
+  }],
+  [testEmpleoPublico100y101.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 100, to: 101 } },
+  }],
+  [testEmpleoPublico102a104.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 102, to: 104 } },
+  }],
+  [testEmpleoPublico105.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 105, to: 105 } },
+  }],
+  [testEmpleoPublico106a111.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 106, to: 111 } },
+  }],
+  [testEmpleoPublico112y113.id, {
+    resourceId: teoriaAccesoEmpleoPublicoVasco.id,
+    selection: { articles: { from: 112, to: 113 } },
+  }],
   [testEmpleoPublico136a138.id, {
     resourceId: teoriaAccesoEmpleoPublicoVasco.id,
     selection: { articles: { from: 136, to: 138 } },
@@ -251,6 +301,16 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico53a62),
   theoryResource(teoriaAccesoEmpleoPublicoVasco),
   summaryResource(resumenSituacionesAdministrativas),
+  testResource(testEmpleoPublico76y77),
+  testResource(testEmpleoPublico78y79),
+  testResource(testEmpleoPublico80a82),
+  testResource(testEmpleoPublico94a96),
+  testResource(testEmpleoPublico97a99),
+  testResource(testEmpleoPublico100y101),
+  testResource(testEmpleoPublico102a104),
+  testResource(testEmpleoPublico105),
+  testResource(testEmpleoPublico106a111),
+  testResource(testEmpleoPublico112y113),
   testResource(testEmpleoPublico136a138),
   testResource(testEmpleoPublico139y140),
   testResource(testEmpleoPublico141y142),
