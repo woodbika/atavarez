@@ -1,5 +1,6 @@
 import { GOBIERNO_VASCO_ADMINISTRATIVO_C1 } from "./oppositions.js";
 import { createOppositionResourceFactory } from "./resource-factory.js";
+import explicacionesEstructuraConstitucion from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-estructura-constitucion-espanola.js";
 import testPrincipiosRectores from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/capitulo-iii-titulo-i-ce-principios-rectores.js";
 import testCapituloII from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-capitulo-ii-titulo-i-ce.js";
 import testCapitulosIVyV from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-capitulo-iv-y-v.js";
@@ -279,9 +280,17 @@ const theoryNoticeByTestId = new Map([
   [testInstitucionesUnionEuropea2.id, "Sin vínculo teórico directo"],
 ]);
 
+const answerExplanationsByTestId = new Map([
+  [explicacionesEstructuraConstitucion.testId, explicacionesEstructuraConstitucion],
+]);
+
 const { summaryResource, testResource, theoryResource } = createOppositionResourceFactory(
   GOBIERNO_VASCO_ADMINISTRATIVO_C1,
-  { relatedTheoryByTestId, theoryNoticeByTestId },
+  {
+    relatedTheoryByTestId,
+    theoryNoticeByTestId,
+    answerExplanationsByTestId,
+  },
 );
 
 export const gobiernoVascoAdministrativoC1Resources = Object.freeze([

@@ -7,7 +7,49 @@ function stateFor(question, selected) {
   return { key: "incorrect", label: "Incorrecta" };
 }
 
+function renderExplanation(question, explanation) {
+  if (!explanation) return "";
+  const discardedOptions = question.opciones.filter(
+    (option) => option.id !== question.respuestaCorrecta,
+  );
+  return `
+    <details class="review-explanation">
+      <summary>
+        <span class="review-explanation-icon" aria-hidden="true">i</span>
+        <span>Comprender la respuesta</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"></path></svg>
+      </summary>
+      <div class="review-explanation-content">
+        <section>
+          <h3>Por qué es correcta</h3>
+          <p>${escapeHtml(explanation.justificacion)}</p>
+        </section>
+        <section>
+          <h3>Por qué no se eligen las demás</h3>
+          <ul>
+            ${discardedOptions.map((option) => `
+              <li>
+                <span class="review-answer-key">${escapeHtml(String(option.id).toLocaleUpperCase("es"))}</span>
+                <div>
+                  <strong>${escapeHtml(option.texto)}</strong>
+                  <p>${escapeHtml(explanation.descartes[option.id])}</p>
+                </div>
+              </li>
+            `).join("")}
+          </ul>
+        </section>
+      </div>
+    </details>
+  `;
+}
+
 export function renderReview(root, test, result, { backHref }) {
+  const explanationByQuestionId = new Map(
+    (test.explicaciones?.preguntas ?? []).map((explanation) => [
+      String(explanation.preguntaId),
+      explanation,
+    ]),
+  );
   root.innerHTML = `
     ${backLink(`#/resultados/${encodeURIComponent(test.id)}`, "Volver al resultado", { className: "view-back-link" })}
     <section class="review-shell view-layout view-layout-wide" aria-labelledby="review-title">
@@ -67,6 +109,10 @@ export function renderReview(root, test, result, { backHref }) {
                     </dd>
                   </div>
                 </dl>
+                ${renderExplanation(
+                  question,
+                  explanationByQuestionId.get(String(question.id)),
+                )}
               </li>
             `;
           })

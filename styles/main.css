@@ -4127,6 +4127,109 @@ body.focus-mode {
   color: var(--muted);
 }
 
+.review-explanation {
+  margin-top: 9px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+}
+
+.review-explanation summary {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 2px 0;
+  color: var(--brand);
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 620;
+  list-style: none;
+}
+
+.review-explanation summary::-webkit-details-marker {
+  display: none;
+}
+
+.review-explanation summary:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.review-explanation-icon {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--brand) 50%, var(--line));
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.review-explanation summary svg {
+  width: 15px;
+  height: 15px;
+  margin-left: auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transition: transform 160ms ease;
+}
+
+.review-explanation[open] summary svg {
+  transform: rotate(180deg);
+}
+
+.review-explanation-content {
+  display: grid;
+  gap: 13px;
+  margin-top: 8px;
+  padding: 13px 14px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--brand-soft) 34%, var(--surface));
+}
+
+.review-explanation-content h3 {
+  margin: 0 0 5px;
+  color: var(--brand);
+  font-size: 0.72rem;
+  font-weight: 680;
+}
+
+.review-explanation-content p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.review-explanation-content ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.review-explanation-content li {
+  display: grid;
+  grid-template-columns: 23px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+}
+
+.review-explanation-content li strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: 0.71rem;
+  font-weight: 580;
+  line-height: 1.4;
+}
+
 .status {
   display: inline-flex;
   min-height: 20px;

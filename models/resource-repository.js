@@ -79,6 +79,12 @@ export class ResourceRepository {
           id: `${resource.id}:${question.id}`,
         })),
       );
+      const explanationEntries = themeResources.flatMap((resource) =>
+        (resource.data.explicaciones?.preguntas ?? []).map((explanation) => ({
+          ...explanation,
+          preguntaId: `${resource.id}:${explanation.preguntaId}`,
+        })),
+      );
       const classification = { ...first.classification };
       const autor = {
         id: "recopilacion-tema",
@@ -95,6 +101,15 @@ export class ResourceRepository {
           tests: themeResources.map((resource) => resource.id),
         },
         preguntas,
+        ...(explanationEntries.length
+          ? {
+              explicaciones: {
+                schemaVersion: 1,
+                testId: id,
+                preguntas: explanationEntries,
+              },
+            }
+          : {}),
       };
 
       return {

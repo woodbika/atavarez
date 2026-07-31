@@ -227,6 +227,83 @@ function validateSourceClassification(resource, path, errors) {
   }
 }
 
+function validateAnswerExplanations(test, path, errors) {
+  const explanations = test.explicaciones;
+  if (explanations === undefined) return;
+  if (!explanations || typeof explanations !== "object") {
+    errors.push(`${path}: debe ser un objeto.`);
+    return;
+  }
+  if (explanations.schemaVersion !== 1) {
+    errors.push(`${path}.schemaVersion: debe ser 1.`);
+  }
+  if (explanations.testId !== test.id) {
+    errors.push(`${path}.testId: debe coincidir con el test.`);
+  }
+  if (!Array.isArray(explanations.preguntas)) {
+    errors.push(`${path}.preguntas: debe ser una lista.`);
+    return;
+  }
+
+  const questionById = new Map(
+    (Array.isArray(test.preguntas) ? test.preguntas : []).map((question) => [
+      String(question.id),
+      question,
+    ]),
+  );
+  const explainedIds = new Set();
+  explanations.preguntas.forEach((explanation, index) => {
+    const explanationPath = `${path}.preguntas[${index}]`;
+    if (!explanation || typeof explanation !== "object") {
+      errors.push(`${explanationPath}: debe ser un objeto.`);
+      return;
+    }
+    const questionId = String(explanation.preguntaId ?? "");
+    const question = questionById.get(questionId);
+    if (!question) {
+      errors.push(`${explanationPath}.preguntaId: no corresponde a una pregunta.`);
+      return;
+    }
+    if (explainedIds.has(questionId)) {
+      errors.push(`${explanationPath}.preguntaId: está duplicado.`);
+    }
+    explainedIds.add(questionId);
+    if (!isNonEmptyString(explanation.justificacion)) {
+      errors.push(`${explanationPath}.justificacion: debe contener texto.`);
+    }
+    if (
+      !explanation.descartes ||
+      typeof explanation.descartes !== "object" ||
+      Array.isArray(explanation.descartes)
+    ) {
+      errors.push(`${explanationPath}.descartes: debe ser un objeto.`);
+      return;
+    }
+    const expectedIds = question.opciones
+      .map((option) => option.id)
+      .filter((optionId) => optionId !== question.respuestaCorrecta)
+      .sort();
+    const discardIds = Object.keys(explanation.descartes).sort();
+    if (
+      expectedIds.length !== discardIds.length ||
+      expectedIds.some((optionId, optionIndex) => optionId !== discardIds[optionIndex])
+    ) {
+      errors.push(
+        `${explanationPath}.descartes: debe explicar exactamente las opciones no elegidas.`,
+      );
+    }
+    discardIds.forEach((optionId) => {
+      if (!isNonEmptyString(explanation.descartes[optionId])) {
+        errors.push(`${explanationPath}.descartes.${optionId}: debe contener texto.`);
+      }
+    });
+  });
+
+  if (explainedIds.size !== questionById.size) {
+    errors.push(`${path}.preguntas: debe explicar todas las preguntas del test.`);
+  }
+}
+
 function validateTest(resource, path, errors, authorById) {
   const test = resource.data;
   if (!test || typeof test !== "object") {
@@ -268,6 +345,7 @@ function validateTest(resource, path, errors, authorById) {
     );
   }
   validateQuestions(test.preguntas, `${path}.data.preguntas`, errors);
+  validateAnswerExplanations(test, `${path}.data.explicaciones`, errors);
 }
 
 function validateTestConfiguration(resource, path, errors) {

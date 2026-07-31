@@ -54,11 +54,13 @@ export function createOppositionResourceFactory(
   {
     relatedTheoryByTestId = new Map(),
     theoryNoticeByTestId = new Map(),
+    answerExplanationsByTestId = new Map(),
   } = {},
 ) {
   function testResource(test) {
     const relatedTheory = relatedTheoryByTestId.get(test.id);
     const theoryNotice = theoryNoticeByTestId.get(test.id);
+    const answerExplanations = answerExplanationsByTestId.get(test.id);
     const classification = canonicalClassification(opposition, test.clasificacion);
     const author = canonicalAuthor(test.autor);
     return {
@@ -72,7 +74,12 @@ export function createOppositionResourceFactory(
       sourceAuthor: test.autor,
       ...(relatedTheory ? { relatedTheory } : {}),
       ...(theoryNotice ? { theoryNotice } : {}),
-      data: { ...test, autor: author, clasificacion: classification },
+      data: {
+        ...test,
+        autor: author,
+        clasificacion: classification,
+        ...(answerExplanations ? { explicaciones: answerExplanations } : {}),
+      },
     };
   }
 
