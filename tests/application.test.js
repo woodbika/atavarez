@@ -98,42 +98,59 @@ test("el registro contiene todos los tests con un formato válido", () => {
   });
 });
 
-test("el test de estructura constitucional explica todas sus respuestas", () => {
-  const resource = resources.find(
-    (item) => item.id === "test-estructura-constitucion-espanola",
-  );
-  const explanations = resource.data.explicaciones;
-  const explanationByQuestionId = new Map(
-    explanations.preguntas.map((item) => [String(item.preguntaId), item]),
+test("todos los tests del Tema 1 explican sus respuestas", () => {
+  const themeResources = resources.filter(
+    (resource) =>
+      resource.type === "test" &&
+      resource.opposition.id === "gobierno-vasco-administrativo-c1" &&
+      resource.classification.tema.numero === "01",
   );
 
-  assert.equal(explanations.schemaVersion, 1);
-  assert.equal(explanations.testId, resource.id);
-  assert.equal(explanations.preguntas.length, resource.data.preguntas.length);
-  resource.data.preguntas.forEach((question) => {
-    const explanation = explanationByQuestionId.get(String(question.id));
-    const discardedOptionIds = question.opciones
-      .map((option) => option.id)
-      .filter((optionId) => optionId !== question.respuestaCorrecta)
-      .sort();
+  assert.equal(themeResources.length, 6);
+  assert.equal(
+    themeResources.reduce(
+      (total, resource) => total + resource.data.preguntas.length,
+      0,
+    ),
+    121,
+  );
+  themeResources.forEach((resource) => {
+    const explanations = resource.data.explicaciones;
+    const explanationByQuestionId = new Map(
+      explanations.preguntas.map((item) => [String(item.preguntaId), item]),
+    );
 
-    assert.ok(explanation?.justificacion);
-    assert.deepEqual(Object.keys(explanation.descartes).sort(), discardedOptionIds);
+    assert.equal(explanations.schemaVersion, 1);
+    assert.equal(explanations.testId, resource.id);
+    assert.equal(explanations.preguntas.length, resource.data.preguntas.length);
+    resource.data.preguntas.forEach((question) => {
+      const explanation = explanationByQuestionId.get(String(question.id));
+      const discardedOptionIds = question.opciones
+        .map((option) => option.id)
+        .filter((optionId) => optionId !== question.respuestaCorrecta)
+        .sort();
+
+      assert.ok(explanation?.justificacion);
+      assert.deepEqual(
+        Object.keys(explanation.descartes).sort(),
+        discardedOptionIds,
+      );
+    });
   });
 });
 
-test("el test completo conserva las explicaciones con ids compuestos", () => {
+test("el test completo conserva todas las explicaciones con ids compuestos", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const combinedTest = repository.getTestById(
     "test-completo-gobierno-vasco-administrativo-c1-tema-01",
   );
-  const expectedPrefix = "test-estructura-constitucion-espanola:";
-  const inheritedExplanations = combinedTest.explicaciones.preguntas.filter(
-    (item) => String(item.preguntaId).startsWith(expectedPrefix),
-  );
 
-  assert.equal(inheritedExplanations.length, 29);
-  inheritedExplanations.forEach((explanation) => {
+  assert.equal(combinedTest.explicaciones.preguntas.length, 121);
+  assert.equal(
+    combinedTest.explicaciones.preguntas.length,
+    combinedTest.preguntas.length,
+  );
+  combinedTest.explicaciones.preguntas.forEach((explanation) => {
     assert.ok(
       combinedTest.preguntas.some(
         (question) => String(question.id) === String(explanation.preguntaId),

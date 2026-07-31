@@ -1,5 +1,10 @@
 import { GOBIERNO_VASCO_ADMINISTRATIVO_C1 } from "./oppositions.js";
 import { createOppositionResourceFactory } from "./resource-factory.js";
+import explicacionesPrincipiosRectores from "./explanations/gobierno-vasco-administrativo-c1/tema-01/capitulo-iii-titulo-i-ce-principios-rectores.js";
+import explicacionesArticulos30a38 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-capitulo-ii-titulo-i-ce.js";
+import explicacionesArticulos53a55 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-capitulo-iv-y-v.js";
+import explicacionesArticulos10a13 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-espanola-articulos-10-a-13.js";
+import explicacionesArticulos14a29 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-espanola-articulos-14-a-29-2022.js";
 import explicacionesEstructuraConstitucion from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-estructura-constitucion-espanola.js";
 import testPrincipiosRectores from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/capitulo-iii-titulo-i-ce-principios-rectores.js";
 import testCapituloII from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-capitulo-ii-titulo-i-ce.js";
@@ -281,6 +286,11 @@ const theoryNoticeByTestId = new Map([
 ]);
 
 const answerExplanationsByTestId = new Map([
+  [explicacionesPrincipiosRectores.testId, explicacionesPrincipiosRectores],
+  [explicacionesArticulos30a38.testId, explicacionesArticulos30a38],
+  [explicacionesArticulos53a55.testId, explicacionesArticulos53a55],
+  [explicacionesArticulos10a13.testId, explicacionesArticulos10a13],
+  [explicacionesArticulos14a29.testId, explicacionesArticulos14a29],
   [explicacionesEstructuraConstitucion.testId, explicacionesEstructuraConstitucion],
 ]);
 

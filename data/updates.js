@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "explicaciones-respuestas-tema-01",
+    category: "Mejora",
+    publishedAt: "2026-07-31T21:36:32+02:00",
+    title: "Explicaciones de respuestas en el Tema 1",
+    description:
+      "Los seis tests del Tema 1 incorporan una justificación de la respuesta correcta y explican por qué se descarta cada alternativa. La mejora comprende sus 121 preguntas y el test completo.",
+  }),
+  Object.freeze({
     id: "teoria-fuentes-derecho-tema-28",
     category: "Nuevo recurso",
     publishedAt: "2026-07-30T17:38:25+02:00",
