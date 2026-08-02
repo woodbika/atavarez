@@ -7,6 +7,52 @@ function stateFor(question, selected) {
   return { key: "incorrect", label: "Incorrecta" };
 }
 
+function statusIcon(state) {
+  if (state === "correct") {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>';
+  }
+  if (state === "incorrect") {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg>';
+  }
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"></path></svg>';
+}
+
+function renderOptions(question, selected) {
+  return `
+    <ol class="review-options" aria-label="Opciones de la pregunta">
+      ${question.opciones.map((option) => {
+        const isCorrect = option.id === question.respuestaCorrecta;
+        const isSelected = option.id === selected;
+        const isSelectedIncorrect = isSelected && !isCorrect;
+        const stateClass = isCorrect
+          ? "is-correct"
+          : isSelectedIncorrect
+            ? "is-selected-incorrect"
+            : "";
+        const stateIcon = isCorrect
+          ? statusIcon("correct")
+          : isSelectedIncorrect
+            ? statusIcon("incorrect")
+            : "";
+        const stateLabel = isCorrect
+          ? "Respuesta correcta"
+          : isSelectedIncorrect
+            ? "Tu respuesta"
+            : "";
+        return `
+          <li class="review-option ${stateClass}">
+            <span class="review-option-letter" aria-hidden="true">${escapeHtml(String(option.id).toLocaleUpperCase("es"))}</span>
+            <span class="review-option-text">${escapeHtml(option.texto)}</span>
+            ${stateIcon
+              ? `<span class="review-option-state" aria-label="${stateLabel}" title="${stateLabel}">${stateIcon}</span>`
+              : ""}
+          </li>
+        `;
+      }).join("")}
+    </ol>
+  `;
+}
+
 function renderExplanation(question, explanation) {
   if (!explanation) return "";
   const discardedOptions = question.opciones.filter(
@@ -15,29 +61,24 @@ function renderExplanation(question, explanation) {
   return `
     <details class="review-explanation">
       <summary>
-        <span class="review-explanation-icon" aria-hidden="true">i</span>
-        <span>Comprender la respuesta</span>
+        <span>Mostrar explicación</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"></path></svg>
       </summary>
       <div class="review-explanation-content">
-        <section>
-          <h3>Por qué es correcta</h3>
-          <p>${escapeHtml(explanation.justificacion)}</p>
-        </section>
-        <section>
-          <h3>Por qué no se eligen las demás</h3>
-          <ul>
-            ${discardedOptions.map((option) => `
-              <li>
-                <span class="review-answer-key">${escapeHtml(String(option.id).toLocaleUpperCase("es"))}</span>
-                <div>
-                  <strong>${escapeHtml(option.texto)}</strong>
-                  <p>${escapeHtml(explanation.descartes[option.id])}</p>
-                </div>
-              </li>
-            `).join("")}
-          </ul>
-        </section>
+        <p class="review-explanation-label">Motivo de la respuesta correcta</p>
+        <p>${escapeHtml(explanation.justificacion)}</p>
+        <p class="review-explanation-label">Por qué no son correctas las demás</p>
+        <ul>
+          ${discardedOptions.map((option) => `
+            <li>
+              <span class="review-answer-key">${escapeHtml(String(option.id).toLocaleUpperCase("es"))}</span>
+              <div>
+                <strong>${escapeHtml(option.texto)}</strong>
+                <p>${escapeHtml(explanation.descartes[option.id])}</p>
+              </div>
+            </li>
+          `).join("")}
+        </ul>
       </div>
     </details>
   `;
@@ -76,39 +117,17 @@ export function renderReview(root, test, result, { backHref }) {
           .map((question, index) => {
             const selected = result.answers[String(question.id)] ?? null;
             const state = stateFor(question, selected);
-            const selectedAnswer = question.opciones.find((option) => option.id === selected);
-            const correctAnswer = question.opciones.find(
-              (option) => option.id === question.respuestaCorrecta,
-            );
-            const selectedKey = selectedAnswer
-              ? escapeHtml(String(selectedAnswer.id).toLocaleUpperCase("es"))
-              : "—";
-            const correctKey = escapeHtml(
-              String(question.respuestaCorrecta).toLocaleUpperCase("es"),
-            );
             return `
               <li class="review-summary-row" data-review-state="${state.key}">
                 <div class="review-summary-heading">
                   <span class="review-question-number">Pregunta ${index + 1}</span>
-                  <span class="status status-${state.key}">${state.label}</span>
+                  <span class="review-outcome review-outcome-${state.key}">
+                    ${statusIcon(state.key)}
+                    ${state.label}
+                  </span>
                 </div>
-                <p class="review-question-text">${escapeHtml(question.enunciado)}</p>
-                <dl class="review-answer-details">
-                  <div>
-                    <dt>Tu respuesta</dt>
-                    <dd class="${state.key === "incorrect" ? "answer-incorrect" : state.key === "correct" ? "answer-correct" : "answer-unanswered"}">
-                      <span class="review-answer-key">${selectedKey}</span>
-                      <span>${selectedAnswer ? escapeHtml(selectedAnswer.texto) : "Sin responder"}</span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Respuesta correcta</dt>
-                    <dd class="answer-correct">
-                      <span class="review-answer-key">${correctKey}</span>
-                      <span>${correctAnswer ? escapeHtml(correctAnswer.texto) : "No disponible"}</span>
-                    </dd>
-                  </div>
-                </dl>
+                <h2 class="review-question-text">${escapeHtml(question.enunciado)}</h2>
+                ${renderOptions(question, selected)}
                 ${renderExplanation(
                   question,
                   explanationByQuestionId.get(String(question.id)),

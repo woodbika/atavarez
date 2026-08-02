@@ -50,6 +50,7 @@ import {
 } from "../utils/preferences.js";
 import { parseHashRoute } from "../utils/router.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
+import { renderReview } from "../views/review-view.js";
 
 const tests = resources
   .filter((resource) => resource.type === "test")
@@ -1031,6 +1032,42 @@ test("la evaluación distingue aciertos, errores y preguntas sin responder", () 
   assert.equal(result.unanswered, 1);
   assert.equal(result.total, 3);
   assert.equal(result.score, 2.22);
+});
+
+test("la revisión presenta respuestas y explicaciones como un informe", () => {
+  const source = tests.find(
+    (candidate) => candidate.explicaciones?.preguntas?.length >= 3,
+  );
+  const testData = { ...source, preguntas: source.preguntas.slice(0, 3) };
+  const incorrectOption = testData.preguntas[1].opciones.find(
+    (option) => option.id !== testData.preguntas[1].respuestaCorrecta,
+  );
+  const result = {
+    answers: {
+      [String(testData.preguntas[0].id)]: testData.preguntas[0].respuestaCorrecta,
+      [String(testData.preguntas[1].id)]: incorrectOption.id,
+    },
+  };
+  const root = { innerHTML: "" };
+
+  renderReview(root, testData, result, { backHref: "#/recursos" });
+
+  assert.match(root.innerHTML, /data-review-filter="all"/);
+  assert.match(root.innerHTML, /data-review-filter="incorrect"/);
+  assert.match(root.innerHTML, /data-review-filter="unanswered"/);
+  assert.match(root.innerHTML, /data-review-state="correct"/);
+  assert.match(root.innerHTML, /data-review-state="incorrect"/);
+  assert.match(root.innerHTML, /data-review-state="unanswered"/);
+  assert.match(root.innerHTML, /class="review-option is-correct"/);
+  assert.match(root.innerHTML, /class="review-option is-selected-incorrect"/);
+  testData.preguntas.forEach((question) => {
+    question.opciones.forEach((option) => {
+      assert.ok(root.innerHTML.includes(option.texto));
+    });
+  });
+  assert.match(root.innerHTML, /Mostrar explicación/);
+  assert.match(root.innerHTML, /Motivo de la respuesta correcta/);
+  assert.doesNotMatch(root.innerHTML, /Comprender la respuesta/);
 });
 
 test("la cuenta atrás asigna 40 segundos por pregunta y formatea su duración", () => {
