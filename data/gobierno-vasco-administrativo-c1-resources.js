@@ -100,6 +100,8 @@ import teoriaOrganizacionAdministrativa from "./resources/gobierno-vasco-adminis
 import teoriaActoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-30/teoria/tema-30-acto-administrativo.js";
 import teoriaProcedimientoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-31/teoria/tema-31-procedimiento-administrativo.js";
 import teoriaFasesProcedimientoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-32/teoria/tema-32-fases-procedimiento-administrativo.js";
+import teoriaRevisionActos from "./resources/gobierno-vasco-administrativo-c1/tema-33/teoria/tema-33-revision-actos.js";
+import teoriaResponsabilidadAdministraciones from "./resources/gobierno-vasco-administrativo-c1/tema-34/teoria/tema-34-responsabilidad-administraciones.js";
 
 const relatedTheoryByTestId = new Map([
   [testEstructura.id, {
@@ -394,6 +396,30 @@ const relatedTheoryByTestId = new Map([
     resourceId: teoriaFasesProcedimientoAdministrativo.id,
     selection: { articleNumbers: [96] },
   }],
+  [testLey39Articulos106a109.id, {
+    resourceId: teoriaRevisionActos.id,
+    selection: { articles: { from: 106, to: 109 } },
+  }],
+  [testLey39Articulos112a120.id, {
+    resourceId: teoriaRevisionActos.id,
+    selection: { articles: { from: 112, to: 120 } },
+  }],
+  [testLey39Articulos121a124.id, {
+    resourceId: teoriaRevisionActos.id,
+    selection: { articles: { from: 121, to: 124 } },
+  }],
+  [testLey39Articulos125y126.id, {
+    resourceId: teoriaRevisionActos.id,
+    selection: { articles: { from: 125, to: 126 } },
+  }],
+  [testLey40Articulos32y33.id, {
+    resourceId: teoriaResponsabilidadAdministraciones.id,
+    selection: { articles: { from: 32, to: 33 } },
+  }],
+  [testLey40Articulos34a37.id, {
+    resourceId: teoriaResponsabilidadAdministraciones.id,
+    selection: { articles: { from: 34, to: 37 } },
+  }],
 ]);
 
 const theoryNoticeByTestId = new Map([
@@ -513,10 +539,12 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testLey39Articulos89y90),
   testResource(testLey39Articulos91a95),
   testResource(testLey39Articulo96),
+  theoryResource(teoriaRevisionActos),
   testResource(testLey39Articulos106a109),
   testResource(testLey39Articulos112a120),
   testResource(testLey39Articulos121a124),
   testResource(testLey39Articulos125y126),
+  theoryResource(teoriaResponsabilidadAdministraciones),
   testResource(testLey40Articulos32y33),
   testResource(testLey40Articulos34a37),
 ]);

@@ -758,6 +758,58 @@ test("los temas 31 y 32 vinculan cada test con su selección teórica exacta", (
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("los temas 33 y 34 relacionan cada test con sus artículos teóricos", () => {
+  const configurations = [
+    {
+      themeNumber: "33",
+      theoryId: "tema-33-revision-actos-recursos-administrativos",
+      cardTitle: "Revisión de los actos administrativos.",
+      pdf: "tema-33-revision-actos.pdf",
+      pages: 9,
+      selections: new Map([
+        ["test-ley-39-2015-articulos-106-a-109", { from: 106, to: 109 }],
+        ["test-ley-39-2015-articulos-112-a-120", { from: 112, to: 120 }],
+        ["test-ley-39-2015-articulos-121-a-124", { from: 121, to: 124 }],
+        ["test-ley-39-2015-articulos-125-y-126", { from: 125, to: 126 }],
+      ]),
+    },
+    {
+      themeNumber: "34",
+      theoryId: "tema-34-responsabilidad-administraciones-publicas",
+      cardTitle: "Responsabilidad de las Administraciones Públicas.",
+      pdf: "tema-34-responsabilidad-administraciones.pdf",
+      pages: 5,
+      selections: new Map([
+        ["test-ley-40-2015-articulos-32-y-33", { from: 32, to: 33 }],
+        ["test-ley-40-2015-articulos-34-a-37", { from: 34, to: 37 }],
+      ]),
+    },
+  ];
+
+  configurations.forEach((configuration) => {
+    const theory = resources.find((resource) => resource.id === configuration.theoryId);
+    const themeResources = resources.filter(
+      (resource) => resource.classification.tema.numero === configuration.themeNumber,
+    );
+    const themeTests = themeResources.filter((resource) => resource.type === "test");
+
+    assert.ok(theory);
+    assert.equal(theory.type, "teoria");
+    assert.equal(theory.title, configuration.cardTitle);
+    assert.equal(theory.data.fuente.archivo, configuration.pdf);
+    assert.equal(theory.data.fuente.paginas, configuration.pages);
+    assert.equal(themeTests.length, configuration.selections.size);
+    assert.equal(themeResources[0].type, "teoria");
+    themeTests.forEach((resource) => {
+      assert.equal(resource.relatedTheory.resourceId, theory.id);
+      assert.deepEqual(resource.relatedTheory.selection, {
+        articles: configuration.selections.get(resource.id),
+      });
+    });
+  });
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("los recursos de teoría declaran un título breve estable para su ficha", () => {
   const theories = resources.filter((resource) => resource.type === "teoria");
 

@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-revision-responsabilidad-temas-33-y-34",
+    category: "Nuevos recursos",
+    publishedAt: "2026-08-02T18:10:28+02:00",
+    title: "Nueva teoría de revisión y responsabilidad administrativa",
+    description:
+      "Los temas 33 y 34 incorporan lectura estructurada, acceso a sus PDF y consulta directa de los artículos correspondientes desde cada test IVOT.",
+  }),
+  Object.freeze({
     id: "teoria-procedimiento-administrativo-temas-29-a-32",
     category: "Nuevos recursos",
     publishedAt: "2026-08-02T17:05:41+02:00",
