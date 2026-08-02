@@ -621,6 +621,143 @@ test("el tema 28 relaciona cada test con sus bloques teóricos", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("los temas 29 y 30 relacionan cada test con sus artículos teóricos", () => {
+  const configurations = [
+    {
+      themeNumber: "29",
+      theoryId: "tema-29-organizacion-administrativa",
+      cardTitle: "Organización administrativa.",
+      pdf: "tema-29-organizacion-administrativa.pdf",
+      pages: 8,
+      selections: new Map([
+        ["test-de-la-ley-40-2015-articulos-5-a-7", { from: 5, to: 7 }],
+        ["test-de-la-ley-40-2015-numero-2-articulos-8-y-9", { from: 8, to: 9 }],
+        [
+          "test-de-la-ley-40-2015-regimen-juridico-sector-publico-articulos-10-y-11",
+          { from: 10, to: 11 },
+        ],
+        ["test-ley-40-2015-articulos-12-a-14", { from: 12, to: 14 }],
+        ["test-ley-40-2015-articulos-15-a-18", { from: 15, to: 18 }],
+      ]),
+    },
+    {
+      themeNumber: "30",
+      theoryId: "tema-30-acto-administrativo",
+      cardTitle: "El acto administrativo.",
+      pdf: "tema-30-acto-administrativo.pdf",
+      pages: 10,
+      selections: new Map([
+        [
+          "test-ley-39-2015-silencio-administrativo-articulos-24-y-25",
+          { from: 24, to: 25 },
+        ],
+        ["test-ley-39-2015-articulos-34-a-40", { from: 34, to: 40 }],
+        ["test-ley-39-2015-articulos-41-a-44", { from: 41, to: 44 }],
+        ["test-ley-39-2015-articulos-45-y-46", { from: 45, to: 46 }],
+        ["test-ley-39-2015-articulos-47-a-52", { from: 47, to: 52 }],
+      ]),
+    },
+  ];
+
+  configurations.forEach((configuration) => {
+    const theory = resources.find(
+      (resource) => resource.id === configuration.theoryId,
+    );
+    const themeResources = resources.filter(
+      (resource) => resource.classification.tema.numero === configuration.themeNumber,
+    );
+    const themeTests = themeResources.filter((resource) => resource.type === "test");
+
+    assert.ok(theory);
+    assert.equal(theory.type, "teoria");
+    assert.equal(theory.title, configuration.cardTitle);
+    assert.equal(theory.data.fuente.archivo, configuration.pdf);
+    assert.equal(theory.data.fuente.paginas, configuration.pages);
+    assert.equal(themeTests.length, configuration.selections.size);
+    assert.equal(themeResources[0].type, "teoria");
+    themeTests.forEach((resource) => {
+      assert.equal(resource.relatedTheory.resourceId, theory.id);
+      assert.deepEqual(resource.relatedTheory.selection, {
+        articles: configuration.selections.get(resource.id),
+      });
+    });
+  });
+  assert.deepEqual(validateResources(resources), []);
+});
+
+test("los temas 31 y 32 vinculan cada test con su selección teórica exacta", () => {
+  const configurations = [
+    {
+      themeNumber: "31",
+      theoryId: "tema-31-procedimiento-administrativo",
+      cardTitle: "Procedimiento administrativo.",
+      pdf: "tema-31-procedimiento-administrativo.pdf",
+      pages: 10,
+      selections: new Map([
+        ["test-ley-39-2015-articulos-3-a-8", {
+          blockIds: ["ley-39-2015-interesados"],
+          articles: { from: 3, to: 8 },
+        }],
+        ["test-ley-39-2015-articulos-9-a-12", {
+          blockIds: ["ley-39-2015-interesados"],
+          articles: { from: 9, to: 12 },
+        }],
+        ["test-ley-40-2015-articulos-23-y-24", {
+          blockIds: ["ley-40-2015-abstencion-recusacion"],
+          articles: { from: 23, to: 24 },
+        }],
+      ]),
+    },
+    {
+      themeNumber: "32",
+      theoryId: "tema-32-fases-procedimiento-administrativo",
+      cardTitle: "Fases del procedimiento administrativo.",
+      pdf: "tema-32-fases-procedimiento-administrativo.pdf",
+      pages: 23,
+      selections: new Map([
+        ["test-ley-39-2015-articulo-53", { articleNumbers: [53] }],
+        ["test-ley-39-2015-articulos-55-a-62", { articles: { from: 55, to: 62 } }],
+        ["test-ley-39-2015-articulos-62-a-66", { articles: { from: 62, to: 66 } }],
+        ["test-ley-39-2015-articulos-67-y-68", { articleNumbers: [67, 68] }],
+        ["test-ley-39-2015-articulos-67-69-y-70", { articleNumbers: [67, 69, 70] }],
+        ["test-ley-39-2015-articulos-70-a-74", { articles: { from: 70, to: 74 } }],
+        ["test-ley-39-2015-articulos-75-a-77", { articles: { from: 75, to: 77 } }],
+        ["test-ley-39-2015-articulos-78-79-80-y-82", { articleNumbers: [78, 79, 80, 82] }],
+        ["test-ley-39-2015-articulo-83", { articleNumbers: [83] }],
+        ["test-ley-39-2015-articulos-85-y-86", { articleNumbers: [85, 86] }],
+        ["test-ley-39-2015-articulos-87-y-88", { articleNumbers: [87, 88] }],
+        ["test-ley-39-2015-articulos-89-y-90", { articleNumbers: [89, 90] }],
+        ["test-ley-39-2015-articulos-91-a-95", { articles: { from: 91, to: 95 } }],
+        ["test-ley-39-2015-articulo-96", { articleNumbers: [96] }],
+      ]),
+    },
+  ];
+
+  configurations.forEach((configuration) => {
+    const theory = resources.find((resource) => resource.id === configuration.theoryId);
+    const themeResources = resources.filter(
+      (resource) => resource.classification.tema.numero === configuration.themeNumber,
+    );
+    const themeTests = themeResources.filter((resource) => resource.type === "test");
+
+    assert.ok(theory);
+    assert.equal(theory.type, "teoria");
+    assert.equal(theory.title, configuration.cardTitle);
+    assert.equal(theory.data.fuente.archivo, configuration.pdf);
+    assert.equal(theory.data.fuente.paginas, configuration.pages);
+    assert.equal(themeTests.length, configuration.selections.size);
+    assert.equal(themeResources[0].type, "teoria");
+    themeTests.forEach((resource) => {
+      assert.equal(resource.relatedTheory.resourceId, theory.id);
+      assert.deepEqual(
+        resource.relatedTheory.selection,
+        configuration.selections.get(resource.id),
+      );
+    });
+  });
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("los recursos de teoría declaran un título breve estable para su ficha", () => {
   const theories = resources.filter((resource) => resource.type === "teoria");
 

@@ -74,44 +74,56 @@ function isLegalArticle(item) {
   return item.tipo === "articulo" || item.numero !== undefined && !item.tipo;
 }
 
-function filterLegalItem(item, range) {
+function articleMatchesSelection(articleNumber, selection) {
+  if (selection.articleNumbers) {
+    return selection.articleNumbers.includes(articleNumber);
+  }
+  const range = selection.articles;
+  return articleNumber >= range.from && articleNumber <= range.to;
+}
+
+function filterLegalItem(item, selection) {
   if (isLegalArticle(item)) {
     const articleNumber = Number(item.numero);
-    return articleNumber >= range.from && articleNumber <= range.to ? item : null;
+    return articleMatchesSelection(articleNumber, selection) ? item : null;
   }
 
   const childKey = Array.isArray(item.contenido) ? "contenido" : "articulos";
   const children = (item[childKey] ?? [])
-    .map((child) => filterLegalItem(child, range))
+    .map((child) => filterLegalItem(child, selection))
     .filter(Boolean);
   return children.length ? { ...item, [childKey]: children } : null;
 }
 
 function selectedTheory(theory, selection) {
   if (!selection) return theory;
+  let blocks = theory.bloques;
   if (selection.blockIds) {
     const blockIds = new Set(selection.blockIds);
-    return { ...theory, bloques: theory.bloques.filter((block) => blockIds.has(block.id)) };
+    blocks = blocks.filter((block) => blockIds.has(block.id));
   }
-  if (selection.articles) {
-    return {
-      ...theory,
-      bloques: theory.bloques
-        .filter((block) => block.tipo === "titulo" || block.tipo === "apartado-tematico")
-        .map((block) => ({
-          ...block,
-          contenido: block.contenido
-            .map((item) => filterLegalItem(item, selection.articles))
-            .filter(Boolean),
-        }))
-        .filter((block) => block.contenido.length),
-    };
-  }
-  return theory;
+  if (!selection.articles && !selection.articleNumbers) return { ...theory, bloques };
+  return {
+    ...theory,
+    bloques: blocks
+      .filter((block) => block.tipo === "titulo" || block.tipo === "apartado-tematico")
+      .map((block) => ({
+        ...block,
+        contenido: block.contenido
+          .map((item) => filterLegalItem(item, selection))
+          .filter(Boolean),
+      }))
+      .filter((block) => block.contenido.length),
+  };
 }
 
 function selectionTitle(selection) {
   if (selection?.blockIds?.includes("estructura")) return "Estructura de la Constitución Española";
+  if (selection?.articleNumbers) {
+    const numbers = selection.articleNumbers;
+    if (numbers.length === 1) return `Artículo ${numbers[0]}`;
+    return `Artículos ${numbers.slice(0, -1).join(", ")} y ${numbers.at(-1)}`;
+  }
   const range = selection?.articles;
   if (!range) return "";
   return range.from === range.to

@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-procedimiento-administrativo-temas-29-a-32",
+    category: "Nuevos recursos",
+    publishedAt: "2026-08-02T17:05:41+02:00",
+    title: "Nueva teoría de procedimiento administrativo",
+    description:
+      "Los temas 29, 30, 31 y 32 incorporan lectura estructurada, acceso a sus PDF y consulta directa de la teoría correspondiente desde cada test IVOT.",
+  }),
+  Object.freeze({
     id: "explicaciones-respuestas-tema-01",
     category: "Mejora",
     publishedAt: "2026-07-31T21:36:32+02:00",

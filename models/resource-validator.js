@@ -857,8 +857,14 @@ function validateRelatedTheory(reference, path, errors) {
   const hasBlocks = Array.isArray(selection.blockIds) && selection.blockIds.length > 0;
   const { from, to } = selection.articles ?? {};
   const hasArticles = Number.isInteger(from) && Number.isInteger(to) && from > 0 && to >= from;
-  if (hasBlocks === hasArticles) {
-    errors.push(`${path}.selection: debe indicar bloques o un intervalo de artículos.`);
+  const hasArticleNumbers = Array.isArray(selection.articleNumbers) &&
+    selection.articleNumbers.length > 0 &&
+    selection.articleNumbers.every((number) => Number.isInteger(number) && number > 0);
+  if (!hasBlocks && !hasArticles && !hasArticleNumbers) {
+    errors.push(`${path}.selection: debe indicar bloques o artículos.`);
+  }
+  if (hasArticles && hasArticleNumbers) {
+    errors.push(`${path}.selection: no puede combinar un intervalo y una lista de artículos.`);
   }
   if (selection.blockIds !== undefined && (
     !Array.isArray(selection.blockIds) ||
@@ -870,10 +876,16 @@ function validateRelatedTheory(reference, path, errors) {
   if (selection.articles !== undefined && !hasArticles) {
     errors.push(`${path}.selection.articles: debe contener un intervalo válido.`);
   }
+  if (selection.articleNumbers !== undefined && !hasArticleNumbers) {
+    errors.push(`${path}.selection.articleNumbers: debe contener artículos válidos.`);
+  } else if (hasArticleNumbers && new Set(selection.articleNumbers).size !== selection.articleNumbers.length) {
+    errors.push(`${path}.selection.articleNumbers: no debe contener artículos repetidos.`);
+  }
 }
 
-function theoryArticleNumbers(theory) {
+function theoryArticleNumbers(theory, blockIds) {
   const numbers = new Set();
+  const selectedBlockIds = blockIds?.length ? new Set(blockIds) : null;
   const visit = (item) => {
     const isArticle = item.tipo === "articulo" || item.numero !== undefined && !item.tipo;
     if (isArticle && Number.isInteger(Number(item.numero))) {
@@ -884,6 +896,7 @@ function theoryArticleNumbers(theory) {
   };
   theory.bloques
     .filter((block) => block.tipo !== "estructura")
+    .filter((block) => !selectedBlockIds || selectedBlockIds.has(block.id))
     .forEach((block) => block.contenido.forEach(visit));
   return numbers;
 }
@@ -993,12 +1006,20 @@ export function validateResources(
       Number.isInteger(selection.articles?.to) &&
       selection.articles.to >= selection.articles.from
     ) {
-      const availableArticles = theoryArticleNumbers(theory.data);
+      const availableArticles = theoryArticleNumbers(theory.data, selection.blockIds);
       for (let number = selection.articles.from; number <= selection.articles.to; number += 1) {
         if (!availableArticles.has(number)) {
           errors.push(`${path}.selection.articles: el artículo ${number} no existe.`);
         }
       }
+    }
+    if (Array.isArray(selection.articleNumbers)) {
+      const availableArticles = theoryArticleNumbers(theory.data, selection.blockIds);
+      selection.articleNumbers.forEach((number) => {
+        if (!availableArticles.has(number)) {
+          errors.push(`${path}.selection.articleNumbers: el artículo ${number} no existe.`);
+        }
+      });
     }
   });
 

@@ -96,6 +96,10 @@ import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-
 import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
 import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-administrativo-c1/tema-18/resumen/resumen-situaciones-administrativas.js";
 import teoriaFuentesDerechoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-28/teoria/tema-28-fuentes-derecho-administrativo.js";
+import teoriaOrganizacionAdministrativa from "./resources/gobierno-vasco-administrativo-c1/tema-29/teoria/tema-29-organizacion-administrativa.js";
+import teoriaActoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-30/teoria/tema-30-acto-administrativo.js";
+import teoriaProcedimientoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-31/teoria/tema-31-procedimiento-administrativo.js";
+import teoriaFasesProcedimientoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-32/teoria/tema-32-fases-procedimiento-administrativo.js";
 
 const relatedTheoryByTestId = new Map([
   [testEstructura.id, {
@@ -273,6 +277,123 @@ const relatedTheoryByTestId = new Map([
       ],
     },
   }],
+  [testLey40Articulos5a7.id, {
+    resourceId: teoriaOrganizacionAdministrativa.id,
+    selection: { articles: { from: 5, to: 7 } },
+  }],
+  [testLey40Articulos8y9.id, {
+    resourceId: teoriaOrganizacionAdministrativa.id,
+    selection: { articles: { from: 8, to: 9 } },
+  }],
+  [testLey40Articulos10y11.id, {
+    resourceId: teoriaOrganizacionAdministrativa.id,
+    selection: { articles: { from: 10, to: 11 } },
+  }],
+  [testLey40Articulos12a14.id, {
+    resourceId: teoriaOrganizacionAdministrativa.id,
+    selection: { articles: { from: 12, to: 14 } },
+  }],
+  [testLey40Articulos15a18.id, {
+    resourceId: teoriaOrganizacionAdministrativa.id,
+    selection: { articles: { from: 15, to: 18 } },
+  }],
+  [testLey39Articulos24y25.id, {
+    resourceId: teoriaActoAdministrativo.id,
+    selection: { articles: { from: 24, to: 25 } },
+  }],
+  [testLey39Articulos34a40.id, {
+    resourceId: teoriaActoAdministrativo.id,
+    selection: { articles: { from: 34, to: 40 } },
+  }],
+  [testLey39Articulos41a44.id, {
+    resourceId: teoriaActoAdministrativo.id,
+    selection: { articles: { from: 41, to: 44 } },
+  }],
+  [testLey39Articulos45y46.id, {
+    resourceId: teoriaActoAdministrativo.id,
+    selection: { articles: { from: 45, to: 46 } },
+  }],
+  [testLey39Articulos47a52.id, {
+    resourceId: teoriaActoAdministrativo.id,
+    selection: { articles: { from: 47, to: 52 } },
+  }],
+  [testLey39Articulos3a8.id, {
+    resourceId: teoriaProcedimientoAdministrativo.id,
+    selection: {
+      blockIds: ["ley-39-2015-interesados"],
+      articles: { from: 3, to: 8 },
+    },
+  }],
+  [testLey39Articulos9a12.id, {
+    resourceId: teoriaProcedimientoAdministrativo.id,
+    selection: {
+      blockIds: ["ley-39-2015-interesados"],
+      articles: { from: 9, to: 12 },
+    },
+  }],
+  [testLey40Articulos23y24.id, {
+    resourceId: teoriaProcedimientoAdministrativo.id,
+    selection: {
+      blockIds: ["ley-40-2015-abstencion-recusacion"],
+      articles: { from: 23, to: 24 },
+    },
+  }],
+  [testLey39Articulo53.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [53] },
+  }],
+  [testLey39Articulos55a62.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articles: { from: 55, to: 62 } },
+  }],
+  [testLey39Articulos62a66.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articles: { from: 62, to: 66 } },
+  }],
+  [testLey39Articulos67y68.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [67, 68] },
+  }],
+  [testLey39Articulos6769y70.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [67, 69, 70] },
+  }],
+  [testLey39Articulos70a74.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articles: { from: 70, to: 74 } },
+  }],
+  [testLey39Articulos75a77.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articles: { from: 75, to: 77 } },
+  }],
+  [testLey39Articulos787980y82.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [78, 79, 80, 82] },
+  }],
+  [testLey39Articulo83.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [83] },
+  }],
+  [testLey39Articulos85y86.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [85, 86] },
+  }],
+  [testLey39Articulos87y88.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [87, 88] },
+  }],
+  [testLey39Articulos89y90.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [89, 90] },
+  }],
+  [testLey39Articulos91a95.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articles: { from: 91, to: 95 } },
+  }],
+  [testLey39Articulo96.id, {
+    resourceId: teoriaFasesProcedimientoAdministrativo.id,
+    selection: { articleNumbers: [96] },
+  }],
 ]);
 
 const theoryNoticeByTestId = new Map([
@@ -361,19 +482,23 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   theoryResource(teoriaFuentesDerechoAdministrativo),
   testResource(testFuentesDerecho1),
   testResource(testFuentesDerecho2),
+  theoryResource(teoriaOrganizacionAdministrativa),
   testResource(testLey40Articulos5a7),
   testResource(testLey40Articulos8y9),
   testResource(testLey40Articulos10y11),
   testResource(testLey40Articulos12a14),
   testResource(testLey40Articulos15a18),
+  theoryResource(teoriaActoAdministrativo),
   testResource(testLey39Articulos24y25),
   testResource(testLey39Articulos34a40),
   testResource(testLey39Articulos41a44),
   testResource(testLey39Articulos45y46),
   testResource(testLey39Articulos47a52),
+  theoryResource(teoriaProcedimientoAdministrativo),
   testResource(testLey39Articulos3a8),
   testResource(testLey39Articulos9a12),
   testResource(testLey40Articulos23y24),
+  theoryResource(teoriaFasesProcedimientoAdministrativo),
   testResource(testLey39Articulo53),
   testResource(testLey39Articulos55a62),
   testResource(testLey39Articulos62a66),
