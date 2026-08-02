@@ -1463,7 +1463,20 @@ h3 {
 }
 
 .theme-card .topic-number {
-  margin-bottom: 14px;
+  flex: 0 0 auto;
+}
+
+.theme-card-topline {
+  align-items: flex-start;
+}
+
+.theme-card-category {
+  margin: 3px 0 0;
+  color: var(--brand);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: right;
 }
 
 .theme-card {

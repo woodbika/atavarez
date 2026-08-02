@@ -77,7 +77,21 @@ export function validateOppositions(oppositions) {
           } else {
             sectionOrders.add(section.order);
           }
+          if (section?.category !== undefined && !isNonEmptyString(section.category)) {
+            errors.push(`${sectionPath}.category: debe contener texto.`);
+          }
         });
+      }
+    }
+    if (opposition.themeCategories !== undefined) {
+      if (
+        !Array.isArray(opposition.themeCategories) ||
+        opposition.themeCategories.length === 0 ||
+        opposition.themeCategories.some((category) => !isNonEmptyString(category))
+      ) {
+        errors.push(`${path}.themeCategories: debe contener categorías válidas.`);
+      } else if (new Set(opposition.themeCategories).size !== opposition.themeCategories.length) {
+        errors.push(`${path}.themeCategories: no debe contener categorías repetidas.`);
       }
     }
     if (opposition.navigation !== undefined) {

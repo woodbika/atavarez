@@ -9,6 +9,10 @@ import {
 } from "../data/question-banks/index.js";
 import { resources } from "../data/resources.js";
 import { oppositions } from "../data/oppositions.js";
+import {
+  GOBIERNO_VASCO_THEME_CATEGORIES,
+  gobiernoVascoThemeCategory,
+} from "../data/opposition-sections.js";
 import { createOppositionResourceFactory } from "../data/resource-factory.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
@@ -1252,6 +1256,37 @@ test("la cabecera contextual describe oposición, tema y test sin crear enlaces"
   assert.equal(osakidetzaItems[1].label, "Apartado");
   assert.equal(osakidetzaItems[1].value, "Temario específico");
   assert.deepEqual(buildStudyContextItems(), []);
+});
+
+test("los temas del Gobierno Vasco se clasifican por áreas de contenido", () => {
+  const ranges = [
+    [1, 14, "Generales"],
+    [15, 16, "Presupuesto y contabilidad"],
+    [17, 18, "Personal"],
+    [19, 22, "Organización y gestión administrativa"],
+    [23, 26, "Atención a la ciudadanía"],
+    [27, 27, "Biblioteca"],
+    [28, 34, "Procedimiento administrativo"],
+  ];
+
+  assert.deepEqual(
+    ranges.map(([, , category]) => category),
+    GOBIERNO_VASCO_THEME_CATEGORIES,
+  );
+  ranges.forEach(([from, to, category]) => {
+    for (let number = from; number <= to; number += 1) {
+      assert.equal(gobiernoVascoThemeCategory(number), category);
+    }
+  });
+  assert.equal(gobiernoVascoThemeCategory("comun"), undefined);
+
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const opposition = repository.getOpposition("gobierno-vasco-administrativo-c1");
+  const themes = repository.getThemes("gobierno-vasco-administrativo-c1");
+  assert.deepEqual(opposition.themeCategories, GOBIERNO_VASCO_THEME_CATEGORIES);
+  themes.forEach((theme) => {
+    assert.equal(theme.category, gobiernoVascoThemeCategory(theme.numero));
+  });
 });
 
 test("el portal agrupa oposiciones, temas y recursos", () => {

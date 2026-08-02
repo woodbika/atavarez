@@ -216,6 +216,7 @@ export class ResourceRepository {
           numero: String(section.id),
           titulo: section.title,
           order: section.order,
+          category: section.category,
           resourceCount: 0,
         },
       ]),
@@ -246,7 +247,7 @@ export class ResourceRepository {
   searchThemes(themes, query = "") {
     const term = normalizeText(query);
     return themes.filter((theme) =>
-      normalizeText(`tema ${theme.numero} ${theme.titulo}`).includes(term),
+      normalizeText(`tema ${theme.numero} ${theme.titulo} ${theme.category ?? ""}`).includes(term),
     );
   }
 

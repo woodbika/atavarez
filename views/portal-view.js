@@ -70,6 +70,8 @@ export function renderOppositions(root, oppositions) {
 
 export function renderThemes(root, opposition, themes) {
   const labels = navigationLabels(opposition);
+  const categories = opposition.themeCategories ??
+    [...new Set(themes.map((theme) => theme.category).filter(Boolean))];
   const coverStyle = opposition.covers.themes
     ? ` style="--opposition-cover-image: url('${escapeHtml(coverImageUrl(opposition.covers.themes))}')"`
     : "";
@@ -90,6 +92,21 @@ export function renderThemes(root, opposition, themes) {
         </div>
         <p id="theme-results-count" class="result-count" aria-live="polite"></p>
       </div>
+      ${categories.length
+        ? `<div class="resource-filter-bar theme-filter-bar" role="group" aria-label="Filtrar temas por categoría">
+            <span>Filtrar por</span>
+            <div class="resource-filter-list">
+              <button class="filter-button is-active" type="button" data-theme-category="" aria-pressed="true">
+                Todos
+              </button>
+              ${categories.map((category) => `
+                <button class="filter-button" type="button" data-theme-category="${escapeHtml(category)}" aria-pressed="false">
+                  ${escapeHtml(category)}
+                </button>
+              `).join("")}
+            </div>
+          </div>`
+        : ""}
       <div id="theme-list" class="navigation-grid"></div>
       <div class="portal-back-action">
         <a class="button button-secondary portal-back-button" href="#/">
@@ -102,23 +119,44 @@ export function renderThemes(root, opposition, themes) {
 
   const list = root.querySelector("#theme-list");
   const count = root.querySelector("#theme-results-count");
+  const filterButtons = [...root.querySelectorAll("[data-theme-category]")];
+  let activeCategory = "";
+  let matchingThemes = themes;
 
-  function updateList(filteredThemes) {
+  function renderList() {
+    const filteredThemes = activeCategory
+      ? matchingThemes.filter((theme) => theme.category === activeCategory)
+      : matchingThemes;
     count.textContent = plural(
       filteredThemes.length,
       labels.collectionSingular,
       labels.collectionPlural,
     );
     if (!filteredThemes.length) {
-      list.innerHTML = `<div class="empty-card"><h3>Sin ${escapeHtml(labels.collectionPlural)}</h3><p>Prueba con otra búsqueda.</p></div>`;
+      const categoryIsUpcoming = activeCategory &&
+        !themes.some((theme) => theme.category === activeCategory);
+      list.innerHTML = categoryIsUpcoming
+        ? `<div class="empty-card empty-card-upcoming">
+            <p class="eyebrow">${escapeHtml(activeCategory)}</p>
+            <h3>Próximamente</h3>
+            <p>Los temas de esta categoría se incorporarán más adelante.</p>
+          </div>`
+        : `<div class="empty-card"><h3>Sin ${escapeHtml(labels.collectionPlural)}</h3><p>Prueba con otra búsqueda o categoría.</p></div>`;
       return;
     }
 
     list.innerHTML = filteredThemes
           .map((theme) => `
               <article class="navigation-card theme-card">
-                ${labels.showUnitNumber
-                  ? `<span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>`
+                ${labels.showUnitNumber || theme.category
+                  ? `<div class="card-topline theme-card-topline">
+                      ${labels.showUnitNumber
+                        ? `<span class="topic-number" aria-label="Tema ${escapeHtml(theme.numero)}">${escapeHtml(theme.numero)}</span>`
+                        : ""}
+                      ${theme.category
+                        ? `<p class="theme-card-category">${escapeHtml(theme.category)}</p>`
+                        : ""}
+                    </div>`
                   : ""}
                 <h3 class="theme-card-title">${escapeHtml(theme.titulo)}</h3>
                 <p class="card-summary">${plural(theme.resourceCount, "recurso disponible", "recursos disponibles")}</p>
@@ -130,7 +168,25 @@ export function renderThemes(root, opposition, themes) {
           .join("");
   }
 
-  updateList(themes);
+  function updateList(filteredThemes) {
+    matchingThemes = filteredThemes;
+    renderList();
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.themeCategory;
+      filterButtons.forEach((candidate) => {
+        const isActive = candidate === button;
+        candidate.classList.toggle("is-active", isActive);
+        candidate.setAttribute("aria-pressed", String(isActive));
+      });
+      renderList();
+      button.blur();
+    });
+  });
+
+  renderList();
   return { updateList };
 }
 

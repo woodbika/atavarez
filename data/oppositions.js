@@ -1,5 +1,6 @@
 import {
   GOBIERNO_VASCO_ADMINISTRATIVO_C1_SECTIONS,
+  GOBIERNO_VASCO_THEME_CATEGORIES,
   OSAKIDETZA_TECNICO_ESPECIALISTA_INFORMATICA_C1_SECTIONS,
 } from "./opposition-sections.js";
 
@@ -14,6 +15,7 @@ export const GOBIERNO_VASCO_ADMINISTRATIVO_C1 = Object.freeze({
   scale: "Escala Administrativa",
   status: "available",
   sections: GOBIERNO_VASCO_ADMINISTRATIVO_C1_SECTIONS,
+  themeCategories: GOBIERNO_VASCO_THEME_CATEGORIES,
   covers: Object.freeze({
     themes: "portada-temas-gobierno-vasco.jpg",
     resources: "portada-recursos.jpg",
