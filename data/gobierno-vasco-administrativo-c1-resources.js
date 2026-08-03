@@ -10,6 +10,9 @@ import explicacionesOrganizacionTerritorial1 from "./explanations/gobierno-vasco
 import explicacionesOrganizacionTerritorial2 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-2.js";
 import explicacionesOrganizacionTerritorial3 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-3.js";
 import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-4-competencias.js";
+import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1/tema-03/index.js";
+import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
+import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import testPrincipiosRectores from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/capitulo-iii-titulo-i-ce-principios-rectores.js";
 import testCapituloII from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-capitulo-ii-titulo-i-ce.js";
 import testCapitulosIVyV from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-capitulo-iv-y-v.js";
@@ -447,6 +450,9 @@ const answerExplanationsByTestId = new Map([
   [explicacionesOrganizacionTerritorial2.testId, explicacionesOrganizacionTerritorial2],
   [explicacionesOrganizacionTerritorial3.testId, explicacionesOrganizacionTerritorial3],
   [explicacionesOrganizacionTerritorial4.testId, explicacionesOrganizacionTerritorial4],
+  ...explicacionesTema03.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
 ]);
 
 const { summaryResource, testResource, theoryResource } = createOppositionResourceFactory(

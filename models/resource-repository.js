@@ -85,6 +85,11 @@ export class ResourceRepository {
           preguntaId: `${resource.id}:${explanation.preguntaId}`,
         })),
       );
+      const theoryResourceIds = new Set(
+        themeResources
+          .map((resource) => resource.data.explicaciones?.theoryResourceId)
+          .filter(Boolean),
+      );
       const classification = { ...first.classification };
       const autor = {
         id: "recopilacion-tema",
@@ -104,8 +109,11 @@ export class ResourceRepository {
         ...(explanationEntries.length
           ? {
               explicaciones: {
-                schemaVersion: 1,
+                schemaVersion: 2,
                 testId: id,
+                ...(theoryResourceIds.size === 1
+                  ? { theoryResourceId: [...theoryResourceIds][0] }
+                  : {}),
                 preguntas: explanationEntries,
               },
             }

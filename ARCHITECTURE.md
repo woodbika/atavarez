@@ -54,6 +54,13 @@ Las novedades tienen un esquema independiente y se validan con `update-validator
 la verificación conjunta cubre oposiciones, recursos, preguntas y novedades antes de
 arrancar o publicar.
 
+Las explicaciones de respuestas usan el esquema versionado de
+`data/explanations/explanation-schema.js`. Cada conjunto identifica su ficha de
+teoría y cada pregunta declara un artículo o bloque verificable, con alcance directo
+o contextual. `explanation-auditor.js` controla longitud, fórmulas poco pedagógicas,
+repeticiones y el tratamiento explícito de discrepancias; `resource-validator.js`
+comprueba además que los localizadores existen en la teoría indicada.
+
 ## Navegación
 
 Las rutas usan fragmentos (`#/...`) para ser compatibles con GitHub Pages sin reglas

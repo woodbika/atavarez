@@ -16,6 +16,7 @@ import {
 import { createOppositionResourceFactory } from "../data/resource-factory.js";
 import { updates } from "../data/updates.js";
 import { ResourceRepository } from "../models/resource-repository.js";
+import { auditExplanations } from "../models/explanation-auditor.js";
 import { validateAuthors } from "../models/author-validator.js";
 import { buildStudyContextItems } from "../controllers/study-context-controller.js";
 import {
@@ -125,7 +126,8 @@ test("todos los tests del Tema 1 explican sus respuestas", () => {
       explanations.preguntas.map((item) => [String(item.preguntaId), item]),
     );
 
-    assert.equal(explanations.schemaVersion, 1);
+    assert.equal(explanations.schemaVersion, 2);
+    assert.ok(explanations.theoryResourceId);
     assert.equal(explanations.testId, resource.id);
     assert.equal(explanations.preguntas.length, resource.data.preguntas.length);
     resource.data.preguntas.forEach((question) => {
@@ -136,6 +138,7 @@ test("todos los tests del Tema 1 explican sus respuestas", () => {
         .sort();
 
       assert.ok(explanation?.justificacion);
+      assert.ok(explanation?.referencia?.etiqueta);
       assert.deepEqual(
         Object.keys(explanation.descartes).sort(),
         discardedOptionIds,
@@ -169,7 +172,8 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
       explanations.preguntas.map((item) => [String(item.preguntaId), item]),
     );
 
-    assert.equal(explanations.schemaVersion, 1);
+    assert.equal(explanations.schemaVersion, 2);
+    assert.ok(explanations.theoryResourceId);
     assert.equal(explanations.testId, resource.id);
     assert.equal(explanations.preguntas.length, resource.data.preguntas.length);
     resource.data.preguntas.forEach((question) => {
@@ -179,10 +183,8 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
         .filter((optionId) => optionId !== question.respuestaCorrecta)
         .sort();
 
-      assert.match(
-        explanation?.justificacion ?? "",
-        /^(La clave está en|Aquí conviene recordar|En este caso)/,
-      );
+      assert.ok(explanation?.justificacion);
+      assert.ok(explanation?.referencia?.etiqueta);
       assert.deepEqual(
         Object.keys(explanation.descartes).sort(),
         discardedOptionIds,
@@ -194,6 +196,99 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
   });
 });
 
+test("los tests de los Temas 3, 4 y 9 explican todas sus respuestas", () => {
+  const expectedByTheme = new Map([
+    ["03", { tests: 5, questions: 121 }],
+    ["04", { tests: 5, questions: 169 }],
+    ["09", { tests: 4, questions: 82 }],
+  ]);
+
+  expectedByTheme.forEach((expected, themeNumber) => {
+    const themeResources = resources.filter(
+      (resource) =>
+        resource.type === "test" &&
+        resource.opposition.id === "gobierno-vasco-administrativo-c1" &&
+        resource.classification.tema.numero === themeNumber,
+    );
+
+    assert.equal(themeResources.length, expected.tests);
+    assert.equal(
+      themeResources.reduce(
+        (total, resource) => total + resource.data.preguntas.length,
+        0,
+      ),
+      expected.questions,
+    );
+    themeResources.forEach((resource) => {
+      const explanations = resource.data.explicaciones;
+      const explanationByQuestionId = new Map(
+        explanations.preguntas.map((item) => [String(item.preguntaId), item]),
+      );
+
+      assert.equal(explanations.schemaVersion, 2);
+      assert.ok(explanations.theoryResourceId);
+      assert.equal(explanations.testId, resource.id);
+      assert.equal(explanations.preguntas.length, resource.data.preguntas.length);
+      resource.data.preguntas.forEach((question) => {
+        const explanation = explanationByQuestionId.get(String(question.id));
+        const discardedOptionIds = question.opciones
+          .map((option) => option.id)
+          .filter((optionId) => optionId !== question.respuestaCorrecta)
+          .sort();
+
+        assert.ok(explanation?.justificacion);
+        assert.ok(explanation?.referencia?.etiqueta);
+        assert.deepEqual(
+          Object.keys(explanation.descartes).sort(),
+          discardedOptionIds,
+        );
+        Object.values(explanation.descartes).forEach((discard) => {
+          assert.ok(discard);
+        });
+      });
+    });
+  });
+});
+
+test("las discrepancias con la teoría se documentan sin cambiar las soluciones", () => {
+  const expectedDiscrepancies = [
+    ["test-espacio-europeo-iii", 17, "b"],
+    ["test-instituciones-union-europea-ii", 5, "a"],
+    ["test-instituciones-union-europea-ii", 11, "b"],
+    ["test-instituciones-union-europea-ii", 22, "b"],
+    ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", 2, "b"],
+  ];
+
+  expectedDiscrepancies.forEach(([testId, questionId, expectedAnswer]) => {
+    const resource = resources.find((candidate) => candidate.id === testId);
+    const question = resource.data.preguntas.find(
+      (candidate) => candidate.id === questionId,
+    );
+    const explanation = resource.data.explicaciones.preguntas.find(
+      (candidate) => candidate.preguntaId === questionId,
+    );
+
+    assert.equal(question.respuestaCorrecta, expectedAnswer);
+    assert.equal(explanation.notaRevision.tipo, "discrepancia-teorica");
+    assert.ok(explanation.notaRevision.titulo);
+    assert.ok(explanation.notaRevision.texto);
+  });
+});
+
+test("todas las explicaciones superan la auditoría pedagógica", () => {
+  const { errors, warnings, stats } = auditExplanations(resources);
+
+  assert.deepEqual(errors, []);
+  assert.deepEqual(warnings, []);
+  assert.deepEqual(stats, {
+    tests: 24,
+    questions: 639,
+    directReferences: 565,
+    contextualReferences: 74,
+    theoryDiscrepancies: 5,
+  });
+});
+
 test("el test completo conserva todas las explicaciones con ids compuestos", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const combinedTest = repository.getTestById(
@@ -201,6 +296,11 @@ test("el test completo conserva todas las explicaciones con ids compuestos", () 
   );
 
   assert.equal(combinedTest.explicaciones.preguntas.length, 121);
+  assert.equal(combinedTest.explicaciones.schemaVersion, 2);
+  assert.equal(
+    combinedTest.explicaciones.theoryResourceId,
+    "tema-01-constitucion-espanola",
+  );
   assert.equal(
     combinedTest.explicaciones.preguntas.length,
     combinedTest.preguntas.length,
@@ -234,6 +334,31 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
+test("los tests completos de los Temas 3, 4 y 9 conservan sus explicaciones", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const expectedByTheme = new Map([
+    ["03", 121],
+    ["04", 169],
+    ["09", 82],
+  ]);
+
+  expectedByTheme.forEach((expectedQuestions, themeNumber) => {
+    const combinedTest = repository.getTestById(
+      `test-completo-gobierno-vasco-administrativo-c1-tema-${themeNumber}`,
+    );
+
+    assert.equal(combinedTest.preguntas.length, expectedQuestions);
+    assert.equal(combinedTest.explicaciones.preguntas.length, expectedQuestions);
+    combinedTest.explicaciones.preguntas.forEach((explanation) => {
+      assert.ok(
+        combinedTest.preguntas.some(
+          (question) => String(question.id) === String(explanation.preguntaId),
+        ),
+      );
+    });
+  });
+});
+
 test("la validación rechaza explicaciones incompletas", () => {
   const invalidResource = structuredClone(
     resources.find(
@@ -252,6 +377,53 @@ test("la validación rechaza explicaciones incompletas", () => {
   );
   assert.ok(
     errors.some((error) => error.includes("debe explicar todas las preguntas")),
+  );
+});
+
+test("la validación rechaza notas de discrepancia mal formadas", () => {
+  const invalidResource = structuredClone(
+    resources.find(
+      (item) => item.id === "test-instituciones-union-europea-ii",
+    ),
+  );
+  const explanation = invalidResource.data.explicaciones.preguntas.find(
+    (item) => item.preguntaId === 5,
+  );
+  explanation.notaRevision.tipo = "aviso";
+  explanation.notaRevision.texto = "";
+
+  const errors = validateResources([invalidResource], oppositions, authors);
+
+  assert.ok(
+    errors.some((error) =>
+      error.includes("notaRevision.tipo: debe ser discrepancia-teorica"),
+    ),
+  );
+  assert.ok(
+    errors.some((error) =>
+      error.includes("notaRevision.texto: debe contener texto"),
+    ),
+  );
+});
+
+test("la validación rechaza referencias teóricas inexistentes", () => {
+  const invalidResources = structuredClone(resources);
+  const invalidResource = invalidResources.find(
+    (item) => item.id === "test-constitucion-espanola-articulos-10-a-13",
+  );
+  invalidResource.data.explicaciones.preguntas[0].referencia.articulos = [999];
+
+  const errors = validateResources(
+    invalidResources,
+    oppositions,
+    authors,
+    questionBanks,
+  );
+
+  assert.ok(
+    errors.some((error) =>
+      error.includes("referencia.articulos: el artículo 999 no existe"),
+    ),
   );
 });
 
@@ -301,6 +473,7 @@ test("la fábrica admite metadatos mínimos y los completa desde los catálogos"
     ).data,
   );
   source.autor = { id: source.autor.id };
+  delete source.explicaciones;
   source.clasificacion = {
     oposicionId: opposition.id,
     tema: { numero: source.clasificacion.tema.numero },
@@ -1136,8 +1309,31 @@ test("la revisión presenta respuestas y explicaciones como un informe", () => {
     });
   });
   assert.match(root.innerHTML, /Mostrar explicación/);
+  assert.match(root.innerHTML, /Referencia teórica/);
   assert.match(root.innerHTML, /Motivo de la respuesta correcta/);
   assert.doesNotMatch(root.innerHTML, /Comprender la respuesta/);
+});
+
+test("la revisión señala las soluciones que discrepan de la teoría", () => {
+  const source = tests.find(
+    (candidate) => candidate.id === "test-instituciones-union-europea-ii",
+  );
+  const question = source.preguntas.find((candidate) => candidate.id === 5);
+  const testData = { ...source, preguntas: [question] };
+  const root = { innerHTML: "" };
+
+  renderReview(
+    root,
+    testData,
+    { answers: { 5: question.respuestaCorrecta } },
+    { backHref: "#/recursos" },
+  );
+
+  assert.match(root.innerHTML, /has-theory-note/);
+  assert.match(root.innerHTML, /Revisar teoría/);
+  assert.match(root.innerHTML, /La solución del test contradice la teoría/);
+  assert.match(root.innerHTML, /París no figura entre sus lugares de trabajo/);
+  assert.match(root.innerHTML, /review-outcome-correct/);
 });
 
 test("la cuenta atrás asigna 40 segundos por pregunta y formatea su duración", () => {

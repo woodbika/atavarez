@@ -4075,6 +4075,34 @@ body.focus-mode {
   gap: 12px;
 }
 
+.review-summary-statuses {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 12px;
+}
+
+.review-theory-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: color-mix(in srgb, var(--brand) 78%, var(--muted));
+  font-size: 0.7rem;
+  font-weight: 580;
+}
+
+.review-theory-flag svg,
+.review-theory-note-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
 .review-outcome {
   display: inline-flex;
   align-items: center;
@@ -4206,6 +4234,48 @@ body.focus-mode {
   margin-top: 6px;
   padding: 8px 0 2px 16px;
   border-left: 2px solid color-mix(in srgb, var(--brand) 38%, var(--line));
+}
+
+.review-explanation-content .review-explanation-reference {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 7px;
+  align-items: baseline;
+  margin: 0 0 9px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.review-explanation-reference span {
+  color: var(--brand);
+  font-weight: 620;
+}
+
+.review-theory-note {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 9px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--brand-soft) 44%, transparent);
+}
+
+.review-theory-note-icon {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  color: var(--brand);
+}
+
+.review-explanation-content .review-theory-note-title {
+  margin: 0 0 3px;
+  color: var(--brand);
+  font-size: 0.72rem;
+  font-weight: 620;
 }
 
 .review-explanation-content p {

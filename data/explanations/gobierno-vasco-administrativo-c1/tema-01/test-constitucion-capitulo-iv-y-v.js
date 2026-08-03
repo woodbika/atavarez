@@ -1,5 +1,10 @@
+import {
+  articleReference,
+  defineExplanationSet,
+  referencesFromQuestionRanges,
+} from "../../explanation-schema.js";
+
 const explicacionesArticulos53a55 = {
-  schemaVersion: 1,
   testId: "test-constitucion-capitulo-iv-y-v",
   preguntas: [
     {
@@ -113,4 +118,10 @@ const explicacionesArticulos53a55 = {
   ],
 };
 
-export default explicacionesArticulos53a55;
+export default defineExplanationSet(explicacionesArticulos53a55, {
+  theoryResourceId: "tema-01-constitucion-espanola",
+  references: referencesFromQuestionRanges([
+    { from: 1, to: 4, reference: articleReference(53) },
+    { from: 5, to: 12, reference: articleReference(55) },
+  ]),
+});

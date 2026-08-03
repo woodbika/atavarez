@@ -36,6 +36,7 @@ Aplicación web estática para organizar oposiciones, apartados del temario y re
 │   ├── oppositions.js        # Catálogo de oposiciones e identificadores estables
 │   ├── resources.js          # Agregador de los registros de cada oposición
 │   ├── resource-factory.js   # Normalización común de tests y teorías
+│   ├── explanations/          # Explicaciones, esquema y plantilla canónica
 │   ├── *-resources.js        # Registro propio de cada oposición
 │   ├── updates.js            # Novedades visibles en la cabecera
 │   ├── resources/            # Materiales agrupados por oposición y apartado
@@ -74,7 +75,7 @@ npm run check
 Este comando comprueba la sintaxis del código de producción, valida los bancos de
 preguntas y los archivos locales referenciados, y ejecuta las pruebas. También pueden
 lanzarse por separado con `npm run check:source`, `npm run validate:data`,
-`npm run validate:assets` y `npm test`. No es necesario ejecutar `npm install`: el
+`npm run audit:explanations`, `npm run validate:assets` y `npm test`. No es necesario ejecutar `npm install`: el
 proyecto no tiene dependencias.
 
 Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante GitHub Actions.
@@ -129,6 +130,8 @@ y `includeInCombinedTest: false` excluye el banco de la recopilación automátic
 Estas propiedades forman parte del esquema validado.
 
 Un test puede enlazar un fragmento de teoría mediante `relatedTheory`, indicando el `resourceId` de la teoría y una selección por `blockIds` o por intervalo de artículos. El modal reutiliza y filtra ese contenido original; no mantiene copias parciales de la teoría.
+
+Las justificaciones de respuestas siguen la [plantilla canónica de explicaciones](data/explanations/README.md). Para encargarlas a un asistente se utiliza el [prompt operativo](data/explanations/PROMPT.md), que remite a esa guía y al esquema técnico vigente. Cada pregunta debe apuntar a un artículo o bloque real de la teoría, distinguir referencias directas y contextuales y documentar cualquier discrepancia sin modificar la solución del test.
 
 El registro de cada oposición es el único lugar que conoce sus recursos. El agregador
 central no contiene tests individuales y la navegación mantiene separados los temas

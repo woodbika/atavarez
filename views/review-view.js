@@ -17,6 +17,36 @@ function statusIcon(state) {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"></path></svg>';
 }
 
+function theoryNoteIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>';
+}
+
+function renderTheoryNote(note) {
+  if (!note) return "";
+  return `
+    <aside class="review-theory-note" aria-label="Advertencia sobre la teoría">
+      <span class="review-theory-note-icon">${theoryNoteIcon()}</span>
+      <div>
+        <p class="review-theory-note-title">${escapeHtml(note.titulo)}</p>
+        <p>${escapeHtml(note.texto)}</p>
+      </div>
+    </aside>
+  `;
+}
+
+function renderTheoryReference(reference) {
+  if (!reference) return "";
+  const prefix = reference.alcance === "contextual"
+    ? "Contexto teórico"
+    : "Referencia teórica";
+  return `
+    <p class="review-explanation-reference">
+      <span>${prefix}</span>
+      ${escapeHtml(reference.etiqueta)}
+    </p>
+  `;
+}
+
 function renderOptions(question, selected) {
   return `
     <ol class="review-options" aria-label="Opciones de la pregunta">
@@ -65,6 +95,8 @@ function renderExplanation(question, explanation) {
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"></path></svg>
       </summary>
       <div class="review-explanation-content">
+        ${renderTheoryReference(explanation.referencia)}
+        ${renderTheoryNote(explanation.notaRevision)}
         <p class="review-explanation-label">Motivo de la respuesta correcta</p>
         <p>${escapeHtml(explanation.justificacion)}</p>
         <p class="review-explanation-label">Por qué no son correctas las demás</p>
@@ -117,21 +149,25 @@ export function renderReview(root, test, result, { backHref }) {
           .map((question, index) => {
             const selected = result.answers[String(question.id)] ?? null;
             const state = stateFor(question, selected);
+            const explanation = explanationByQuestionId.get(String(question.id));
+            const hasTheoryNote = Boolean(explanation?.notaRevision);
             return `
-              <li class="review-summary-row" data-review-state="${state.key}">
+              <li class="review-summary-row${hasTheoryNote ? " has-theory-note" : ""}" data-review-state="${state.key}">
                 <div class="review-summary-heading">
                   <span class="review-question-number">Pregunta ${index + 1}</span>
-                  <span class="review-outcome review-outcome-${state.key}">
-                    ${statusIcon(state.key)}
-                    ${state.label}
+                  <span class="review-summary-statuses">
+                    ${hasTheoryNote
+                      ? `<span class="review-theory-flag">${theoryNoteIcon()} Revisar teoría</span>`
+                      : ""}
+                    <span class="review-outcome review-outcome-${state.key}">
+                      ${statusIcon(state.key)}
+                      ${state.label}
+                    </span>
                   </span>
                 </div>
                 <h2 class="review-question-text">${escapeHtml(question.enunciado)}</h2>
                 ${renderOptions(question, selected)}
-                ${renderExplanation(
-                  question,
-                  explanationByQuestionId.get(String(question.id)),
-                )}
+                ${renderExplanation(question, explanation)}
               </li>
             `;
           })

@@ -25,4 +25,10 @@ Guarda cada banco en la carpeta de su oposición, apartado y autor. Regístralo 
 en `data/<id-de-oposicion>-resources.js`; `data/resources.js` solo agrega esos
 registros. La validación automática debe completarse sin errores antes de publicar.
 
+Si el test dispone de una ficha teórica, sus justificaciones deben seguir
+`data/explanations/README.md`. Si las genera o amplía un asistente, debe seguir también
+`data/explanations/PROMPT.md`. Las soluciones no se modifican desde una explicación:
+las diferencias con la teoría se documentan mediante la nota de revisión prevista
+por el esquema. Ejecuta `npm run audit:explanations` antes de incorporar el recurso.
+
 No incluyas información personal, credenciales, resultados de usuarios ni material cuya distribución no esté autorizada.

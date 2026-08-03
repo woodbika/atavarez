@@ -1,5 +1,10 @@
+import {
+  articleReference,
+  defineExplanationSet,
+  referencesFromQuestionRanges,
+} from "../../explanation-schema.js";
+
 const explicacionesArticulos14a29 = {
-  schemaVersion: 1,
   testId: "test-constitucion-espanola-articulos-14-a-29-2022",
   preguntas: [
     {
@@ -305,4 +310,24 @@ const explicacionesArticulos14a29 = {
   ],
 };
 
-export default explicacionesArticulos14a29;
+export default defineExplanationSet(explicacionesArticulos14a29, {
+  theoryResourceId: "tema-01-constitucion-espanola",
+  references: referencesFromQuestionRanges([
+    { from: 1, reference: articleReference(14) },
+    { from: 2, reference: articleReference(15) },
+    { from: 3, to: 4, reference: articleReference(16) },
+    { from: 5, to: 7, reference: articleReference(17) },
+    { from: 8, reference: articleReference(18) },
+    { from: 9, reference: articleReference(19) },
+    { from: 10, to: 12, reference: articleReference(20) },
+    { from: 13, reference: articleReference(21) },
+    { from: 14, to: 15, reference: articleReference(22) },
+    { from: 16, reference: articleReference(23) },
+    { from: 17, to: 19, reference: articleReference(24) },
+    { from: 20, to: 21, reference: articleReference(25) },
+    { from: 22, reference: articleReference(26) },
+    { from: 23, to: 26, reference: articleReference(27) },
+    { from: 27, to: 29, reference: articleReference(28) },
+    { from: 30, reference: articleReference(29) },
+  ]),
+});

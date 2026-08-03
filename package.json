@@ -11,7 +11,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "npm run check:source && npm run validate:data && npm run validate:assets && npm test",
+    "check": "npm run check:source && npm run validate:data && npm run audit:explanations && npm run validate:assets && npm test",
+    "audit:explanations": "node scripts/audit-explanations.js",
     "check:source": "find app.js controllers data models scripts utils views -name '*.js' -exec node --check {} \\;",
     "test": "node --test tests/*.test.js",
     "validate:data": "node scripts/validate-data.js",

@@ -1,3 +1,9 @@
+import {
+  articleReference,
+  blockReference,
+  defineExplanationSet,
+} from "../../explanation-schema.js";
+
 const theoryRules = Object.freeze({
   "titulo-viii": {
     label: "el Título VIII de la Constitución",
@@ -136,13 +142,35 @@ export function referencesFromRanges(ranges) {
   return references;
 }
 
-function naturalJustification(correctOption, source, index) {
+function compactQuestionFocus(question, maxWords = 18) {
+  const focus = cleanOptionText(question.enunciado)
+    .replace(/^(señal(?:a|e)|indica|es correcto señalar)\s+/i, "")
+    .trim();
+  const words = focus.split(/\s+/).filter(Boolean);
+  const compact = words.slice(0, maxWords).join(" ");
+  const result = words.length > maxWords ? `${compact}…` : compact;
+  return /^(es correcto señalar|es incorrecto señalar)$/i.test(result) ? "" : result;
+}
+
+function naturalJustification(question, correctOption, source, index) {
   const introductions = [
     `La clave está en ${source.label}:`,
     `Aquí conviene recordar lo que dispone ${source.label}:`,
     `En este caso, ${source.label} da la pauta:`,
   ];
-  return `${introductions[index % introductions.length]} ${source.rule}. En esta pregunta, la opción que recoge esa regla es «${cleanOptionText(correctOption.texto)}».`;
+  const focus = compactQuestionFocus(question);
+  const correct = cleanOptionText(correctOption.texto);
+  const application = focus
+    ? `Aplicada a «${focus}», esa regla conduce a «${correct}».`
+    : `Por eso corresponde elegir «${correct}».`;
+
+  if (source.label === "el artículo 149" && /competencia exclusiva/i.test(correct)) {
+    return `El artículo 149 reserva al Estado la materia «${focus}». Por eso debe elegirse «${correct}».`;
+  }
+  if (source.label === "el artículo 148" && /comunidades autónomas/i.test(correct)) {
+    return `El artículo 148 incluye «${focus}» entre las materias que las comunidades autónomas pueden asumir. Por eso encaja «${correct}».`;
+  }
+  return `${introductions[index % introductions.length]} ${source.rule}. ${application}`;
 }
 
 function cleanOptionText(text) {
@@ -153,6 +181,9 @@ function naturalDiscard(question, option, correctOption, source) {
   const prompt = question.enunciado.toLocaleLowerCase("es");
   const discarded = cleanOptionText(option.texto);
   const correct = cleanOptionText(correctOption.texto);
+  const focus = compactQuestionFocus(question, 12);
+  const focusContext = focus ? ` En «${focus}», esa diferencia es relevante.` : "";
+  const correctReference = correct.length > 70 ? "la respuesta registrada" : `«${correct}»`;
   const asksForIncorrect = /incorrect|no es correcta|no corresponde|excepto/.test(prompt);
   const correctCombinesOptions = /^(ambas|todas)/i.test(correct);
   const discardedCombinesOptions = /^(ambas|todas)/i.test(discarded);
@@ -165,26 +196,50 @@ function naturalDiscard(question, option, correctOption, source) {
     );
 
   if (asksForIncorrect) {
-    return `Esta afirmación sí es compatible con ${source.label}; por eso no es la opción que debe señalarse como incorrecta.`;
+    return `Esta afirmación sí respeta ${source.label}; por eso no es la que debe marcarse como incorrecta.${focusContext}`;
   }
   if (correctCombinesOptions) {
-    return `«${discarded}» recoge solo una parte de la respuesta. Como las afirmaciones planteadas son compatibles, debe elegirse «${correct}».`;
+    return `«${discarded}» recoge solo una parte de la respuesta. Las afirmaciones deben aceptarse conjuntamente.${focusContext}`;
   }
   if (discardedCombinesOptions) {
-    return `No pueden aceptarse todas las afirmaciones: la que se ajusta a ${source.label} es «${correct}».`;
+    return `No pueden aceptarse todas las afirmaciones: ${source.label} solo respalda ${correctReference}.${focusContext}`;
   }
   if (asksForAmount) {
-    return `El dato «${discarded}» no coincide con el establecido en ${source.label}; el valor correcto es «${correct}».`;
+    return `El dato «${discarded}» no coincide con el establecido en ${source.label}; el valor correcto es ${correctReference}.${focusContext}`;
   }
   if (asksForAttribution) {
-    return `Esta opción atribuye la respuesta a «${discarded}», pero ${source.label} señala «${correct}».`;
+    return `Esta opción atribuye la respuesta a «${discarded}», pero ${source.label} señala ${correctReference}.${focusContext}`;
   }
-  return `«${discarded}» altera la formulación aplicable. La opción que se ajusta a ${source.label} es «${correct}».`;
+  const discardedReference = discarded.length > 88
+    ? `«${discarded.slice(0, 87).trimEnd()}…»`
+    : `«${discarded}»`;
+  const normalizedDiscarded = discarded.toLocaleLowerCase("es");
+  const normalizedCorrect = correct.toLocaleLowerCase("es");
+  if (normalizedCorrect.includes(normalizedDiscarded)) {
+    return `${discardedReference} es incompleta para ${source.label}: omite una condición de la regla.`;
+  }
+  if (normalizedDiscarded.includes(normalizedCorrect)) {
+    return `${discardedReference} añade una condición que ${source.label} no exige.`;
+  }
+  return `${discardedReference} no coincide con el criterio establecido en ${source.label}${focus ? ` para «${focus}»` : ""}.`;
+}
+
+function theoryReference(reference, source) {
+  const articleNumber = reference.match(/^articulo-(\d+)/)?.[1];
+  if (articleNumber) {
+    return articleReference(Number(articleNumber), {
+      label: source.label.replace(/^el\s+/i, "").replace(/^./, (letter) => letter.toUpperCase()),
+    });
+  }
+  return blockReference(
+    "titulo-viii",
+    source.label.replace(/^el\s+/i, "").replace(/^./, (letter) => letter.toUpperCase()),
+  );
 }
 
 export function createTheme02Explanations(test, references) {
-  return {
-    schemaVersion: 1,
+  const theoryReferences = {};
+  const explanationSet = {
     testId: test.id,
     preguntas: test.preguntas.map((question, questionIndex) => {
       const reference = references[question.id];
@@ -192,6 +247,7 @@ export function createTheme02Explanations(test, references) {
       if (!source) {
         throw new Error(`La pregunta ${question.id} de ${test.id} no tiene referencia teórica.`);
       }
+      theoryReferences[String(question.id)] = theoryReference(reference, source);
       const correctOption = question.opciones.find(
         (option) => option.id === question.respuestaCorrecta,
       );
@@ -201,6 +257,7 @@ export function createTheme02Explanations(test, references) {
       return {
         preguntaId: question.id,
         justificacion: naturalJustification(
+          question,
           correctOption,
           source,
           questionIndex,
@@ -219,4 +276,8 @@ export function createTheme02Explanations(test, references) {
       };
     }),
   };
+  return defineExplanationSet(explanationSet, {
+    theoryResourceId: "tema-02-organizacion-territorial-del-estado",
+    references: theoryReferences,
+  });
 }

@@ -1,5 +1,10 @@
+import {
+  articleReference,
+  defineExplanationSet,
+  referencesFromQuestionRanges,
+} from "../../explanation-schema.js";
+
 const explicacionesArticulos39a52 = {
-  schemaVersion: 1,
   testId: "capitulo-iii-titulo-i-ce-principios-rectores",
   preguntas: [
     {
@@ -215,4 +220,23 @@ const explicacionesArticulos39a52 = {
   ],
 };
 
-export default explicacionesArticulos39a52;
+const references = referencesFromQuestionRanges([
+  { from: 1, to: 3, reference: articleReference(39) },
+  { from: 4, to: 5, reference: articleReference(40) },
+  { from: 6, to: 7, reference: articleReference(41) },
+  { from: 8, reference: articleReference(42) },
+  { from: 9, reference: articleReference(43) },
+  { from: 10, reference: articleReference(44) },
+  { from: 11, to: 12, reference: articleReference(45) },
+  { from: 13, to: 14, reference: articleReference(46) },
+  { from: 15, to: 17, reference: articleReference(47) },
+  { from: 18, reference: articleReference(48) },
+  { from: 20, reference: articleReference(50) },
+  { from: 21, reference: articleReference(51) },
+]);
+references[19] = articleReference([49, 50, 52]);
+
+export default defineExplanationSet(explicacionesArticulos39a52, {
+  theoryResourceId: "tema-01-constitucion-espanola",
+  references,
+});

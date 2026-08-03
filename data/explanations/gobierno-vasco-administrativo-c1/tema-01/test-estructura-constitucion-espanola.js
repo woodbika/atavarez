@@ -1,5 +1,9 @@
+import {
+  blockReference,
+  defineExplanationSet,
+} from "../../explanation-schema.js";
+
 const explicacionesEstructuraConstitucion = {
-  schemaVersion: 1,
   testId: "test-estructura-constitucion-espanola",
   preguntas: [
     {
@@ -8,7 +12,7 @@ const explicacionesEstructuraConstitucion = {
         "Las sesiones plenarias del Congreso de los Diputados y del Senado aprobaron la Constitución el 31 de octubre de 1978.",
       descartes: {
         b: "El 6 de diciembre fue ratificada por el pueblo español mediante referéndum.",
-        c: "El 27 de diciembre fue sancionada y promulgada por el Rey.",
+        c: "El 27 de diciembre corresponde a la sanción y promulgación por el Rey, no a la aprobación parlamentaria.",
       },
     },
     {
@@ -26,7 +30,7 @@ const explicacionesEstructuraConstitucion = {
         "El pueblo español ratificó la Constitución en el referéndum celebrado el 6 de diciembre de 1978.",
       descartes: {
         a: "El 31 de octubre fue aprobada por el Congreso de los Diputados y el Senado.",
-        c: "El 27 de diciembre fue sancionada y promulgada por el Rey.",
+        c: "El 27 de diciembre tuvo lugar la sanción y promulgación, después del referéndum.",
       },
     },
     {
@@ -141,8 +145,8 @@ const explicacionesEstructuraConstitucion = {
       justificacion:
         "El Título III se denomina «De las Cortes Generales» y regula el Congreso de los Diputados y el Senado.",
       descartes: {
-        b: "«De la Corona» corresponde al Título II.",
-        c: "«Del Gobierno y de la Administración» corresponde al Título IV.",
+        b: "«De la Corona» denomina el Título II, no el Título III.",
+        c: "«Del Gobierno y de la Administración» denomina el Título IV, no el Título III.",
       },
     },
     {
@@ -151,7 +155,7 @@ const explicacionesEstructuraConstitucion = {
         "El Título IV se denomina «Del Gobierno y de la Administración».",
       descartes: {
         a: "«De las Cortes Generales» corresponde al Título III.",
-        b: "«De la Corona» corresponde al Título II.",
+        b: "«De la Corona» es el Título II y no identifica el Título IV.",
       },
     },
     {
@@ -159,15 +163,15 @@ const explicacionesEstructuraConstitucion = {
       justificacion:
         "El Título V se denomina «De las relaciones entre el Gobierno y las Cortes Generales».",
       descartes: {
-        a: "«Del Gobierno y de la Administración» corresponde al Título IV.",
-        b: "«Del Poder Judicial» corresponde al Título VI.",
+        a: "«Del Gobierno y de la Administración» corresponde al Título IV, no al V.",
+        b: "«Del Poder Judicial» corresponde al Título VI, no al V.",
       },
     },
     {
       preguntaId: 19,
       justificacion: "El Título VI de la Constitución se denomina «Del Poder Judicial».",
       descartes: {
-        a: "«Del Gobierno y de la Administración» corresponde al Título IV.",
+        a: "«Del Gobierno y de la Administración» identifica el Título IV, no el VI.",
         c: "«De las relaciones entre el Gobierno y las Cortes Generales» corresponde al Título V.",
       },
     },
@@ -175,7 +179,7 @@ const explicacionesEstructuraConstitucion = {
       preguntaId: 20,
       justificacion: "El Título VII se denomina «Economía y Hacienda».",
       descartes: {
-        b: "«Del Poder Judicial» corresponde al Título VI.",
+        b: "«Del Poder Judicial» es el Título VI y no el VII.",
         c: "«De la organización territorial del Estado» corresponde al Título VIII.",
       },
     },
@@ -185,7 +189,7 @@ const explicacionesEstructuraConstitucion = {
         "El Título VIII se denomina «De la organización territorial del Estado».",
       descartes: {
         a: "«Economía y Hacienda» corresponde al Título VII.",
-        b: "«Del Poder Judicial» corresponde al Título VI.",
+        b: "«Del Poder Judicial» identifica el Título VI, no el VIII.",
       },
     },
     {
@@ -218,7 +222,7 @@ const explicacionesEstructuraConstitucion = {
       preguntaId: 25,
       justificacion: "La Constitución contiene cuatro disposiciones adicionales.",
       descartes: {
-        b: "Nueve es el número de disposiciones transitorias.",
+        b: "Nueve es el número de disposiciones transitorias, no de adicionales.",
         c: "La disposición derogatoria y la disposición final son únicas, pero las adicionales son cuatro.",
       },
     },
@@ -226,16 +230,16 @@ const explicacionesEstructuraConstitucion = {
       preguntaId: 26,
       justificacion: "La Constitución contiene una única disposición derogatoria.",
       descartes: {
-        a: "Cuatro es el número de disposiciones adicionales.",
-        b: "Nueve es el número de disposiciones transitorias.",
+        a: "Cuatro es el número de disposiciones adicionales; la derogatoria es única.",
+        b: "Nueve es el número de disposiciones transitorias; no existen nueve derogatorias.",
       },
     },
     {
       preguntaId: 27,
       justificacion: "La Constitución contiene una única disposición final.",
       descartes: {
-        a: "Cuatro es el número de disposiciones adicionales.",
-        b: "Nueve es el número de disposiciones transitorias.",
+        a: "Cuatro es el número de disposiciones adicionales; la disposición final es una.",
+        b: "Nueve es el número de disposiciones transitorias, no de disposiciones finales.",
       },
     },
     {
@@ -259,4 +263,8 @@ const explicacionesEstructuraConstitucion = {
   ],
 };
 
-export default explicacionesEstructuraConstitucion;
+export default defineExplanationSet(explicacionesEstructuraConstitucion, {
+  theoryResourceId: "tema-01-constitucion-espanola",
+  referenceForQuestion: () =>
+    blockReference("estructura", "Estructura de la Constitución Española"),
+});

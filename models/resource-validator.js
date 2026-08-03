@@ -234,11 +234,14 @@ function validateAnswerExplanations(test, path, errors) {
     errors.push(`${path}: debe ser un objeto.`);
     return;
   }
-  if (explanations.schemaVersion !== 1) {
-    errors.push(`${path}.schemaVersion: debe ser 1.`);
+  if (explanations.schemaVersion !== 2) {
+    errors.push(`${path}.schemaVersion: debe ser 2.`);
   }
   if (explanations.testId !== test.id) {
     errors.push(`${path}.testId: debe coincidir con el test.`);
+  }
+  if (!isStableId(explanations.theoryResourceId)) {
+    errors.push(`${path}.theoryResourceId: debe ser un identificador estable.`);
   }
   if (!Array.isArray(explanations.preguntas)) {
     errors.push(`${path}.preguntas: debe ser una lista.`);
@@ -270,6 +273,61 @@ function validateAnswerExplanations(test, path, errors) {
     explainedIds.add(questionId);
     if (!isNonEmptyString(explanation.justificacion)) {
       errors.push(`${explanationPath}.justificacion: debe contener texto.`);
+    }
+    const reference = explanation.referencia;
+    if (!reference || typeof reference !== "object" || Array.isArray(reference)) {
+      errors.push(`${explanationPath}.referencia: debe ser un objeto.`);
+    } else {
+      if (!isNonEmptyString(reference.etiqueta)) {
+        errors.push(`${explanationPath}.referencia.etiqueta: debe contener texto.`);
+      }
+      if (!["directa", "contextual"].includes(reference.alcance)) {
+        errors.push(
+          `${explanationPath}.referencia.alcance: debe ser directa o contextual.`,
+        );
+      }
+      if (reference.tipo === "articulos") {
+        if (
+          !Array.isArray(reference.articulos) ||
+          reference.articulos.length === 0 ||
+          reference.articulos.some(
+            (article) => !Number.isInteger(article) || article < 1,
+          ) ||
+          new Set(reference.articulos).size !== reference.articulos.length
+        ) {
+          errors.push(
+            `${explanationPath}.referencia.articulos: debe contener artículos válidos y únicos.`,
+          );
+        }
+      } else if (reference.tipo === "bloque") {
+        if (!isStableId(reference.bloqueId)) {
+          errors.push(
+            `${explanationPath}.referencia.bloqueId: debe ser un identificador estable.`,
+          );
+        }
+      } else {
+        errors.push(
+          `${explanationPath}.referencia.tipo: debe ser articulos o bloque.`,
+        );
+      }
+    }
+    const reviewNote = explanation.notaRevision;
+    if (reviewNote !== undefined) {
+      if (!reviewNote || typeof reviewNote !== "object" || Array.isArray(reviewNote)) {
+        errors.push(`${explanationPath}.notaRevision: debe ser un objeto.`);
+      } else {
+        if (reviewNote.tipo !== "discrepancia-teorica") {
+          errors.push(
+            `${explanationPath}.notaRevision.tipo: debe ser discrepancia-teorica.`,
+          );
+        }
+        if (!isNonEmptyString(reviewNote.titulo)) {
+          errors.push(`${explanationPath}.notaRevision.titulo: debe contener texto.`);
+        }
+        if (!isNonEmptyString(reviewNote.texto)) {
+          errors.push(`${explanationPath}.notaRevision.texto: debe contener texto.`);
+        }
+      }
     }
     if (
       !explanation.descartes ||
@@ -1021,6 +1079,67 @@ export function validateResources(
         }
       });
     }
+  });
+
+  resources.forEach((resource, index) => {
+    if (resource?.type !== "test" || !resource.data?.explicaciones) return;
+    const path = `resources[${index}].data.explicaciones`;
+    const explanations = resource.data.explicaciones;
+    const theory = resourcesById.get(explanations.theoryResourceId);
+    if (theory?.type !== "teoria") {
+      errors.push(`${path}.theoryResourceId: no corresponde a un recurso de teoría.`);
+      return;
+    }
+    if (!classificationsMatch(resource.classification, theory.classification)) {
+      errors.push(`${path}.theoryResourceId: la teoría debe pertenecer al mismo tema.`);
+    }
+    if (
+      resource.relatedTheory?.resourceId &&
+      resource.relatedTheory.resourceId !== explanations.theoryResourceId
+    ) {
+      errors.push(
+        `${path}.theoryResourceId: debe coincidir con la teoría relacionada del test.`,
+      );
+    }
+    const availableArticles = theoryArticleNumbers(theory.data);
+    const availableBlocks = new Set(theory.data.bloques.map((block) => block.id));
+    const relatedSelection = resource.relatedTheory?.selection;
+    const relatedArticleRange = relatedSelection?.articles;
+    const relatedArticleNumbers = Array.isArray(relatedSelection?.articleNumbers)
+      ? new Set(relatedSelection.articleNumbers)
+      : null;
+    explanations.preguntas.forEach((explanation, explanationIndex) => {
+      const reference = explanation.referencia;
+      const referencePath = `${path}.preguntas[${explanationIndex}].referencia`;
+      if (reference?.tipo === "articulos" && Array.isArray(reference.articulos)) {
+        reference.articulos.forEach((article) => {
+          if (!availableArticles.has(article)) {
+            errors.push(`${referencePath}.articulos: el artículo ${article} no existe.`);
+          }
+          if (
+            Number.isInteger(relatedArticleRange?.from) &&
+            Number.isInteger(relatedArticleRange?.to) &&
+            (article < relatedArticleRange.from || article > relatedArticleRange.to)
+          ) {
+            errors.push(
+              `${referencePath}.articulos: el artículo ${article} queda fuera de la teoría vinculada al test.`,
+            );
+          }
+          if (relatedArticleNumbers && !relatedArticleNumbers.has(article)) {
+            errors.push(
+              `${referencePath}.articulos: el artículo ${article} queda fuera de la teoría vinculada al test.`,
+            );
+          }
+        });
+      }
+      if (
+        reference?.tipo === "bloque" &&
+        isNonEmptyString(reference.bloqueId) &&
+        !availableBlocks.has(reference.bloqueId)
+      ) {
+        errors.push(`${referencePath}.bloqueId: el bloque ${reference.bloqueId} no existe.`);
+      }
+    });
   });
 
   resources.forEach((resource, index) => {
