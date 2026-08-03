@@ -5,16 +5,16 @@ const explicacionesArticulos53a55 = {
     {
       preguntaId: 1,
       justificacion:
-        "El artículo 53.1 establece que los derechos y libertades reconocidos en el Capítulo II vinculan a todos los poderes públicos.",
+        "La clave está en que el artículo 53.1 establece que los derechos y libertades reconocidos en el Capítulo II vinculan a todos los poderes públicos.",
       descartes: {
         b: "Los principios del Capítulo III tienen el régimen específico del artículo 53.3, no la vinculación formulada en el apartado 1.",
-        c: "La opción A reproduce expresamente la regla constitucional.",
+        c: "Los derechos y libertades del Capítulo II sí vinculan a todos los poderes públicos, por lo que existe una respuesta válida.",
       },
     },
     {
       preguntaId: 2,
       justificacion:
-        "El artículo 53.2 permite tutelar ante los tribunales ordinarios, mediante un procedimiento basado en preferencia y sumariedad, el artículo 14 y la Sección 1.ª del Capítulo II.",
+        "Aquí conviene recordar que el artículo 53.2 permite tutelar ante los tribunales ordinarios, mediante un procedimiento basado en preferencia y sumariedad, el artículo 14 y la Sección 1.ª del Capítulo II.",
       descartes: {
         a: "Los principios del Capítulo III sólo pueden alegarse de acuerdo con sus leyes de desarrollo.",
         b: "La tutela preferente y sumaria no alcanza a todo el Capítulo II, sino al artículo 14 y a su Sección 1.ª.",
@@ -26,7 +26,7 @@ const explicacionesArticulos53a55 = {
         "El recurso de amparo protege el mismo ámbito indicado en la pregunta anterior: artículo 14 y Sección 1.ª del Capítulo II, además de la objeción de conciencia del artículo 30.",
       descartes: {
         b: "No todos los derechos del Capítulo II pueden recurrirse en amparo.",
-        c: "La opción A remite correctamente al conjunto protegido mediante el procedimiento anterior.",
+        c: "El ámbito protegido coincide con el indicado para el procedimiento anterior, por lo que sí existe una respuesta válida.",
       },
     },
     {
@@ -41,7 +41,7 @@ const explicacionesArticulos53a55 = {
     {
       preguntaId: 5,
       justificacion:
-        "El artículo 55 sólo contempla la suspensión general de determinados derechos cuando se declara el estado de excepción o de sitio, no durante el estado de alarma.",
+        "En este caso, el artículo 55 sólo contempla la suspensión general de determinados derechos cuando se declara el estado de excepción o de sitio, no durante el estado de alarma.",
       descartes: {
         a: "La libertad individual figura entre los derechos susceptibles de suspensión en excepción o sitio, pero no existe suspensión constitucional de derechos en el estado de alarma.",
         b: "El derecho a la educación ni siquiera aparece en la relación de derechos suspendibles del artículo 55.1.",
@@ -50,7 +50,7 @@ const explicacionesArticulos53a55 = {
     {
       preguntaId: 6,
       justificacion:
-        "El artículo 55.1 exceptúa el artículo 17.3 de la suspensión durante el estado de excepción; al no extender esa excepción al estado de sitio, puede suspenderse en este último.",
+        "La clave está en que el artículo 55.1 exceptúa el artículo 17.3 de la suspensión durante el estado de excepción; al no extender esa excepción al estado de sitio, puede suspenderse en este último.",
       descartes: {
         a: "El estado de alarma no habilita la suspensión y, además, el artículo 17.3 se preserva en el estado de excepción.",
         b: "La regla es la contraria: no se suspende en excepción, pero sí puede suspenderse en sitio.",
@@ -86,7 +86,7 @@ const explicacionesArticulos53a55 = {
     {
       preguntaId: 10,
       justificacion:
-        "El artículo 55.2 reserva a una ley orgánica la determinación de la forma y los casos de suspensión individual vinculada a investigaciones sobre bandas armadas o terrorismo.",
+        "Aquí conviene recordar que el artículo 55.2 reserva a una ley orgánica la determinación de la forma y los casos de suspensión individual vinculada a investigaciones sobre bandas armadas o terrorismo.",
       descartes: {
         b: "La Constitución exige específicamente ley orgánica, por lo que una ley ordinaria no basta.",
         c: "La materia no puede regularse mediante decreto-ley en sustitución de la ley orgánica exigida.",
@@ -98,13 +98,13 @@ const explicacionesArticulos53a55 = {
         "La suspensión individual exige la necesaria intervención judicial y el adecuado control parlamentario.",
       descartes: {
         a: "La opción intercambia las funciones: la intervención debe ser judicial y el control, parlamentario.",
-        c: "La opción B reproduce literalmente la distribución de garantías del artículo 55.2.",
+        c: "La intervención judicial y el control parlamentario están correctamente asignados, por lo que sí existe una respuesta válida.",
       },
     },
     {
       preguntaId: 12,
       justificacion:
-        "El artículo 55.2 establece responsabilidad penal cuando se utilicen injustificada o abusivamente esas facultades, por vulnerar derechos y libertades.",
+        "En este caso, el artículo 55.2 establece responsabilidad penal cuando se utilicen injustificada o abusivamente esas facultades, por vulnerar derechos y libertades.",
       descartes: {
         b: "El precepto constitucional califica expresamente la responsabilidad como penal, no civil.",
         c: "Tampoco la define como mera responsabilidad administrativa.",

@@ -104,7 +104,7 @@ const explicacionesEstructuraConstitucion = {
     {
       preguntaId: 12,
       justificacion:
-        "El artículo 1 se encuentra en el Título Preliminar; el preámbulo anterior no está dividido en artículos.",
+        "La clave está en que el artículo 1 se encuentra en el Título Preliminar; el preámbulo anterior no está dividido en artículos.",
       descartes: {
         a: "El preámbulo carece de numeración articulada.",
         c: "No existe una sección formal denominada prólogo en la Constitución.",

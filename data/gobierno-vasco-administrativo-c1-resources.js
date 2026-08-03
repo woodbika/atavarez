@@ -6,6 +6,10 @@ import explicacionesArticulos53a55 from "./explanations/gobierno-vasco-administr
 import explicacionesArticulos10a13 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-espanola-articulos-10-a-13.js";
 import explicacionesArticulos14a29 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-espanola-articulos-14-a-29-2022.js";
 import explicacionesEstructuraConstitucion from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-estructura-constitucion-espanola.js";
+import explicacionesOrganizacionTerritorial1 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-1.js";
+import explicacionesOrganizacionTerritorial2 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-2.js";
+import explicacionesOrganizacionTerritorial3 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-3.js";
+import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-4-competencias.js";
 import testPrincipiosRectores from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/capitulo-iii-titulo-i-ce-principios-rectores.js";
 import testCapituloII from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-capitulo-ii-titulo-i-ce.js";
 import testCapitulosIVyV from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-capitulo-iv-y-v.js";
@@ -439,6 +443,10 @@ const answerExplanationsByTestId = new Map([
   [explicacionesArticulos10a13.testId, explicacionesArticulos10a13],
   [explicacionesArticulos14a29.testId, explicacionesArticulos14a29],
   [explicacionesEstructuraConstitucion.testId, explicacionesEstructuraConstitucion],
+  [explicacionesOrganizacionTerritorial1.testId, explicacionesOrganizacionTerritorial1],
+  [explicacionesOrganizacionTerritorial2.testId, explicacionesOrganizacionTerritorial2],
+  [explicacionesOrganizacionTerritorial3.testId, explicacionesOrganizacionTerritorial3],
+  [explicacionesOrganizacionTerritorial4.testId, explicacionesOrganizacionTerritorial4],
 ]);
 
 const { summaryResource, testResource, theoryResource } = createOppositionResourceFactory(

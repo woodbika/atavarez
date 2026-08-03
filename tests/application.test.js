@@ -140,6 +140,56 @@ test("todos los tests del Tema 1 explican sus respuestas", () => {
         Object.keys(explanation.descartes).sort(),
         discardedOptionIds,
       );
+      Object.values(explanation.descartes).forEach((discard) => {
+        assert.doesNotMatch(discard, /^La opción [A-D] (?:reproduce|coincide)/);
+      });
+    });
+  });
+});
+
+test("todos los tests del Tema 2 explican sus respuestas", () => {
+  const themeResources = resources.filter(
+    (resource) =>
+      resource.type === "test" &&
+      resource.opposition.id === "gobierno-vasco-administrativo-c1" &&
+      resource.classification.tema.numero === "02",
+  );
+
+  assert.equal(themeResources.length, 4);
+  assert.equal(
+    themeResources.reduce(
+      (total, resource) => total + resource.data.preguntas.length,
+      0,
+    ),
+    146,
+  );
+  themeResources.forEach((resource) => {
+    const explanations = resource.data.explicaciones;
+    const explanationByQuestionId = new Map(
+      explanations.preguntas.map((item) => [String(item.preguntaId), item]),
+    );
+
+    assert.equal(explanations.schemaVersion, 1);
+    assert.equal(explanations.testId, resource.id);
+    assert.equal(explanations.preguntas.length, resource.data.preguntas.length);
+    resource.data.preguntas.forEach((question) => {
+      const explanation = explanationByQuestionId.get(String(question.id));
+      const discardedOptionIds = question.opciones
+        .map((option) => option.id)
+        .filter((optionId) => optionId !== question.respuestaCorrecta)
+        .sort();
+
+      assert.match(
+        explanation?.justificacion ?? "",
+        /^(La clave está en|Aquí conviene recordar|En este caso)/,
+      );
+      assert.deepEqual(
+        Object.keys(explanation.descartes).sort(),
+        discardedOptionIds,
+      );
+      Object.values(explanation.descartes).forEach((discard) => {
+        assert.ok(discard);
+      });
     });
   });
 });
@@ -151,6 +201,26 @@ test("el test completo conserva todas las explicaciones con ids compuestos", () 
   );
 
   assert.equal(combinedTest.explicaciones.preguntas.length, 121);
+  assert.equal(
+    combinedTest.explicaciones.preguntas.length,
+    combinedTest.preguntas.length,
+  );
+  combinedTest.explicaciones.preguntas.forEach((explanation) => {
+    assert.ok(
+      combinedTest.preguntas.some(
+        (question) => String(question.id) === String(explanation.preguntaId),
+      ),
+    );
+  });
+});
+
+test("el test completo del Tema 2 conserva todas las explicaciones", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const combinedTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-02",
+  );
+
+  assert.equal(combinedTest.explicaciones.preguntas.length, 146);
   assert.equal(
     combinedTest.explicaciones.preguntas.length,
     combinedTest.preguntas.length,
