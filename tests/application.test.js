@@ -257,6 +257,7 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-instituciones-union-europea-ii", 11, "b"],
     ["test-instituciones-union-europea-ii", 22, "b"],
     ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", 2, "b"],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
   ];
 
   expectedDiscrepancies.forEach(([testId, questionId, expectedAnswer]) => {
@@ -283,10 +284,51 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(stats, {
     tests: 24,
     questions: 639,
-    directReferences: 565,
-    contextualReferences: 74,
-    theoryDiscrepancies: 5,
+    directReferences: 574,
+    contextualReferences: 65,
+    theoryDiscrepancies: 6,
   });
+});
+
+test("la auditoría rechaza descartes clonados dentro de una misma pregunta", () => {
+  const repeatedDiscard =
+    "Esta alternativa repite exactamente una explicación genérica que no identifica el error concreto de la respuesta ofrecida.";
+  const resource = {
+    id: "test-auditoria-editorial",
+    type: "test",
+    data: {
+      preguntas: [
+        {
+          id: 1,
+          enunciado: "¿Qué opción aplica la regla estudiada?",
+          respuestaCorrecta: "a",
+          opciones: [
+            { id: "a", texto: "La opción correcta" },
+            { id: "b", texto: "Primer distractor" },
+            { id: "c", texto: "Segundo distractor" },
+          ],
+        },
+      ],
+      explicaciones: {
+        preguntas: [
+          {
+            preguntaId: 1,
+            justificacion:
+              "La referencia teórica atribuye expresamente este efecto a la opción registrada como correcta.",
+            descartes: {
+              b: repeatedDiscard,
+              c: repeatedDiscard,
+            },
+            referencia: { alcance: "directa" },
+          },
+        ],
+      },
+    },
+  };
+
+  const { errors } = auditExplanations([resource]);
+
+  assert.ok(errors.some((error) => error.includes("reutilizan una explicación")));
 });
 
 test("el test completo conserva todas las explicaciones con ids compuestos", () => {

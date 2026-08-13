@@ -49,6 +49,10 @@ Cada pregunta debe contener:
 - `descartes`: contiene una explicación específica para cada opción no registrada como correcta.
 - `notaRevision`, solo cuando exista una discrepancia comprobada entre la solución del test y la teoría.
 
+Las explicaciones finales se almacenan de forma explícita, pregunta por pregunta. Los ayudantes compartidos pueden validar el esquema, construir referencias o facilitar una revisión inicial, pero no deben redactar en tiempo de ejecución justificaciones ni descartes mediante una plantilla verbal común.
+
+En las baterías de clasificación —por ejemplo, elegir el artículo competente o distinguir entre materia estatal y autonómica— puede repetirse la regla común cuando el razonamiento sea realmente idéntico. En esos casos la explicación debe ser breve y apoyarse en el enunciado visible, sin copiar de nuevo una materia extensa ni ocultarla tras un recorte con puntos suspensivos.
+
 ## Modelo de redacción
 
 La justificación tendrá normalmente dos movimientos, en una o dos frases breves:
@@ -89,10 +93,10 @@ La justificación y los descartes deben ser transparentes con esa discrepancia: 
 1. Leer la ficha teórica completa y delimitar qué bloque o artículo responde cada pregunta.
 2. Mantener intactos el enunciado, las opciones y `respuestaCorrecta`.
 3. Redactar primero la regla y después los descartes específicos.
-4. Comprobar que no se repite la misma explicación dentro del test salvo que las preguntas sean realmente equivalentes.
+4. Comprobar que no se repite la misma explicación dentro del test salvo que las preguntas sean realmente equivalentes. Incluso en ejercicios equivalentes, la aplicación debe nombrar el concepto concreto que se está evaluando.
 5. Marcar las contradicciones verificadas mediante `notaRevision`.
 6. Ejecutar `npm run audit:explanations` y después `npm run check`.
 
 ## Criterio de aceptación
 
-Una explicación está terminada cuando es completa, breve, comprensible sin perder precisión, trazable hasta una referencia real y coherente con la solución o con su nota de discrepancia. La generación automática solo puede producir un borrador: siempre requiere revisión de contenido antes de incorporarse.
+Una explicación está terminada cuando es completa, breve, comprensible sin perder precisión, trazable hasta una referencia real y coherente con la solución o con su nota de discrepancia. Una generación auxiliar solo puede producir material de trabajo: el archivo incorporado al proyecto debe contener la redacción explícita e individualizada de cada pregunta, revisada frente a la teoría.

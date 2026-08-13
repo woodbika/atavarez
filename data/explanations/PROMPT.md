@@ -61,7 +61,8 @@ Cuando la referencia sea `contextual`, indícalo también en la explicación: la
 2. Crea un conjunto por test con `defineExplanationSet` y la versión de esquema vigente; no construyas manualmente una variante del contrato.
 3. Incluye una explicación para todas las preguntas y un descarte para todas las opciones que no sean la respuesta registrada.
 4. Registra los nuevos conjuntos en el recurso o índice correspondiente sin alterar el orden funcional de los tests.
-5. Si usas una factoría para trabajo repetitivo, considera su resultado un borrador: revisa semánticamente cada pregunta antes de darla por terminada.
+5. Escribe en el archivo final la redacción explícita de cada pregunta. No conserves una factoría de frases ni una función que componga justificaciones o descartes en tiempo de ejecución. Los ayudantes se limitarán al contrato de datos, las referencias y la validación.
+6. Si utilizas automatización temporal para ordenar el trabajo, su salida será solo un borrador: elimina el mecanismo y revisa semántica y editorialmente cada registro antes de incorporarlo.
 
 ## Verificación obligatoria
 

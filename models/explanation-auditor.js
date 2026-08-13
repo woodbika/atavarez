@@ -1,8 +1,19 @@
 const DISCOURAGED_PATTERNS = [
-  [/altera la formulación aplicable/i, "fórmula genérica: «altera la formulación aplicable»"],
-  [/el dato que resuelve la pregunta/i, "fórmula genérica: «el dato que resuelve la pregunta»"],
-  [/es el dato decisivo/i, "fórmula genérica: «es el dato decisivo»"],
-  [/(obviamente|evidentemente|simplemente)/i, "tono poco pedagógico"],
+  [/\baltera la formulación aplicable\b/i, "fórmula genérica: «altera la formulación aplicable»"],
+  [/\bel dato que resuelve la pregunta\b/i, "fórmula genérica: «el dato que resuelve la pregunta»"],
+  [/\bes el dato decisivo\b/i, "fórmula genérica: «es el dato decisivo»"],
+  [/\b(obviamente|evidentemente|simplemente)\b/i, "tono poco pedagógico"],
+  [/\bsu contenido, aplicado\b/i, "fórmula mecánica: «su contenido, aplicado…»"],
+  [/\bese criterio se aplica aquí\b/i, "repetición mecánica del enunciado"],
+  [/\besta opción atribuye la respuesta a\b/i, "fórmula impersonal de atribución"],
+  [/\bsustituye el matiz\b/i, "comparación genérica de opciones"],
+  [/\bno coincide con el criterio establecido\b/i, "descarte genérico"],
+  [/\bla alternativa cambia un elemento esencial\b/i, "comparación mecánica de alternativas"],
+  [/\bdescribe un supuesto distinto\b/i, "descarte sin matiz específico"],
+  [/\bpara lo preguntado\b/i, "aplicación genérica"],
+  [/\bla ficha teórica tampoco permite comprobar\b/i, "limitación contextual repetitiva"],
+  [/\bpermite identificar\b/i, "aplicación mecánica de la referencia"],
+  [/\bla opción indicada\b/i, "referencia impersonal a la respuesta"],
 ];
 
 function normalize(value) {
@@ -32,6 +43,13 @@ function longestSharedWordSequence(left, right) {
   return longest;
 }
 
+function narrativeText(value) {
+  return String(value ?? "")
+    .replace(/«[^»]*»/g, " ")
+    .replace(/\b(?:el|los)\s+artículos?\s+[\d.,\sy]+/gi, " referencia ")
+    .replace(/\b(?:el|los)\s+apartados?\s+«[^»]*»/gi, " referencia ");
+}
+
 function repeatedTexts(entries) {
   const byText = new Map();
   entries.forEach((entry) => {
@@ -42,8 +60,20 @@ function repeatedTexts(entries) {
   });
   return [...byText.values()].filter((matches) => {
     if (matches.length < 2) return false;
+    if (matches.every((match) => match.repeatable)) return false;
     return new Set(matches.map((match) => normalize(match.context))).size > 1;
   });
+}
+
+function isClassificationDrill(question) {
+  const options = question?.opciones ?? [];
+  return (
+    options.every((option) => /^(?:el\s+)?artículo\s+\d+/i.test(option.texto)) ||
+    options.every((option) => /derecho individual/i.test(option.texto)) ||
+    (options.length === 2 &&
+      options.some((option) => /comunidades autónomas podrán asumir/i.test(option.texto)) &&
+      options.some((option) => /competencia exclusiva del estado/i.test(option.texto)))
+  );
 }
 
 function textQualityErrors(text, path) {
@@ -83,6 +113,7 @@ export function auditExplanations(resources) {
         stats.questions += 1;
         const path = `${resource.id}.preguntas[${index}]`;
         const question = questionById.get(String(explanation.preguntaId));
+        const repeatable = isClassificationDrill(question);
         const referenceScope = explanation.referencia?.alcance;
         if (referenceScope === "directa") stats.directReferences += 1;
         if (referenceScope === "contextual") stats.contextualReferences += 1;
@@ -103,25 +134,48 @@ export function auditExplanations(resources) {
           text: explanation.justificacion,
           context: question?.enunciado,
           questionId: explanation.preguntaId,
+          repeatable,
         });
 
-        Object.entries(explanation.descartes ?? {}).forEach(([optionId, discard]) => {
+        const questionDiscards = Object.entries(explanation.descartes ?? {});
+        questionDiscards.forEach(([optionId, discard]) => {
           errors.push(...textQualityErrors(discard, `${path}.descartes.${optionId}`));
           discards.push({
             text: discard,
             context: `${question?.enunciado} ${optionId}`,
             questionId: explanation.preguntaId,
+            repeatable,
           });
-          if (longestSharedWordSequence(explanation.justificacion, discard) >= 16) {
+          if (
+            longestSharedWordSequence(
+              narrativeText(explanation.justificacion),
+              narrativeText(discard),
+            ) >= 16
+          ) {
             errors.push(
               `${path}: la justificación y el descarte ${optionId} repiten una frase extensa.`,
             );
           }
         });
 
+        questionDiscards.forEach(([leftId, leftText], leftIndex) => {
+          questionDiscards.slice(leftIndex + 1).forEach(([rightId, rightText]) => {
+            if (
+              longestSharedWordSequence(
+                narrativeText(leftText),
+                narrativeText(rightText),
+              ) >= 14
+            ) {
+              errors.push(
+                `${path}: los descartes ${leftId} y ${rightId} reutilizan una explicación demasiado similar.`,
+              );
+            }
+          });
+        });
+
         if (
           referenceScope === "contextual" &&
-          !/no (?:reproduce|detalla|desarrolla|recoge)|referencia contextual/i.test(
+          !/no (?:contiene|reproduce|detalla|desarrolla|recoge|permite|ofrece|aporta|confirma|concreta|formula)|no basta|referencia contextual/i.test(
             explanation.justificacion,
           )
         ) {
