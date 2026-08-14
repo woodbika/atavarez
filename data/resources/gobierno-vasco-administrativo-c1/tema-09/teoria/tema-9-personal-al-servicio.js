@@ -549,6 +549,207 @@ const tema9PersonalAlServicio = {
         },
       ],
     },
+    {
+      id: "titulo-xii",
+      tipo: "titulo",
+      numero: "XII",
+      titulo: "Régimen disciplinario",
+      contenido: [
+        {
+          tipo: "capitulo",
+          numero: "I",
+          titulo: "Disposiciones generales y principios del régimen disciplinario",
+          articulos: [
+            {
+              numero: 172,
+              titulo: "Ámbito de aplicación",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "Este título y las normas reglamentarias que lo desarrollen se aplicarán al personal funcionario y al personal directivo público profesional.",
+                },
+                {
+                  numero: 2,
+                  texto:
+                    "El régimen disciplinario del personal laboral se regirá por lo dispuesto en la normativa básica del empleo público y, en lo no previsto en ella, por la legislación laboral, por los convenios colectivos que suscriban las diferentes administraciones públicas y por las previsiones contenidas en este título.",
+                },
+              ],
+            },
+            {
+              numero: 173,
+              titulo: "Ejercicio de la potestad disciplinaria. Responsabilidad disciplinaria",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "Las administraciones públicas vascas corregirán disciplinariamente las infracciones del personal a su servicio cometidas en el ejercicio de sus funciones y cargos, sin perjuicio de la responsabilidad patrimonial o penal que pueda derivarse de tales conductas.",
+                },
+                {
+                  numero: 2,
+                  texto:
+                    "Cuando de la instrucción de un procedimiento disciplinario resulte la existencia de indicios fundados de responsabilidad penal, se suspenderá su tramitación poniéndolo en conocimiento del Ministerio Fiscal.",
+                },
+                {
+                  numero: 3,
+                  texto:
+                    "Los hechos declarados probados por resoluciones judiciales firmes vinculan a la Administración.",
+                },
+                {
+                  numero: 4,
+                  texto:
+                    "El personal funcionario que induzca a otras personas a la realización de actos o conductas constitutivos de falta disciplinaria incurrirá en la misma responsabilidad que estas.",
+                },
+                {
+                  numero: 5,
+                  texto:
+                    "Igualmente, incurrirá en responsabilidad el personal funcionario que encubriere las faltas consumadas muy graves o graves, cuando de dichos actos se derive daño grave para la Administración o la ciudadanía.",
+                },
+                {
+                  numero: 6,
+                  texto:
+                    "Al personal funcionario que, en virtud de lo previsto en esta ley, se encuentre desempeñando puestos de trabajo en otras administraciones públicas vascas le será de aplicación el régimen disciplinario de la administración de destino mientras mantenga su relación funcionarial con ella, con excepción de la sanción de separación definitiva del servicio, que deberá ser acordada por el órgano competente de la administración de procedencia.",
+                },
+              ],
+            },
+            {
+              numero: 174,
+              titulo: "Principios del régimen disciplinario",
+              texto: "Los principios del régimen disciplinario serán los siguientes:",
+              letras: [
+                {
+                  letra: "a",
+                  texto: "Principio de legalidad y de tipicidad de faltas y sanciones:",
+                  numerales: [
+                    {
+                      numero: 1,
+                      texto:
+                        "El personal funcionario únicamente puede ser sancionado por las acciones u omisiones tipificadas como faltas en esta ley o en otras leyes.",
+                    },
+                    {
+                      numero: 2,
+                      texto:
+                        "Las disposiciones reglamentarias de desarrollo podrán introducir especificaciones o graduaciones en los tipos de infracciones o sanciones establecidas en esta ley, sin alterar su naturaleza y límites.",
+                    },
+                    {
+                      numero: 3,
+                      texto:
+                        "Las normas definidoras de las infracciones y de las sanciones no son susceptibles de aplicación analógica.",
+                    },
+                  ],
+                },
+                {
+                  letra: "b",
+                  texto:
+                    "Principio de irretroactividad de las disposiciones sancionadoras no favorables y de retroactividad de las favorables a la persona presunta infractora.",
+                },
+                {
+                  letra: "c",
+                  texto:
+                    "Principio de proporcionalidad, aplicable tanto a la clasificación de las infracciones y sanciones como a su aplicación.",
+                },
+                { letra: "d", texto: "Principio de culpabilidad." },
+                {
+                  letra: "e",
+                  texto:
+                    "Principio de presunción de inocencia y derecho a utilizar los medios de prueba pertinentes para la defensa.",
+                },
+                {
+                  letra: "f",
+                  texto:
+                    "Principio de non bis in idem, cuando exista identidad de sujeto, hecho y fundamento.",
+                },
+              ],
+            },
+            {
+              numero: 175,
+              titulo:
+                "Extinción de la responsabilidad disciplinaria y prescripción de faltas y sanciones",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "La responsabilidad disciplinaria se extingue por alguna de las siguientes causas:",
+                  letras: [
+                    { letra: "a", texto: "Cumplimiento de la sanción." },
+                    { letra: "b", texto: "Fallecimiento." },
+                    { letra: "c", texto: "Prescripción de la falta o sanción." },
+                  ],
+                },
+                {
+                  numero: 2,
+                  texto:
+                    "Las faltas muy graves prescribirán a los tres años; las graves, a los dos años, y las leves, a los seis meses. El plazo de prescripción de las faltas comenzará a contarse desde que se hubiere cometido o, cuando se trate de falta continuada, desde el cese de su comisión.",
+                },
+                {
+                  numero: 3,
+                  texto:
+                    "Las sanciones impuestas por faltas muy graves prescriben a los tres años; las impuestas por faltas graves, a los dos años, y las impuestas por faltas leves, al año. El plazo de prescripción de las sanciones comenzará a contarse desde la firmeza en vía administrativa de la resolución sancionadora.",
+                },
+              ],
+            },
+            {
+              numero: 176,
+              titulo: "Anotación y cancelación de sanciones disciplinarias",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "Las sanciones disciplinarias, una vez sean firmes, se anotarán en el expediente personal de la persona funcionaria. Las anotaciones se cancelarán de oficio o a instancia de parte, conforme a los siguientes períodos, computados desde el cumplimiento de la sanción:",
+                  letras: [
+                    {
+                      letra: "a",
+                      texto: "Un año para las sanciones impuestas por faltas leves.",
+                    },
+                    {
+                      letra: "b",
+                      texto: "Dos años para las sanciones impuestas por faltas graves.",
+                    },
+                    {
+                      letra: "c",
+                      texto:
+                        "Tres años para las sanciones impuestas por faltas muy graves.",
+                    },
+                  ],
+                },
+                {
+                  numero: 2,
+                  texto:
+                    "En ningún caso se computarán a efectos de reincidencia las anotaciones canceladas.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          tipo: "capitulo",
+          numero: "II",
+          titulo: "Infracciones disciplinarias",
+          articulos: [
+            {
+              numero: 177,
+              titulo: "Tipificación de infracciones",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "Constituye falta disciplinaria la acción u omisión que conlleve el incumplimiento de cualquiera de las obligaciones o deberes tipificados en este capítulo, en otras leyes o, en su caso, en los reglamentos de desarrollo.",
+                },
+                {
+                  numero: 2,
+                  texto: "Las faltas disciplinarias se clasifican en:",
+                  letras: [
+                    { letra: "a", texto: "Muy graves." },
+                    { letra: "b", texto: "Graves." },
+                    { letra: "c", texto: "Leves." },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
 

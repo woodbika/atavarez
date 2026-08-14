@@ -200,7 +200,7 @@ test("los tests de los Temas 3, 4 y 9 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
-    ["09", { tests: 4, questions: 82 }],
+    ["09", { tests: 5, questions: 96 }],
   ]);
 
   expectedByTheme.forEach((expected, themeNumber) => {
@@ -258,6 +258,7 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-instituciones-union-europea-ii", 22, "b"],
     ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", 2, "b"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
   ];
 
   expectedDiscrepancies.forEach(([testId, questionId, expectedAnswer]) => {
@@ -282,11 +283,11 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 24,
-    questions: 639,
-    directReferences: 574,
+    tests: 25,
+    questions: 653,
+    directReferences: 588,
     contextualReferences: 65,
-    theoryDiscrepancies: 6,
+    theoryDiscrepancies: 7,
   });
 });
 
@@ -381,7 +382,7 @@ test("los tests completos de los Temas 3, 4 y 9 conservan sus explicaciones", ()
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
-    ["09", 82],
+    ["09", 96],
   ]);
 
   expectedByTheme.forEach((expectedQuestions, themeNumber) => {
@@ -742,6 +743,7 @@ test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
     ["test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162", { from: 161, to: 162 }],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166", { from: 161, to: 166 }],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171", { from: 167, to: 171 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", { from: 172, to: 177 }],
   ]);
 
   assert.ok(theory);
@@ -750,7 +752,7 @@ test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
   assert.equal(theory.classification.tema.numero, "09");
   assert.equal(theory.data.fuente.archivo, "tema-09-personal-servicio-publico.pdf");
   assert.equal(theory.data.fuente.paginas, 8);
-  assert.equal(theory.data.bloques.filter((block) => block.tipo === "titulo").length, 2);
+  assert.equal(theory.data.bloques.filter((block) => block.tipo === "titulo").length, 3);
   expectedSelections.forEach((articles, resourceId) => {
     const resource = resources.find((item) => item.id === resourceId);
     assert.equal(resource.relatedTheory.resourceId, theory.id);
@@ -1991,6 +1993,7 @@ test("el tema 09 reúne sus tests IVOT en un test completo", () => {
     "test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162",
     "test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166",
     "test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171",
+    "test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177",
   ];
   const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
 
@@ -2001,7 +2004,7 @@ test("el tema 09 reúne sus tests IVOT en un test completo", () => {
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
   );
-  assert.equal(sourceQuestionCount, 82);
+  assert.equal(sourceQuestionCount, 96);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(
     new Set(completeTest.data.fuente.tests),

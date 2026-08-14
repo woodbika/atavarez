@@ -37,6 +37,7 @@ import testEmpleoPublico26a30 from "./tests/gobierno-vasco-administrativo-c1/tem
 import testEmpleoPublico161y162Derechos from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162.js";
 import testEmpleoPublico161a166 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166.js";
 import testEmpleoPublico167a171 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171.js";
+import testEmpleoPublico172a177 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177.js";
 import testEmpleoPublico40a44 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-40-a-44.js";
 import testEmpleoPublico45a50 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
@@ -178,6 +179,10 @@ const relatedTheoryByTestId = new Map([
   [testEmpleoPublico167a171.id, {
     resourceId: teoriaPersonalServicioPublico.id,
     selection: { articles: { from: 167, to: 171 } },
+  }],
+  [testEmpleoPublico172a177.id, {
+    resourceId: teoriaPersonalServicioPublico.id,
+    selection: { articles: { from: 172, to: 177 } },
   }],
   [testEmpleoPublico40a44.id, {
     resourceId: teoriaEmpleoPublicoVasco.id,
@@ -494,6 +499,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico161y162Derechos),
   testResource(testEmpleoPublico161a166),
   testResource(testEmpleoPublico167a171),
+  testResource(testEmpleoPublico172a177),
   theoryResource(teoriaEmpleoPublicoVasco),
   testResource(testEmpleoPublico40a44),
   testResource(testEmpleoPublico45a50),
