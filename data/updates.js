@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "test-regimen-disciplinario-tema-09",
+    category: "Nuevo test",
+    publishedAt: "2026-08-14T09:18:17+02:00",
+    title: "Test del régimen disciplinario del empleo público",
+    description:
+      "El Tema 9 incorpora un nuevo test IVOT de 14 preguntas sobre los artículos 172 a 177, con teoría relacionada y explicaciones para cada respuesta. El test completo reúne ahora 96 preguntas.",
+  }),
+  Object.freeze({
     id: "teoria-revision-responsabilidad-temas-33-y-34",
     category: "Nuevos recursos",
     publishedAt: "2026-08-02T18:10:28+02:00",
