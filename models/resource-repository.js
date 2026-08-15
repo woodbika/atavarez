@@ -12,8 +12,9 @@ function firstArticleNumber(title) {
 function resourceDisplayOrder(resource) {
   if (resource.type === "teoria") return 0;
   if (resource.type === "resumen") return 1;
-  if (resource.variant === "complete") return 3;
-  return 2;
+  if (resource.type === "explicacion") return 2;
+  if (resource.variant === "complete") return 4;
+  return 3;
 }
 
 function combinedTestTitle(theme) {

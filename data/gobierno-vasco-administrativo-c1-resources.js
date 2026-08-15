@@ -103,6 +103,7 @@ import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administra
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
 import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
 import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-administrativo-c1/tema-18/resumen/resumen-situaciones-administrativas.js";
+import explicacionAdscripcionProvisional from "./resources/gobierno-vasco-administrativo-c1/tema-18/explicaciones/articulo-105-adscripcion-provisional.js";
 import teoriaFuentesDerechoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-28/teoria/tema-28-fuentes-derecho-administrativo.js";
 import teoriaOrganizacionAdministrativa from "./resources/gobierno-vasco-administrativo-c1/tema-29/teoria/tema-29-organizacion-administrativa.js";
 import teoriaActoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-30/teoria/tema-30-acto-administrativo.js";
@@ -460,7 +461,12 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
 ]);
 
-const { summaryResource, testResource, theoryResource } = createOppositionResourceFactory(
+const {
+  explanationResource,
+  summaryResource,
+  testResource,
+  theoryResource,
+} = createOppositionResourceFactory(
   GOBIERNO_VASCO_ADMINISTRATIVO_C1,
   {
     relatedTheoryByTestId,
@@ -507,6 +513,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico53a62),
   theoryResource(teoriaAccesoEmpleoPublicoVasco),
   summaryResource(resumenSituacionesAdministrativas),
+  explanationResource(explicacionAdscripcionProvisional),
   testResource(testEmpleoPublico76y77),
   testResource(testEmpleoPublico78y79),
   testResource(testEmpleoPublico80a82),

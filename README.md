@@ -35,7 +35,7 @@ Aplicación web estática para organizar oposiciones, apartados del temario y re
 ├── data/
 │   ├── oppositions.js        # Catálogo de oposiciones e identificadores estables
 │   ├── resources.js          # Agregador de los registros de cada oposición
-│   ├── resource-factory.js   # Normalización común de tests y teorías
+│   ├── resource-factory.js   # Normalización común de los recursos
 │   ├── explanations/          # Explicaciones, esquema y plantilla canónica
 │   ├── *-resources.js        # Registro propio de cada oposición
 │   ├── updates.js            # Novedades visibles en la cabecera
@@ -84,7 +84,7 @@ Cada `push` a `main` y cada pull request ejecutan estas comprobaciones mediante 
 
 1. Declara la oposición en `data/oppositions.js` con un `id` estable, sus datos visibles, sus portadas y, si no usa temas numerados, la colección `sections`.
 2. Crea un registro `data/<id>-resources.js`.
-3. Usa `createOppositionResourceFactory()` para convertir sus tests y teorías en recursos normalizados.
+3. Usa `createOppositionResourceFactory()` para convertir sus materiales en recursos normalizados.
 4. Importa ese registro desde `data/resources.js`.
 5. Guarda sus bancos en `data/tests/<id>/<apartado>/` y sus materiales en `data/resources/<id>/<apartado>/`.
 
@@ -102,9 +102,17 @@ cambiarse a `status: "available"` y configurar sus portadas.
 1. Añade el archivo `.js` dentro de la carpeta de su oposición y apartado.
 2. Abre el archivo `data/<id>-resources.js` de esa oposición.
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
-4. Para otro material, añade una entrada con `id`, `type`, `title`, `classification`, `href` y, opcionalmente, `actionLabel`.
+4. Para teoría, resúmenes o explicaciones utiliza respectivamente `theoryResource()`, `summaryResource()` o `explanationResource()`.
 
 Los recursos teóricos se guardan en `data/resources/<id>/tema-XX/teoria/`, junto con su fuente original cuando corresponda. Su contenido estructurado se registra con `type: "teoria"` para presentarlo como lectura dentro de la aplicación.
+
+Las explicaciones prácticas de artículos se guardan en
+`data/resources/<id>/tema-XX/explicaciones/`. Se registran con
+`explanationResource()` y mantienen secciones, casos y ejemplos como datos
+estructurados. Cada ficha debe identificar la teoría y los artículos que utiliza;
+el validador comprueba que existen y pertenecen al mismo tema. Este recurso no debe
+confundirse con las justificaciones de respuestas almacenadas en
+`data/explanations/`.
 
 Los archivos existentes que todavía contienen administración, cuerpo, grupo y escala
 siguen siendo compatibles. Para un recurso nuevo basta con identificar la oposición

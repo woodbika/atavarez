@@ -2,7 +2,12 @@ import { isNonEmptyString, isStableId } from "../utils/validation.js";
 import { validateQuestions } from "./question-validator.js";
 import { isSupportedAnswerStatus } from "./test-contract.js";
 
-const SUPPORTED_RESOURCE_TYPES = new Set(["test", "teoria", "resumen"]);
+const SUPPORTED_RESOURCE_TYPES = new Set([
+  "test",
+  "teoria",
+  "resumen",
+  "explicacion",
+]);
 
 function validateAuthor(
   author,
@@ -899,6 +904,137 @@ function validateSummary(resource, path, errors) {
   validateSummaryNotes(summary.alcance, `${path}.data.alcance`, errors);
 }
 
+function validateExplanationTextList(value, path, errors) {
+  if (!Array.isArray(value) || value.length === 0) {
+    errors.push(`${path}: debe contener al menos un texto.`);
+    return;
+  }
+  value.forEach((item, index) => {
+    if (!isNonEmptyString(item)) {
+      errors.push(`${path}[${index}]: debe contener texto.`);
+    }
+  });
+}
+
+function validateExplanation(resource, path, errors) {
+  const explanation = resource.data;
+  if (!explanation || typeof explanation !== "object") {
+    errors.push(`${path}.data: falta el contenido de la explicación.`);
+    return;
+  }
+  if (explanation.schemaVersion !== 1) {
+    errors.push(`${path}.data.schemaVersion: debe ser 1.`);
+  }
+  if (explanation.id !== resource.id) {
+    errors.push(`${path}.data.id: debe coincidir con el recurso.`);
+  }
+  if (!isNonEmptyString(explanation.titulo)) {
+    errors.push(`${path}.data.titulo: debe contener texto.`);
+  } else if (explanation.titulo.trim() !== resource.title) {
+    errors.push(`${path}.title: debe coincidir con el título de la explicación.`);
+  }
+  if (!isNonEmptyString(explanation.descripcion)) {
+    errors.push(`${path}.data.descripcion: debe contener texto.`);
+  } else if (explanation.descripcion.trim() !== resource.description) {
+    errors.push(`${path}.description: debe coincidir con la descripción.`);
+  }
+  if (!isNonEmptyString(explanation.introduccion)) {
+    errors.push(`${path}.data.introduccion: debe contener texto.`);
+  }
+  if (!isNonEmptyString(explanation.cierre)) {
+    errors.push(`${path}.data.cierre: debe contener texto.`);
+  }
+  if (!classificationsMatch(resource.classification, explanation.clasificacion)) {
+    errors.push(`${path}.classification: debe coincidir con la clasificación de la explicación.`);
+  }
+  validateClassification(explanation.clasificacion, `${path}.data`, errors);
+
+  const source = explanation.fuente;
+  if (!source || typeof source !== "object") {
+    errors.push(`${path}.data.fuente: debe identificar la teoría de origen.`);
+  } else {
+    if (!isStableId(source.resourceId)) {
+      errors.push(`${path}.data.fuente.resourceId: debe ser un identificador estable.`);
+    }
+    if (
+      !Array.isArray(source.articulos) ||
+      source.articulos.length === 0 ||
+      source.articulos.some(
+        (article) => !Number.isInteger(article) || article < 1,
+      ) ||
+      new Set(source.articulos).size !== source.articulos.length
+    ) {
+      errors.push(
+        `${path}.data.fuente.articulos: debe contener artículos únicos y válidos.`,
+      );
+    }
+  }
+
+  if (!Array.isArray(explanation.secciones) || explanation.secciones.length === 0) {
+    errors.push(`${path}.data.secciones: debe contener al menos una sección.`);
+    return;
+  }
+  const sectionIds = new Set();
+  explanation.secciones.forEach((section, sectionIndex) => {
+    const sectionPath = `${path}.data.secciones[${sectionIndex}]`;
+    if (!section || typeof section !== "object") {
+      errors.push(`${sectionPath}: debe ser un objeto.`);
+      return;
+    }
+    if (!isStableId(section.id)) {
+      errors.push(`${sectionPath}.id: debe ser un identificador estable.`);
+    } else if (sectionIds.has(section.id)) {
+      errors.push(`${sectionPath}.id: está duplicado.`);
+    } else {
+      sectionIds.add(section.id);
+    }
+    if (!isNonEmptyString(section.titulo)) {
+      errors.push(`${sectionPath}.titulo: debe contener texto.`);
+    }
+    if (
+      section.introduccion !== undefined &&
+      !isNonEmptyString(section.introduccion)
+    ) {
+      errors.push(`${sectionPath}.introduccion: debe contener texto.`);
+    }
+    ["parrafos", "puntos", "ejemplos"].forEach((field) => {
+      if (section[field] !== undefined) {
+        validateExplanationTextList(
+          section[field],
+          `${sectionPath}.${field}`,
+          errors,
+        );
+      }
+    });
+    if (section.casos !== undefined) {
+      if (!Array.isArray(section.casos) || section.casos.length === 0) {
+        errors.push(`${sectionPath}.casos: debe contener al menos un caso.`);
+      } else {
+        section.casos.forEach((item, itemIndex) => {
+          const itemPath = `${sectionPath}.casos[${itemIndex}]`;
+          if (!item || typeof item !== "object") {
+            errors.push(`${itemPath}: debe ser un objeto.`);
+            return;
+          }
+          ["titulo", "texto", "ejemplo"].forEach((field) => {
+            if (!isNonEmptyString(item[field])) {
+              errors.push(`${itemPath}.${field}: debe contener texto.`);
+            }
+          });
+        });
+      }
+    }
+    const hasContent =
+      isNonEmptyString(section.introduccion) ||
+      ["parrafos", "puntos", "casos", "ejemplos"].some(
+        (field) => Array.isArray(section[field]) && section[field].length > 0,
+      );
+    if (!hasContent) {
+      errors.push(`${sectionPath}: debe incluir contenido explicativo.`);
+    }
+  });
+}
+
 function validateRelatedTheory(reference, path, errors) {
   if (!reference || typeof reference !== "object") {
     errors.push(`${path}: debe ser un objeto.`);
@@ -1016,6 +1152,9 @@ export function validateResources(
     if (resource.type === "resumen") {
       validateSummary(resource, path, errors);
     }
+    if (resource.type === "explicacion") {
+      validateExplanation(resource, path, errors);
+    }
     if (resource.relatedTheory !== undefined) {
       validateRelatedTheory(resource.relatedTheory, `${path}.relatedTheory`, errors);
     }
@@ -1040,6 +1179,22 @@ export function validateResources(
             }
           }
         }
+      }
+    }
+    if (resource?.type === "explicacion") {
+      const path = `resources[${index}].data.fuente`;
+      const theory = resourcesById.get(resource.data?.fuente?.resourceId);
+      if (theory?.type !== "teoria") {
+        errors.push(`${path}.resourceId: no corresponde a un recurso de teoría.`);
+      } else if (!classificationsMatch(resource.classification, theory.classification)) {
+        errors.push(`${path}: la teoría debe pertenecer al mismo tema que la explicación.`);
+      } else {
+        const availableArticles = theoryArticleNumbers(theory.data);
+        (resource.data.fuente.articulos ?? []).forEach((article) => {
+          if (Number.isInteger(article) && !availableArticles.has(article)) {
+            errors.push(`${path}.articulos: el artículo ${article} no existe.`);
+          }
+        });
       }
     }
     if (!resource?.relatedTheory?.resourceId) return;

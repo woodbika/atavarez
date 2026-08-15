@@ -861,6 +861,43 @@ test("el tema 18 incluye un resumen comparativo vinculado a su teoría", () => {
   assert.deepEqual(validateResources(resources), []);
 });
 
+test("el tema 18 explica la adscripción provisional con ejemplos estructurados", () => {
+  const repository = new ResourceRepository(resources);
+  const explanation = resources.find(
+    (resource) =>
+      resource.id ===
+      "explicacion-tema-18-articulo-105-adscripcion-provisional",
+  );
+  const themeResources = repository.getResources(
+    "gobierno-vasco-administrativo-c1",
+    "18",
+  );
+
+  assert.ok(explanation);
+  assert.equal(explanation.type, "explicacion");
+  assert.equal(explanation.classification.tema.numero, "18");
+  assert.equal(
+    explanation.data.fuente.resourceId,
+    "tema-18-acceso-empleo-publico-provision-puestos",
+  );
+  assert.deepEqual(explanation.data.fuente.articulos, [105]);
+  assert.equal(explanation.data.secciones.length, 6);
+  assert.equal(explanation.data.secciones[0].casos.length, 8);
+  assert.equal(explanation.data.secciones.at(-1).puntos.length, 3);
+  assert.ok(
+    explanation.data.secciones.every(
+      (section) =>
+        section.introduccion ||
+        section.parrafos?.length ||
+        section.puntos?.length ||
+        section.casos?.length ||
+        section.ejemplos?.length,
+    ),
+  );
+  assert.equal(themeResources[2].id, explanation.id);
+  assert.deepEqual(validateResources(resources), []);
+});
+
 test("el tema 28 relaciona cada test con sus bloques teóricos", () => {
   const theory = resources.find(
     (resource) => resource.id === "tema-28-fuentes-derecho-administrativo",

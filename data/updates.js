@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "explicacion-adscripcion-provisional-articulo-105",
+    category: "Nuevo recurso",
+    publishedAt: "2026-08-15T15:39:06+02:00",
+    title: "Guía práctica de la adscripción provisional",
+    description:
+      "El Tema 18 incorpora una explicación del artículo 105 con sus ocho supuestos, ejemplos diferenciados y las reglas sobre destino, efectos, retribuciones, garantías y finalización.",
+  }),
+  Object.freeze({
     id: "test-regimen-disciplinario-tema-09",
     category: "Nuevo test",
     publishedAt: "2026-08-14T09:18:17+02:00",

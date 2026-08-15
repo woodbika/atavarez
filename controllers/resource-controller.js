@@ -1,5 +1,6 @@
 import { parseQuestionRange } from "../utils/test-order.js";
 import { renderResources } from "../views/portal-view.js";
+import { openExplanationModal } from "../views/explanation-view.js";
 import { openSummaryModal } from "../views/summary-view.js";
 import { openTheoryModal } from "../views/theory-view.js";
 
@@ -54,6 +55,7 @@ export class ResourceController {
     resourceList.addEventListener("click", (event) => {
       this.openTheory(event);
       this.openSummary(event);
+      this.openExplanation(event);
     });
     resourceList.addEventListener("submit", (event) => {
       this.createRangeTest(event);
@@ -101,6 +103,17 @@ export class ResourceController {
     const resource = this.repository.getById(trigger.dataset.summaryResource);
     if (resource?.type === "resumen") {
       openSummaryModal(this.root, resource, trigger);
+    }
+  }
+
+  openExplanation(event) {
+    const trigger = event.target.closest("[data-explanation-resource]");
+    if (!trigger) return;
+    const resource = this.repository.getById(
+      trigger.dataset.explanationResource,
+    );
+    if (resource?.type === "explicacion") {
+      openExplanationModal(this.root, resource, trigger);
     }
   }
 

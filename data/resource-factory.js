@@ -140,5 +140,24 @@ export function createOppositionResourceFactory(
         },
       };
     },
+    explanationResource(explanation) {
+      const classification = canonicalClassification(
+        opposition,
+        explanation.clasificacion,
+      );
+      return {
+        id: explanation.id,
+        type: "explicacion",
+        title: explanation.titulo,
+        description: explanation.descripcion,
+        opposition,
+        classification,
+        sourceClassification: explanation.clasificacion,
+        data: {
+          ...explanation,
+          clasificacion: classification,
+        },
+      };
+    },
   });
 }

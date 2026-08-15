@@ -11,8 +11,8 @@ OPOSAKETAK es una aplicación estática con módulos ES, sin framework, backend 
 - `utils/`: operaciones puras reutilizables, sin acceso al DOM.
 
 `AppController` coordina rutas, el ciclo de vida del intento y las transiciones entre
-pantallas. `ResourceController` encapsula la búsqueda, los filtros, el acceso a teoría
-y la creación de tests por rango. Los demás comportamientos con ciclo de vida propio,
+pantallas. `ResourceController` encapsula la búsqueda, los filtros, el acceso a teoría,
+resúmenes y explicaciones prácticas, y la creación de tests por rango. Los demás comportamientos con ciclo de vida propio,
 como la revisión y los controles del test, se mantienen en controladores específicos
 para evitar listeners huérfanos.
 
@@ -60,6 +60,13 @@ teoría y cada pregunta declara un artículo o bloque verificable, con alcance d
 o contextual. `explanation-auditor.js` controla longitud, fórmulas poco pedagógicas,
 repeticiones y el tratamiento explícito de discrepancias; `resource-validator.js`
 comprueba además que los localizadores existen en la teoría indicada.
+
+Las explicaciones prácticas de artículos son recursos de catálogo de tipo
+`explicacion`, independientes de las justificaciones de un test. Viven junto a los
+materiales del tema, enlazan una teoría y uno o varios artículos reales, y se
+representan mediante secciones, casos y ejemplos reutilizables. Su contrato se valida
+en `resource-validator.js` y su presentación se mantiene en
+`views/explanation-view.js`.
 
 ## Navegación
 
