@@ -13,6 +13,7 @@ import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco
 import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1/tema-03/index.js";
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
+import explicacionesTema18 from "./explanations/gobierno-vasco-administrativo-c1/tema-18/index.js";
 import testPrincipiosRectores from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/capitulo-iii-titulo-i-ce-principios-rectores.js";
 import testCapituloII from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-capitulo-ii-titulo-i-ce.js";
 import testCapitulosIVyV from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-capitulo-iv-y-v.js";
@@ -203,7 +204,7 @@ const relatedTheoryByTestId = new Map([
   }],
   [testEmpleoPublico76y77.id, {
     resourceId: teoriaAccesoEmpleoPublicoVasco.id,
-    selection: { articles: { from: 76, to: 77 } },
+    selection: { articles: { from: 76, to: 78 } },
   }],
   [testEmpleoPublico78y79.id, {
     resourceId: teoriaAccesoEmpleoPublicoVasco.id,
@@ -459,6 +460,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema03.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema18.map((explanations) => [explanations.testId, explanations]),
 ]);
 
 const {

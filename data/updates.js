@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "explicaciones-respuestas-tema-18",
+    category: "Mejora",
+    publishedAt: "2026-08-16T17:05:49+02:00",
+    title: "Explicaciones de respuestas en el Tema 18",
+    description:
+      "Los 18 tests del Tema 18 incorporan una justificación individualizada de la respuesta correcta y explican por qué se descarta cada alternativa. La mejora comprende sus 235 preguntas y el test completo.",
+  }),
+  Object.freeze({
     id: "explicacion-adscripcion-provisional-articulo-105",
     category: "Nuevo recurso",
     publishedAt: "2026-08-15T15:39:06+02:00",

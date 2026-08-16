@@ -196,11 +196,12 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests de los Temas 3, 4 y 9 explican todas sus respuestas", () => {
+test("los tests de los Temas 3, 4, 9 y 18 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
     ["09", { tests: 5, questions: 96 }],
+    ["18", { tests: 18, questions: 235 }],
   ]);
 
   expectedByTheme.forEach((expected, themeNumber) => {
@@ -259,6 +260,8 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", 2, "b"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105", 6, "a"],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-136-a-138", 9, "d"],
   ];
 
   expectedDiscrepancies.forEach(([testId, questionId, expectedAnswer]) => {
@@ -283,11 +286,11 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 25,
-    questions: 653,
-    directReferences: 588,
+    tests: 43,
+    questions: 888,
+    directReferences: 823,
     contextualReferences: 65,
-    theoryDiscrepancies: 7,
+    theoryDiscrepancies: 9,
   });
 });
 
@@ -377,12 +380,13 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3, 4 y 9 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3, 4, 9 y 18 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
     ["09", 96],
+    ["18", 235],
   ]);
 
   expectedByTheme.forEach((expectedQuestions, themeNumber) => {
@@ -795,7 +799,7 @@ test("el tema 18 relaciona cada test con su intervalo de teoría", () => {
     (resource) => resource.id === "tema-18-acceso-empleo-publico-provision-puestos",
   );
   const expectedSelections = new Map([
-    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-76-y-77", { from: 76, to: 77 }],
+    ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-76-y-77", { from: 76, to: 78 }],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-78-y-79", { from: 78, to: 79 }],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-80-a-82", { from: 80, to: 82 }],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulos-94-a-96", { from: 94, to: 96 }],
