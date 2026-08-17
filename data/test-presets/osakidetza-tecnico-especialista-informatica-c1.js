@@ -20,6 +20,7 @@ function testPreset(questionBank, {
     questionBankId: questionBank.id,
     includeInCombinedTest: false,
     orderModes: Object.freeze(orderModes),
+    answerOrderModes: Object.freeze(["natural", "aleatorio"]),
     defaultOrder,
     ...(questionSelection
       ? { questionSelection: Object.freeze(questionSelection) }

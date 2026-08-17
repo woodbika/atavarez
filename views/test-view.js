@@ -11,6 +11,7 @@ export function renderTest(
     orderMode,
     answerOrderMode,
     showOrder,
+    showAnswerOrder,
     showQuestionMap = true,
     timer,
   },
@@ -35,11 +36,13 @@ export function renderTest(
       <header class="test-heading study-heading view-heading">
         <div class="study-heading-kicker">
           ${themeDisclosure(test)}
-          ${showOrder
+          ${showAnswerOrder
             ? `<span class="study-order">
                 <span>Preguntas: ${orderMode === "aleatorio" ? "aleatorio" : "natural"}</span>
                 <span>Respuestas: ${answerOrderMode === "aleatorio" ? "aleatorio" : "natural"}</span>
               </span>`
+            : showOrder
+              ? `<span class="study-order">· Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}</span>`
             : ""}
         </div>
         <h1 id="test-title">${escapeHtml(formatDisplayTitle(test.titulo))}</h1>

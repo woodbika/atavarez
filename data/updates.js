@@ -5,7 +5,7 @@ export const updates = Object.freeze([
     publishedAt: "2026-08-17T21:02:51+02:00",
     title: "Orden configurable de preguntas y respuestas",
     description:
-      "Cada nuevo intento permite elegir por separado el orden natural o aleatorio de las preguntas y de las respuestas. Las opciones cuyo significado depende de su posición conservan siempre el orden original.",
+      "Los tests de Osakidetza permiten elegir por separado el orden natural o aleatorio de las preguntas y de las respuestas. Las opciones cuyo significado depende de su posición conservan siempre el orden original.",
   }),
   Object.freeze({
     id: "explicaciones-respuestas-tema-18",

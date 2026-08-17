@@ -7,6 +7,11 @@ export function availableQuestionOrders(resource) {
     : ["natural", "aleatorio"];
 }
 
+export function supportsTestLaunchConfiguration(resource) {
+  return Array.isArray(resource?.answerOrderModes) &&
+    resource.answerOrderModes.length > 0;
+}
+
 export function buildTestLaunchRoute(
   resource,
   {

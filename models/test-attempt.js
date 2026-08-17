@@ -21,9 +21,10 @@ export function createTestAttempt(
   } = {},
 ) {
   const selection = resource?.questionSelection;
-  const answerOrderMode = requestedAnswerOrder === "aleatorio"
-    ? "aleatorio"
-    : "natural";
+  const availableAnswerOrderModes = resource?.answerOrderModes ?? ["natural"];
+  const answerOrderMode = availableAnswerOrderModes.includes(requestedAnswerOrder)
+    ? requestedAnswerOrder
+    : availableAnswerOrderModes[0];
   const randomAnswerOrder = answerOrderMode === "aleatorio";
   const answerRouteSuffix = answerOrderMode === "aleatorio"
     ? "respuestas-aleatorias"
@@ -64,7 +65,7 @@ export function createTestAttempt(
     };
   }
 
-  const availableOrderModes = resource?.orderModes ?? ["natural", "aleatorio"];
+  const availableOrderModes = resource?.orderModes ?? ["natural"];
   const orderMode = availableOrderModes.includes(requestedOrder)
     ? requestedOrder
     : resource?.defaultOrder ?? "natural";

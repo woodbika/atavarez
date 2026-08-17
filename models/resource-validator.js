@@ -434,6 +434,20 @@ function validateTestConfiguration(resource, path, errors) {
     }
   }
 
+  const answerOrderModes = resource.answerOrderModes;
+  if (answerOrderModes !== undefined) {
+    if (
+      !Array.isArray(answerOrderModes) ||
+      answerOrderModes.length === 0 ||
+      answerOrderModes.some((mode) => !allowedOrderModes.has(mode)) ||
+      new Set(answerOrderModes).size !== answerOrderModes.length
+    ) {
+      errors.push(
+        `${path}.answerOrderModes: debe contener modos únicos natural o aleatorio.`,
+      );
+    }
+  }
+
   if (
     resource.defaultOrder !== undefined &&
     !allowedOrderModes.has(resource.defaultOrder)
@@ -535,6 +549,7 @@ function validateTestPreset(resource, path, errors, questionBankById) {
   [
     "includeInCombinedTest",
     "orderModes",
+    "answerOrderModes",
     "defaultOrder",
     "questionSelection",
     "questionCountLabel",

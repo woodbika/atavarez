@@ -2,6 +2,7 @@ import { parseQuestionRange } from "../utils/test-order.js";
 import {
   availableQuestionOrders,
   buildTestLaunchRoute,
+  supportsTestLaunchConfiguration,
 } from "../utils/test-launch.js";
 import { formatDisplayTitle } from "../utils/text.js";
 import { renderResources } from "../views/portal-view.js";
@@ -100,7 +101,10 @@ export class ResourceController {
     const trigger = event.target.closest("[data-test-launch]");
     if (!trigger) return false;
     const resource = this.repository.getById(trigger.dataset.testLaunch);
-    if (resource?.type === "test") {
+    if (
+      resource?.type === "test" &&
+      supportsTestLaunchConfiguration(resource)
+    ) {
       this.showLaunchDialog(resource, { trigger });
     }
     return true;
@@ -112,6 +116,10 @@ export class ResourceController {
     const defaultQuestionOrder = questionOrderModes.includes(resource.defaultOrder)
       ? resource.defaultOrder
       : questionOrderModes[0];
+    const answerOrderModes = resource.answerOrderModes;
+    const defaultAnswerOrder = answerOrderModes.includes("natural")
+      ? "natural"
+      : answerOrderModes[0];
 
     this.launchState = { resource, selection, trigger };
     this.launchDialog.querySelector("[data-test-launch-title]").textContent =
@@ -123,10 +131,13 @@ export class ResourceController {
       input.disabled = !isAvailable;
       input.checked = isAvailable && input.value === defaultQuestionOrder;
     });
-    const naturalAnswers = this.launchForm.querySelector(
-      '[name="answer-order"][value="natural"]',
-    );
-    if (naturalAnswers) naturalAnswers.checked = true;
+    this.launchForm.querySelectorAll("[data-answer-order-option]").forEach((option) => {
+      const input = option.querySelector("input");
+      const isAvailable = answerOrderModes.includes(input.value);
+      option.hidden = !isAvailable;
+      input.disabled = !isAvailable;
+      input.checked = isAvailable && input.value === defaultAnswerOrder;
+    });
 
     if (typeof this.launchDialog.showModal === "function") {
       this.launchDialog.showModal();
@@ -233,7 +244,10 @@ export class ResourceController {
     input.removeAttribute("aria-invalid");
     error.hidden = true;
     const resource = this.repository.getById(form.dataset.testId);
-    if (resource?.type === "test") {
+    if (
+      resource?.type === "test" &&
+      supportsTestLaunchConfiguration(resource)
+    ) {
       this.showLaunchDialog(resource, {
         trigger: form.querySelector('button[type="submit"]'),
         selection: `${range.from}-${range.to}`,

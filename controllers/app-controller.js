@@ -5,6 +5,7 @@ import {
 } from "../models/test-attempt.js";
 import { coverImageUrl } from "../utils/assets.js";
 import { parseHashRoute } from "../utils/router.js";
+import { supportsTestLaunchConfiguration } from "../utils/test-launch.js";
 import { renderNotFound } from "../views/layout.js";
 import { renderOppositions, renderThemes } from "../views/portal-view.js";
 import { renderResults } from "../views/results-view.js";
@@ -247,11 +248,15 @@ export class AppController {
   renderCurrentQuestion() {
     this.clearAutoAdvance();
     this.testControls.releaseTestTools();
+    const resource = this.repository.getById(this.session.test.id);
+    const usesLaunchConfiguration = supportsTestLaunchConfiguration(resource);
     renderTest(this.root, this.session, {
       ...this.resourceContext(this.session.test),
       orderMode: this.sessionOrder,
       answerOrderMode: this.sessionAnswerOrder,
-      showOrder: true,
+      showOrder:
+        usesLaunchConfiguration || (resource?.orderModes?.length ?? 0) > 1,
+      showAnswerOrder: usesLaunchConfiguration,
       showQuestionMap: this.testPreferences.questionMap,
       timer: this.testTimer.snapshot(),
     });

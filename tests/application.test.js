@@ -60,6 +60,7 @@ import { parseHashRoute } from "../utils/router.js";
 import {
   availableQuestionOrders,
   buildTestLaunchRoute,
+  supportsTestLaunchConfiguration,
 } from "../utils/test-launch.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 import { renderReview } from "../views/review-view.js";
@@ -1613,6 +1614,14 @@ test("el orden de respuestas se restaura y adapta sus referencias visibles", () 
     restoredAttempt.preguntas[0].opciones.map((option) => option.id),
     ["b", "c", "a"],
   );
+
+  const unsupportedAttempt = createTestAttempt(
+    { orderModes: ["natural", "aleatorio"], defaultOrder: "natural" },
+    source,
+    { requestedAnswerOrder: "aleatorio", random: () => 0 },
+  );
+  assert.equal(unsupportedAttempt.answerOrderMode, "natural");
+  assert.deepEqual(unsupportedAttempt.test.preguntas[0].opciones, source.preguntas[0].opciones);
 });
 
 test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la batería", () => {
@@ -1726,18 +1735,25 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
   assert.deepEqual(parseHashRoute("#/"), []);
 });
 
-test("la configuración de inicio combina de forma independiente ambos órdenes", () => {
-  const regularResource = { id: "test de ejemplo" };
+test("la configuración de inicio combina ambos órdenes solo en Osakidetza", () => {
+  const regularResource = {
+    id: "test de ejemplo",
+    answerOrderModes: ["natural", "aleatorio"],
+  };
   const rangeResource = {
     id: "test-rango",
     orderModes: ["natural", "aleatorio"],
+    answerOrderModes: ["natural", "aleatorio"],
     questionSelection: { type: "range" },
   };
   const randomSelectionResource = {
     id: "test-aleatorio-50",
+    answerOrderModes: ["natural", "aleatorio"],
     questionSelection: { type: "random-count", count: 50 },
   };
 
+  assert.equal(supportsTestLaunchConfiguration({ id: "test-gv" }), false);
+  assert.equal(supportsTestLaunchConfiguration(regularResource), true);
   assert.deepEqual(availableQuestionOrders(regularResource), [
     "natural",
     "aleatorio",
@@ -1942,10 +1958,14 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
     fullQuestionBank.orderModes,
     ["natural", "aleatorio"],
   );
+  assert.deepEqual(fullQuestionBank.answerOrderModes, ["natural", "aleatorio"]);
   assert.equal(randomFifty.questionSelection.count, 50);
   assert.deepEqual(randomFifty.orderModes, ["aleatorio"]);
   assert.equal(rangeBuilder.questionCountLabel, "200 disponibles");
   assert.deepEqual(rangeBuilder.orderModes, ["natural", "aleatorio"]);
+  assert.ok(
+    osakidetzaSpecificResources.every(supportsTestLaunchConfiguration),
+  );
   assert.equal(
     repository.getQuestionBankById(osakidetzaSpecificQuestionBank.id),
     osakidetzaSpecificQuestionBank,
