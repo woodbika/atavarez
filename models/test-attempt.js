@@ -5,6 +5,10 @@ import {
   selectQuestionsByOrder,
   selectRandomQuestions,
 } from "../utils/test-order.js";
+import {
+  randomizeTestAnswers,
+  restoreTestAnswers,
+} from "../utils/answer-order.js";
 
 export function createTestAttempt(
   resource,
@@ -12,22 +16,34 @@ export function createTestAttempt(
   {
     requestedOrder = "",
     requestedSelection = "",
+    requestedAnswerOrder = "natural",
     random = Math.random,
   } = {},
 ) {
   const selection = resource?.questionSelection;
+  const answerOrderMode = requestedAnswerOrder === "aleatorio"
+    ? "aleatorio"
+    : "natural";
+  const randomAnswerOrder = answerOrderMode === "aleatorio";
+  const answerRouteSuffix = answerOrderMode === "aleatorio"
+    ? "respuestas-aleatorias"
+    : "respuestas-naturales";
 
   if (selection?.type === "random-count") {
+    const selectedTest = selectRandomQuestions(test, selection.count, random);
     return {
-      test: selectRandomQuestions(test, selection.count, random),
+      test: randomizeTestAnswers(selectedTest, randomAnswerOrder, random),
       orderMode: "aleatorio",
+      answerOrderMode,
       selectionKey: `random-${selection.count}`,
-      routeSuffix: "/aleatorio",
+      routeSuffix: `/aleatorio/${answerRouteSuffix}`,
     };
   }
 
   if (selection?.type === "range") {
-    const range = requestedOrder === "rango"
+    const isRandomOrder = requestedOrder === "rango-aleatorio";
+    const isRangeRoute = requestedOrder === "rango" || isRandomOrder;
+    const range = isRangeRoute
       ? parseQuestionRange(requestedSelection, test.preguntas.length)
       : null;
     if (!range) {
@@ -36,26 +52,38 @@ export function createTestAttempt(
       };
     }
     const selectionKey = `${range.from}-${range.to}`;
+    const orderMode = isRandomOrder ? "aleatorio" : "natural";
+    const selectedTest = selectQuestionRange(test, range);
+    const orderedTest = orderTestQuestions(selectedTest, orderMode, null, random);
     return {
-      test: selectQuestionRange(test, range),
-      orderMode: "natural",
+      test: randomizeTestAnswers(orderedTest, randomAnswerOrder, random),
+      orderMode,
+      answerOrderMode,
       selectionKey,
-      routeSuffix: `/rango/${selectionKey}`,
+      routeSuffix: `/${isRandomOrder ? "rango-aleatorio" : "rango"}/${selectionKey}/${answerRouteSuffix}`,
     };
   }
 
-  const availableOrderModes = resource?.orderModes ?? ["natural"];
+  const availableOrderModes = resource?.orderModes ?? ["natural", "aleatorio"];
   const orderMode = availableOrderModes.includes(requestedOrder)
     ? requestedOrder
     : resource?.defaultOrder ?? "natural";
   return {
-    test: orderTestQuestions(test, orderMode),
+    test: randomizeTestAnswers(
+      orderTestQuestions(test, orderMode, null, random),
+      randomAnswerOrder,
+      random,
+    ),
     orderMode,
+    answerOrderMode,
     selectionKey: "",
-    routeSuffix: `/${orderMode}`,
+    routeSuffix: `/${orderMode}/${answerRouteSuffix}`,
   };
 }
 
-export function restoreTestAttempt(test, questionOrder) {
-  return selectQuestionsByOrder(test, questionOrder);
+export function restoreTestAttempt(test, questionOrder, answerOrder) {
+  return restoreTestAnswers(
+    selectQuestionsByOrder(test, questionOrder),
+    answerOrder,
+  );
 }

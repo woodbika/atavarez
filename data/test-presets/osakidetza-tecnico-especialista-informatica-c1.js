@@ -53,14 +53,14 @@ function createTestPresets(questionBank, sectionId) {
     testPreset(questionBank, {
       id: `test-por-rango-temario-${sectionId}-osakidetza`,
       title: "Test por rango de preguntas",
-      orderModes: ["natural"],
+      orderModes: ["natural", "aleatorio"],
       defaultOrder: "natural",
       questionSelection: {
         type: "range",
       },
       questionCountLabel: `${questionBank.preguntas.length} disponibles`,
       description:
-        "Selecciona la primera y la última pregunta que quieres incluir en el intento.",
+        "Selecciona la primera y la última pregunta que quieres incluir y decide si deseas mezclarlas.",
     }),
   ]);
 }

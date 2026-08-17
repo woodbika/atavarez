@@ -80,6 +80,12 @@ export class TestSession {
       percentage: total ? Math.round((correct / total) * 100) : 0,
       score,
       questionOrder: this.test.preguntas.map((question) => String(question.id)),
+      answerOrder: Object.fromEntries(
+        this.test.preguntas.map((question) => [
+          String(question.id),
+          question.opciones.map((option) => String(option.id)),
+        ]),
+      ),
     };
   }
 }

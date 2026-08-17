@@ -23,6 +23,7 @@ export class AppController {
     this.repository = repository;
     this.session = null;
     this.sessionSelectionKey = "";
+    this.sessionAnswerOrder = "natural";
     this.sessionRouteSuffix = "";
     this.currentResult = null;
     this.testControls = new TestControlsController(root);
@@ -72,7 +73,13 @@ export class AppController {
   onRouteChange() {
     this.clearAutoAdvance();
     this.restoreOptionHover?.();
-    const [section = "", id = "", subsection = "", subId = ""] = this.route();
+    const [
+      section = "",
+      id = "",
+      subsection = "",
+      subId = "",
+      optionId = "",
+    ] = this.route();
     if (section !== "test") this.testTimer.reset();
     this.testControls.hideSearch();
     this.studyContext.hide();
@@ -87,8 +94,9 @@ export class AppController {
     else if (section === "oposiciones" && id && !subsection) this.showThemes(id);
     else if (section === "oposiciones" && id && subsection === "temas" && subId) {
       this.showResources(id, subId);
-    } else if (section === "test" && id) this.showTest(id, subsection, subId);
-    else if (section === "resultados" && id) this.showResults(id);
+    } else if (section === "test" && id) {
+      this.showTest(id, subsection, subId, optionId);
+    } else if (section === "resultados" && id) this.showResults(id);
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
 
@@ -153,7 +161,12 @@ export class AppController {
     this.resourceController.show(opposition, theme, resources);
   }
 
-  showTest(id, requestedOrder = "", requestedSelection = "") {
+  showTest(
+    id,
+    requestedOrder = "",
+    requestedSelectionOrAnswerOrder = "",
+    requestedAnswerOrder = "",
+  ) {
     const resource = this.repository.getById(id);
     const test = this.repository.getTestById(id);
     if (!test) {
@@ -161,9 +174,18 @@ export class AppController {
       this.testControls.setTestRouteActive(false);
       return renderNotFound(this.root, "El test solicitado no existe.");
     }
+    const isRangeTest = resource?.questionSelection?.type === "range";
+    const requestedSelection = isRangeTest
+      ? requestedSelectionOrAnswerOrder
+      : "";
+    const answerOrderRoute = isRangeTest
+      ? requestedAnswerOrder
+      : requestedSelectionOrAnswerOrder;
     const attempt = createTestAttempt(resource, test, {
       requestedOrder,
       requestedSelection,
+      requestedAnswerOrder:
+        answerOrderRoute === "respuestas-aleatorias" ? "aleatorio" : "natural",
     });
     if (attempt.error) {
       this.testTimer.reset();
@@ -176,12 +198,14 @@ export class AppController {
       !this.session ||
       this.session.test.id !== id ||
       this.sessionOrder !== attempt.orderMode ||
+      this.sessionAnswerOrder !== attempt.answerOrderMode ||
       this.sessionSelectionKey !== attempt.selectionKey;
     if (startsNewSession) {
       this.session = new TestSession(attempt.test);
       this.session.setLiveResponseEnabled(this.testPreferences.liveResponse);
       this.session.setAutoAdvanceEnabled(this.testPreferences.autoAdvance);
       this.sessionOrder = attempt.orderMode;
+      this.sessionAnswerOrder = attempt.answerOrderMode;
       this.testTimer.start(
         attempt.test.preguntas.length,
         this.testPreferences.timerEnabled,
@@ -223,11 +247,11 @@ export class AppController {
   renderCurrentQuestion() {
     this.clearAutoAdvance();
     this.testControls.releaseTestTools();
-    const resource = this.repository.getById(this.session.test.id);
     renderTest(this.root, this.session, {
       ...this.resourceContext(this.session.test),
       orderMode: this.sessionOrder,
-      showOrder: (resource?.orderModes?.length ?? 0) > 1,
+      answerOrderMode: this.sessionAnswerOrder,
+      showOrder: true,
       showQuestionMap: this.testPreferences.questionMap,
       timer: this.testTimer.snapshot(),
     });
@@ -453,6 +477,7 @@ export class AppController {
     this.testTimer.reset();
     const result = this.session.calculateResult();
     result.orderMode = this.sessionOrder;
+    result.answerOrderMode = this.sessionAnswerOrder;
     result.routeSuffix = this.sessionRouteSuffix;
     this.currentResult = result;
     location.hash = `#/resultados/${encodeURIComponent(this.session.test.id)}`;
@@ -497,7 +522,11 @@ export class AppController {
 
     this.showTestStudyContext(this.repository.getById(id), test);
     this.session = null;
-    const attemptedTest = restoreTestAttempt(test, result.questionOrder);
+    const attemptedTest = restoreTestAttempt(
+      test,
+      result.questionOrder,
+      result.answerOrder,
+    );
     renderResults(this.root, attemptedTest, result, this.resourceContext(test));
     this.root.querySelector('[data-action="repeat"]').addEventListener("click", () => {
       this.currentResult = null;
@@ -515,7 +544,11 @@ export class AppController {
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");
     this.showTestStudyContext(this.repository.getById(id), test);
     this.session = null;
-    const orderedTest = restoreTestAttempt(test, result.questionOrder);
+    const orderedTest = restoreTestAttempt(
+      test,
+      result.questionOrder,
+      result.answerOrder,
+    );
     renderReview(this.root, orderedTest, result, this.resourceContext(test));
     new ReviewController(this.root).start();
   }

@@ -1,10 +1,19 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
+import { displayOptionId } from "../utils/answer-order.js";
 import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
 export function renderTest(
   root,
   session,
-  { backHref, backLabel, orderMode, showOrder, showQuestionMap = true, timer },
+  {
+    backHref,
+    backLabel,
+    orderMode,
+    answerOrderMode,
+    showOrder,
+    showQuestionMap = true,
+    timer,
+  },
 ) {
   const { test, currentQuestion: question, currentIndex } = session;
   const total = test.preguntas.length;
@@ -26,7 +35,12 @@ export function renderTest(
       <header class="test-heading study-heading view-heading">
         <div class="study-heading-kicker">
           ${themeDisclosure(test)}
-          ${showOrder ? `<span class="study-order">· Orden ${orderMode === "aleatorio" ? "aleatorio" : "natural"}</span>` : ""}
+          ${showOrder
+            ? `<span class="study-order">
+                <span>Preguntas: ${orderMode === "aleatorio" ? "aleatorio" : "natural"}</span>
+                <span>Respuestas: ${answerOrderMode === "aleatorio" ? "aleatorio" : "natural"}</span>
+              </span>`
+            : ""}
         </div>
         <h1 id="test-title">${escapeHtml(formatDisplayTitle(test.titulo))}</h1>
         ${questionCount(test)}
@@ -113,7 +127,7 @@ export function renderTest(
                   return `
                     <label class="option ${isSelected ? "is-selected" : ""} ${liveState} ${liveAnswerLocked ? "is-locked" : ""}">
                       <input type="radio" name="answer" value="${escapeHtml(answer.id)}" ${isSelected ? "checked" : ""} ${liveAnswerLocked ? "disabled" : ""}>
-                      <span class="option-letter" aria-hidden="true">${escapeHtml(answer.id)}</span>
+                      <span class="option-letter" aria-hidden="true">${escapeHtml(displayOptionId(answer))}</span>
                       <span>${escapeHtml(answer.texto)}</span>
                       ${liveIcon}
                     </label>

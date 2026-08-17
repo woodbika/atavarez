@@ -1,4 +1,8 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
+import {
+  displayOptionId,
+  remapOptionReferences,
+} from "../utils/answer-order.js";
 import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
 function stateFor(question, selected) {
@@ -21,14 +25,14 @@ function theoryNoteIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>';
 }
 
-function renderTheoryNote(note) {
+function renderTheoryNote(note, question) {
   if (!note) return "";
   return `
     <aside class="review-theory-note" aria-label="Advertencia sobre la teoría">
       <span class="review-theory-note-icon">${theoryNoteIcon()}</span>
       <div>
-        <p class="review-theory-note-title">${escapeHtml(note.titulo)}</p>
-        <p>${escapeHtml(note.texto)}</p>
+        <p class="review-theory-note-title">${escapeHtml(remapOptionReferences(note.titulo, question))}</p>
+        <p>${escapeHtml(remapOptionReferences(note.texto, question))}</p>
       </div>
     </aside>
   `;
@@ -71,7 +75,7 @@ function renderOptions(question, selected) {
             : "";
         return `
           <li class="review-option ${stateClass}">
-            <span class="review-option-letter" aria-hidden="true">${escapeHtml(String(option.id).toLocaleUpperCase("es"))}</span>
+            <span class="review-option-letter" aria-hidden="true">${escapeHtml(String(displayOptionId(option)).toLocaleUpperCase("es"))}</span>
             <span class="review-option-text">${escapeHtml(option.texto)}</span>
             ${stateIcon
               ? `<span class="review-option-state" aria-label="${stateLabel}" title="${stateLabel}">${stateIcon}</span>`
@@ -96,17 +100,17 @@ function renderExplanation(question, explanation) {
       </summary>
       <div class="review-explanation-content">
         ${renderTheoryReference(explanation.referencia)}
-        ${renderTheoryNote(explanation.notaRevision)}
+        ${renderTheoryNote(explanation.notaRevision, question)}
         <p class="review-explanation-label">Motivo de la respuesta correcta</p>
-        <p>${escapeHtml(explanation.justificacion)}</p>
+        <p>${escapeHtml(remapOptionReferences(explanation.justificacion, question))}</p>
         <p class="review-explanation-label">Por qué no son correctas las demás</p>
         <ul>
           ${discardedOptions.map((option) => `
             <li>
-              <span class="review-answer-key">${escapeHtml(String(option.id).toLocaleUpperCase("es"))}</span>
+              <span class="review-answer-key">${escapeHtml(String(displayOptionId(option)).toLocaleUpperCase("es"))}</span>
               <div>
                 <strong>${escapeHtml(option.texto)}</strong>
-                <p>${escapeHtml(explanation.descartes[option.id])}</p>
+                <p>${escapeHtml(remapOptionReferences(explanation.descartes[option.id], question))}</p>
               </div>
             </li>
           `).join("")}

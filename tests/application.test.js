@@ -35,6 +35,13 @@ import { TestSession } from "../models/test-session.js";
 import { formatDisplayTitle } from "../utils/text.js";
 import { assetUrl, coverImageUrl } from "../utils/assets.js";
 import {
+  displayOptionId,
+  hasOrderDependentAnswers,
+  randomizeTestAnswers,
+  remapOptionReferences,
+  restoreTestAnswers,
+} from "../utils/answer-order.js";
+import {
   orderTestQuestions,
   parseQuestionRange,
   selectQuestionRange,
@@ -50,6 +57,10 @@ import {
   savePreferences,
 } from "../utils/preferences.js";
 import { parseHashRoute } from "../utils/router.js";
+import {
+  availableQuestionOrders,
+  buildTestLaunchRoute,
+} from "../utils/test-launch.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 import { renderReview } from "../views/review-view.js";
 
@@ -1518,6 +1529,92 @@ test("el orden de preguntas admite una secuencia guardada y mezcla controlada", 
   assert.deepEqual(source.preguntas, tests[0].preguntas.slice(0, 3));
 });
 
+test("el orden aleatorio de respuestas conserva las preguntas dependientes del orden", () => {
+  const regularQuestion = {
+    id: 1,
+    enunciado: "Selecciona la respuesta correcta.",
+    opciones: [
+      { id: "a", texto: "Todas las personas tienen derecho a participar." },
+      { id: "b", texto: "Segunda alternativa." },
+      { id: "c", texto: "Tercera alternativa." },
+    ],
+    respuestaCorrecta: "b",
+  };
+  const dependentQuestions = [
+    "Todas las anteriores son correctas.",
+    "Ninguna de las anteriores.",
+    "Las respuestas a) y b) son correctas.",
+    "Ambas posibilidades son correctas.",
+    "La opción anterior no tiene excepciones.",
+    "Las tres anteriores son erróneas.",
+  ].map((text, index) => ({
+    ...regularQuestion,
+    id: index + 2,
+    opciones: [
+      { id: "a", texto: "Primera alternativa." },
+      { id: "b", texto: "Segunda alternativa." },
+      { id: "c", texto: text },
+    ],
+  }));
+  const source = {
+    id: "answer-order-sample",
+    preguntas: [regularQuestion, ...dependentQuestions],
+  };
+  const randomized = randomizeTestAnswers(source, true, () => 0);
+
+  assert.equal(hasOrderDependentAnswers(regularQuestion), false);
+  dependentQuestions.forEach((question) => {
+    assert.equal(hasOrderDependentAnswers(question), true);
+  });
+  assert.deepEqual(
+    randomized.preguntas[0].opciones.map((option) => option.id),
+    ["b", "c", "a"],
+  );
+  assert.deepEqual(
+    randomized.preguntas[0].opciones.map(displayOptionId),
+    ["a", "b", "c"],
+  );
+  randomized.preguntas.slice(1).forEach((question) => {
+    assert.deepEqual(question.opciones, source.preguntas[question.id - 1].opciones);
+  });
+  assert.deepEqual(source.preguntas[0].opciones, regularQuestion.opciones);
+});
+
+test("el orden de respuestas se restaura y adapta sus referencias visibles", () => {
+  const source = {
+    id: "restored-answer-order",
+    preguntas: [{
+      id: 1,
+      opciones: [
+        { id: "a", texto: "Primera." },
+        { id: "b", texto: "Segunda." },
+        { id: "c", texto: "Tercera." },
+      ],
+      respuestaCorrecta: "b",
+    }],
+  };
+  const restored = restoreTestAnswers(source, { 1: ["b", "c", "a"] });
+  const question = restored.preguntas[0];
+
+  assert.deepEqual(question.opciones.map((option) => option.id), ["b", "c", "a"]);
+  assert.deepEqual(question.opciones.map(displayOptionId), ["a", "b", "c"]);
+  assert.equal(
+    remapOptionReferences("La opción B es preferible a las opciones A y C.", question),
+    "La opción A es preferible a las opciones C y B.",
+  );
+
+  const result = new TestSession(restored).calculateResult();
+  const restoredAttempt = restoreTestAttempt(
+    source,
+    result.questionOrder,
+    result.answerOrder,
+  );
+  assert.deepEqual(
+    restoredAttempt.preguntas[0].opciones.map((option) => option.id),
+    ["b", "c", "a"],
+  );
+});
+
 test("los tests configurables de Osakidetza seleccionan preguntas sin alterar la batería", () => {
   questionBanks.forEach((source) => {
     const range = parseQuestionRange("103-109", source.preguntas.length);
@@ -1570,6 +1667,16 @@ test("la fábrica de intentos conserva selección, orden y ruta de repetición",
     requestedOrder: "rango",
     requestedSelection: "103-109",
   });
+  const randomRangeAttempt = createTestAttempt(
+    rangeResource,
+    rangeResource.data,
+    {
+      requestedOrder: "rango-aleatorio",
+      requestedSelection: "103-109",
+      requestedAnswerOrder: "aleatorio",
+      random: () => 0,
+    },
+  );
   const invalidAttempt = createTestAttempt(rangeResource, rangeResource.data, {
     requestedOrder: "rango",
     requestedSelection: "109-103",
@@ -1581,12 +1688,28 @@ test("la fábrica de intentos conserva selección, orden y ruta de repetición",
 
   assert.equal(randomAttempt.test.preguntas.length, 50);
   assert.equal(randomAttempt.orderMode, "aleatorio");
-  assert.equal(randomAttempt.routeSuffix, "/aleatorio");
+  assert.equal(randomAttempt.routeSuffix, "/aleatorio/respuestas-naturales");
   assert.deepEqual(
     rangeAttempt.test.preguntas.map((question) => question.id),
     [103, 104, 105, 106, 107, 108, 109],
   );
-  assert.equal(rangeAttempt.routeSuffix, "/rango/103-109");
+  assert.equal(rangeAttempt.routeSuffix, "/rango/103-109/respuestas-naturales");
+  assert.equal(randomRangeAttempt.orderMode, "aleatorio");
+  assert.equal(randomRangeAttempt.answerOrderMode, "aleatorio");
+  assert.equal(
+    randomRangeAttempt.routeSuffix,
+    "/rango-aleatorio/103-109/respuestas-aleatorias",
+  );
+  assert.deepEqual(
+    randomRangeAttempt.test.preguntas
+      .map((question) => question.id)
+      .toSorted((first, second) => first - second),
+    [103, 104, 105, 106, 107, 108, 109],
+  );
+  assert.notDeepEqual(
+    randomRangeAttempt.test.preguntas.map((question) => question.id),
+    rangeAttempt.test.preguntas.map((question) => question.id),
+  );
   assert.ok(invalidAttempt.error);
   assert.deepEqual(
     restored.preguntas.map((question) => question.id),
@@ -1601,6 +1724,40 @@ test("las rutas hash se interpretan sin romper segmentos mal codificados", () =>
   ]);
   assert.deepEqual(parseHashRoute("#/test/%E0%A4%A"), ["test", "%E0%A4%A"]);
   assert.deepEqual(parseHashRoute("#/"), []);
+});
+
+test("la configuración de inicio combina de forma independiente ambos órdenes", () => {
+  const regularResource = { id: "test de ejemplo" };
+  const rangeResource = {
+    id: "test-rango",
+    orderModes: ["natural", "aleatorio"],
+    questionSelection: { type: "range" },
+  };
+  const randomSelectionResource = {
+    id: "test-aleatorio-50",
+    questionSelection: { type: "random-count", count: 50 },
+  };
+
+  assert.deepEqual(availableQuestionOrders(regularResource), [
+    "natural",
+    "aleatorio",
+  ]);
+  assert.deepEqual(availableQuestionOrders(randomSelectionResource), ["aleatorio"]);
+  assert.equal(
+    buildTestLaunchRoute(regularResource, {
+      questionOrder: "aleatorio",
+      answerOrder: "natural",
+    }),
+    "#/test/test%20de%20ejemplo/aleatorio/respuestas-naturales",
+  );
+  assert.equal(
+    buildTestLaunchRoute(rangeResource, {
+      questionOrder: "natural",
+      answerOrder: "aleatorio",
+      selection: "103-109",
+    }),
+    "#/test/test-rango/rango/103-109/respuestas-aleatorias",
+  );
 });
 
 test("la cabecera contextual describe oposición, tema y test sin crear enlaces", () => {
@@ -1788,6 +1945,7 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   assert.equal(randomFifty.questionSelection.count, 50);
   assert.deepEqual(randomFifty.orderModes, ["aleatorio"]);
   assert.equal(rangeBuilder.questionCountLabel, "200 disponibles");
+  assert.deepEqual(rangeBuilder.orderModes, ["natural", "aleatorio"]);
   assert.equal(
     repository.getQuestionBankById(osakidetzaSpecificQuestionBank.id),
     osakidetzaSpecificQuestionBank,

@@ -20,6 +20,59 @@ function navigationLabels(opposition) {
   };
 }
 
+function testLaunchDialog() {
+  return `
+    <dialog id="test-launch-dialog" class="test-launch-dialog" aria-labelledby="test-launch-title" aria-describedby="test-launch-description">
+      <form data-test-launch-form>
+        <div class="test-launch-heading">
+          <div>
+            <p class="eyebrow">Nuevo intento</p>
+            <h2 id="test-launch-title">Configura el test</h2>
+          </div>
+          <button class="test-launch-close" type="button" data-test-launch-close aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+          </button>
+        </div>
+        <p id="test-launch-description" class="test-launch-test-title" data-test-launch-title></p>
+        <div class="test-launch-options">
+          <fieldset>
+            <legend>Orden de las preguntas</legend>
+            <p>Decide cómo quieres recorrer las preguntas del test.</p>
+            <div class="settings-segmented test-launch-segmented">
+              <label data-question-order-option="natural">
+                <input type="radio" name="question-order" value="natural" checked>
+                <span>Natural</span>
+              </label>
+              <label data-question-order-option="aleatorio">
+                <input type="radio" name="question-order" value="aleatorio">
+                <span>Aleatorio</span>
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Orden de las respuestas</legend>
+            <p>Las opciones dependientes del orden conservarán siempre su posición.</p>
+            <div class="settings-segmented test-launch-segmented">
+              <label>
+                <input type="radio" name="answer-order" value="natural" checked>
+                <span>Natural</span>
+              </label>
+              <label>
+                <input type="radio" name="answer-order" value="aleatorio">
+                <span>Aleatorio</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="test-launch-actions">
+          <button class="button button-secondary" type="button" data-test-launch-close>Cancelar</button>
+          <button class="button button-primary" type="submit">Empezar test</button>
+        </div>
+      </form>
+    </dialog>
+  `;
+}
+
 export function renderOppositions(root, oppositions) {
   root.innerHTML = `
     <section class="hero hero-home view-heading view-heading-cover" aria-labelledby="oppositions-title">
@@ -250,6 +303,7 @@ export function renderResources(
         </a>
       </div>
     </section>
+    ${testLaunchDialog()}
   `;
 
   const list = root.querySelector("#resource-list");
@@ -268,7 +322,6 @@ export function renderResources(
       .map((resource) => {
         const test = resource.data;
         const isComplete = resource.variant === "complete";
-        const hasOrderSelector = (resource.orderModes?.length ?? 0) > 1;
         const isRangeBuilder = resource.questionSelection?.type === "range";
         const isTheory = resource.type === "teoria";
         const isSummary = resource.type === "resumen";
@@ -292,10 +345,6 @@ export function renderResources(
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
           : resource.href;
-        const directHref =
-          resource.defaultOrder && resource.defaultOrder !== "natural"
-            ? `${href}/${encodeURIComponent(resource.defaultOrder)}`
-            : href;
         const actionLabel = resource.type === "test"
           ? resource.actionLabel ?? "Empezar test"
           : isTheory
@@ -330,19 +379,20 @@ export function renderResources(
                   <label for="range-${escapeHtml(resource.id)}">Rango de preguntas</label>
                   <div class="range-test-controls">
                     <input id="range-${escapeHtml(resource.id)}" data-question-range type="text" inputmode="numeric" autocomplete="off" placeholder="Ej. 10-50" aria-describedby="range-help-${escapeHtml(resource.id)} range-error-${escapeHtml(resource.id)}">
-                    <button class="resource-action" type="submit">Crear test</button>
+                    <button class="resource-action" type="submit">Continuar</button>
                   </div>
                   <p id="range-help-${escapeHtml(resource.id)}" class="range-test-help">Desde la pregunta 1 hasta la ${test.preguntas.length}.</p>
                   <p id="range-error-${escapeHtml(resource.id)}" class="range-test-error" data-range-error role="alert" hidden>Escribe un rango válido, por ejemplo 10-50.</p>
                 </form>`
-              : hasOrderSelector
-              ? `<div class="order-selector" role="group" aria-label="Orden de las preguntas">
-                  <span>Elige el orden</span>
-                  <div class="order-actions">
-                    <a class="resource-action" href="${escapeHtml(href)}/natural">Orden natural</a>
-                    <a class="resource-action" href="${escapeHtml(href)}/aleatorio">Orden aleatorio</a>
-                  </div>
-                </div>`
+              : resource.type === "test"
+                ? `<div class="resource-card-actions">
+                    ${hasRelatedTheory
+                      ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`
+                      : theoryNotice
+                        ? `<span class="resource-theory-notice">${escapeHtml(theoryNotice)}</span>`
+                        : ""}
+                    <button class="resource-action" type="button" data-test-launch="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>
+                  </div>`
               : isTheory
                 ? `<div class="resource-card-theory-actions">
                     <button class="resource-action" type="button" data-theory-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>
@@ -358,14 +408,7 @@ export function renderResources(
                   ? `<button class="resource-action" type="button" data-summary-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
                 : isExplanation
                   ? `<button class="resource-action" type="button" data-explanation-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
-                : `<div class="resource-card-actions">
-                    ${hasRelatedTheory
-                      ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`
-                      : theoryNotice
-                        ? `<span class="resource-theory-notice">${escapeHtml(theoryNotice)}</span>`
-                      : ""}
-                    <a class="resource-action" href="${escapeHtml(directHref)}">${escapeHtml(actionLabel)}</a>
-                  </div>`}
+                : `<a class="resource-action" href="${escapeHtml(href)}">${escapeHtml(actionLabel)}</a>`}
           </article>
         `;
       })
