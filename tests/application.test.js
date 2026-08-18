@@ -212,7 +212,7 @@ test("los tests de los Temas 3, 4, 9 y 18 explican todas sus respuestas", () => 
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
-    ["09", { tests: 5, questions: 96 }],
+    ["09", { tests: 7, questions: 165 }],
     ["18", { tests: 18, questions: 235 }],
   ]);
 
@@ -298,9 +298,9 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 43,
-    questions: 888,
-    directReferences: 823,
+    tests: 45,
+    questions: 957,
+    directReferences: 892,
     contextualReferences: 65,
     theoryDiscrepancies: 9,
   });
@@ -397,7 +397,7 @@ test("los tests completos de los Temas 3, 4, 9 y 18 conservan sus explicaciones"
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
-    ["09", 96],
+    ["09", 165],
     ["18", 235],
   ]);
 
@@ -760,6 +760,8 @@ test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
     ["test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166", { from: 161, to: 166 }],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171", { from: 167, to: 171 }],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", { from: 172, to: 177 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-178-a-180-tipos-de-faltas", { from: 178, to: 180 }],
+    ["test-ley-11-2022-empleo-publico-vasco-articulos-181-a-184", { from: 181, to: 184 }],
   ]);
 
   assert.ok(theory);
@@ -2213,6 +2215,8 @@ test("el tema 09 reúne sus tests IVOT en un test completo", () => {
     "test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166",
     "test-ley-11-2022-empleo-publico-vasco-articulos-167-a-171",
     "test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177",
+    "test-ley-11-2022-empleo-publico-vasco-articulos-178-a-180-tipos-de-faltas",
+    "test-ley-11-2022-empleo-publico-vasco-articulos-181-a-184",
   ];
   const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
 
@@ -2223,7 +2227,7 @@ test("el tema 09 reúne sus tests IVOT en un test completo", () => {
     new Set(sourceTests.map((resource) => resource.classification.tema.titulo)).size,
     1,
   );
-  assert.equal(sourceQuestionCount, 96);
+  assert.equal(sourceQuestionCount, 165);
   assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
   assert.deepEqual(
     new Set(completeTest.data.fuente.tests),

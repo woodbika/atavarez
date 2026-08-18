@@ -746,6 +746,560 @@ const tema9PersonalAlServicio = {
                 },
               ],
             },
+            {
+              numero: 178,
+              titulo: "Faltas muy graves",
+              texto: "Son faltas muy graves:",
+              letras: [
+                {
+                  letra: "a",
+                  texto:
+                    "El incumplimiento del deber de respeto al ordenamiento jurídico vigente, en el ejercicio de funciones públicas.",
+                },
+                {
+                  letra: "b",
+                  texto:
+                    "Cualquier actuación que suponga discriminación por razón de origen racial o étnico, religión o convicciones, discapacidad, edad, orientación sexual, lengua, opinión, lugar de nacimiento o vecindad, sexo, o cualquier otra condición o circunstancia personal o social.",
+                },
+                {
+                  letra: "c",
+                  texto:
+                    "El acoso por razón de origen racial o étnico, religión o convicciones, discapacidad, edad u orientación sexual, así como el acoso moral, sexual o por razón de sexo.",
+                },
+                {
+                  letra: "d",
+                  texto:
+                    "El incumplimiento de las órdenes o instrucciones del personal responsable o directivo referidas al desempeño del puesto de trabajo, cuando no sean constitutivas de falta grave.",
+                },
+                {
+                  letra: "e",
+                  texto:
+                    "Aceptar cualquier regalo, favor o servicio en condiciones ventajosas que se ofrezca en función de su condición de persona funcionaria y que vaya más allá de los usos habituales, sociales y de cortesía, cuando no sea constitutivo de falta grave y sin perjuicio de lo establecido en el Código Penal.",
+                },
+                {
+                  letra: "f",
+                  texto:
+                    "El abandono del servicio, así como no hacerse cargo de las tareas o funciones que la persona empleada pública tiene encomendadas, siempre que esta circunstancia revista notoria gravedad.",
+                },
+                {
+                  letra: "g",
+                  texto:
+                    "La adopción de acuerdos manifiestamente ilegales que causen perjuicio grave a la Administración o a la ciudadanía.",
+                },
+                {
+                  letra: "h",
+                  texto:
+                    "La publicación o utilización indebida de la documentación o información a que tengan o hayan tenido acceso por razón de su cargo o función.",
+                },
+                {
+                  letra: "i",
+                  texto:
+                    "La negligencia en la custodia de secretos oficiales, declarados así por ley o clasificados como tales, que sea causa de su publicación o que provoque su difusión o conocimiento indebido.",
+                },
+                {
+                  letra: "j",
+                  texto:
+                    "El incumplimiento del deber de guardar secreto respecto de los datos e informaciones que conozcan en el ejercicio de sus funciones desempeñadas en el órgano al que se refiere el artículo 24 de la Ley 1/2014, de 26 de junio, Reguladora del Código de Conducta y de los Conflictos de Intereses de los Cargos Públicos, y en el Registro de Actividades y de Bienes y Derechos Patrimoniales, establecido en la legislación en materia de incompatibilidades de los cargos públicos.",
+                },
+                {
+                  letra: "k",
+                  texto:
+                    "El notorio incumplimiento de las funciones esenciales inherentes al puesto de trabajo o de las funciones encomendadas.",
+                },
+                {
+                  letra: "l",
+                  texto:
+                    "La violación de la imparcialidad, utilizando las facultades atribuidas para influir en procesos electorales de cualquier naturaleza y ámbito.",
+                },
+                {
+                  letra: "m",
+                  texto:
+                    "La desobediencia abierta a las órdenes o instrucciones de un superior, salvo que constituyan infracción manifiesta del ordenamiento jurídico.",
+                },
+                {
+                  letra: "n",
+                  texto:
+                    "La prevalencia de la condición de persona empleada pública para obtener un beneficio indebido para sí o para otra persona.",
+                },
+                {
+                  letra: "ñ",
+                  texto:
+                    "La obstaculización del ejercicio de libertades públicas y de derechos sindicales.",
+                },
+                {
+                  letra: "o",
+                  texto:
+                    "El incumplimiento de la obligación de atender los servicios esenciales en caso de huelga, así como la participación en huelgas de quienes lo tengan prohibido por ley.",
+                },
+                {
+                  letra: "p",
+                  texto:
+                    "La realización de actos limitativos de la libertad de expresión, de pensamiento, ideas y opiniones.",
+                },
+                {
+                  letra: "q",
+                  texto:
+                    "La comisión de una falta grave cuando en un período de un año hubiera sido objeto de sanción por otras dos faltas graves.",
+                },
+                {
+                  letra: "r",
+                  texto:
+                    "El incumplimiento de las normas sobre incompatibilidades cuando ello dé lugar a una situación de incompatibilidad.",
+                },
+                {
+                  letra: "s",
+                  texto:
+                    "La incomparecencia injustificada a las comisiones de investigación del Parlamento Vasco, de las Juntas Generales o, en su caso, de alguna de las cámaras de las Cortes Generales.",
+                },
+                {
+                  letra: "t",
+                  texto:
+                    "La falta injustificada de colaboración con el Tribunal Vasco de Cuentas Públicas.",
+                },
+                { letra: "u", texto: "El acoso laboral." },
+                {
+                  letra: "v",
+                  texto:
+                    "La realización de actos encaminados a coartar el libre ejercicio del derecho de huelga, así como a impedir la asistencia al puesto de trabajo de quienes no quieran ejercer el derecho de huelga.",
+                },
+                {
+                  letra: "w",
+                  texto:
+                    "El incumplimiento de las obligaciones en materia de prevención de riesgos laborales, cuando se deriven riesgos o daños para el propio personal funcionario o terceras personas.",
+                },
+                {
+                  letra: "x",
+                  texto:
+                    "La infracción o aplicación indebida de los preceptos contenidos en la normativa sobre contratos del sector público, cuando mediare, al menos, negligencia grave.",
+                },
+                {
+                  letra: "y",
+                  texto:
+                    "La realización dentro de la jornada laboral, de manera reiterada o con ánimo de lucro, de otro tipo de actividades personales o profesionales.",
+                },
+                {
+                  letra: "z",
+                  texto:
+                    "Causar daños muy graves por negligencia o mala fe en el patrimonio de la administración pública en la que desempeña sus funciones la persona empleada pública.",
+                },
+                {
+                  letra: "aa",
+                  texto:
+                    "Causar daños graves para terceros, ya sean personas o bienes, por la inobservancia de medidas de seguridad y prevención de riesgos laborales.",
+                },
+                {
+                  letra: "bb",
+                  texto:
+                    "Aquellas otras conductas que las leyes califiquen como falta muy grave.",
+                },
+              ],
+            },
+            {
+              numero: 179,
+              titulo: "Faltas graves",
+              texto: "Son faltas graves:",
+              letras: [
+                {
+                  letra: "a",
+                  texto:
+                    "El incumplimiento de las órdenes o instrucciones del personal responsable y/o directivo referidas al desempeño del puesto de trabajo, cuando no sean constitutivas de falta muy grave.",
+                },
+                {
+                  letra: "b",
+                  texto:
+                    "La falta grave de consideración, atención o respeto a la ciudadanía en su trato con el personal empleado público, así como no facilitar a la ciudadanía el ejercicio de sus derechos o el cumplimiento de sus deberes.",
+                },
+                {
+                  letra: "c",
+                  texto:
+                    "Causar, por negligencia o mala fe, graves daños en los bienes y documentos de la Administración pública o adoptar conductas que no velen por su conservación.",
+                },
+                {
+                  letra: "d",
+                  texto:
+                    "Utilizar de forma reiterada indebidamente los medios, incluidos los telemáticos, que la Administración pública ha puesto a su disposición para el cumplimiento de las funciones propias del puesto de trabajo asignado.",
+                },
+                {
+                  letra: "e",
+                  texto:
+                    "Aceptar cualquier regalo, favor o servicio en condiciones ventajosas que se ofrezca en función de su condición de persona funcionaria y que vaya más allá de los usos habituales, sociales y de cortesía, cuando no sea constitutivo de falta muy grave y sin perjuicio de lo establecido en el Código Penal.",
+                },
+                {
+                  letra: "f",
+                  texto:
+                    "El incumplimiento del deber de discreción profesional y de reserva respecto de los asuntos que conozcan por razón del puesto de trabajo cuando causen perjuicio a la Administración o se utilicen en provecho propio.",
+                },
+                {
+                  letra: "g",
+                  texto:
+                    "La tolerancia de las personas responsables de la unidad o del personal directivo público ante la comisión de faltas por el personal subordinado.",
+                },
+                {
+                  letra: "h",
+                  texto:
+                    "La emisión de informes y la formulación de propuestas manifiestamente ilegales, cuando causen perjuicio a la Administración o a la ciudadanía y no constituyan falta muy grave.",
+                },
+                {
+                  letra: "i",
+                  texto:
+                    "La falta grave de atención y respeto hacia el personal responsable, subordinado, directivo o hacia el resto de personal empleado público.",
+                },
+                {
+                  letra: "j",
+                  texto:
+                    "El incumplimiento de las disposiciones en materia de incompatibilidades, cuando no constituyan falta muy grave.",
+                },
+                {
+                  letra: "k",
+                  texto:
+                    "La falta de diligencia en el desempeño de sus tareas y la falta de rendimiento que afecte al normal funcionamiento de los servicios y no constituya falta muy grave.",
+                },
+                {
+                  letra: "l",
+                  texto: "El abuso de autoridad en el ejercicio del puesto de trabajo.",
+                },
+                {
+                  letra: "m",
+                  texto:
+                    "La intervención en un procedimiento administrativo cuando existan causas de abstención legalmente establecidas, salvo que sea constitutivo de falta muy grave.",
+                },
+                {
+                  letra: "n",
+                  texto:
+                    "El incumplimiento injustificado de la jornada de trabajo que suponga un mínimo de diez horas al mes natural. A tal efecto, se entiende por mes natural el período comprendido desde el primer día hasta el último de cada uno de los doce meses que integran el año.",
+                },
+                {
+                  letra: "ñ",
+                  texto:
+                    "Las acciones u omisiones dirigidas a evadir los sistemas de control horario o a impedir que sean detectados los incumplimientos horarios.",
+                },
+                {
+                  letra: "o",
+                  texto:
+                    "La tercera falta injustificada de asistencia en un período de tres meses, cuando las dos anteriores hubieran sido objeto de sanción por falta leve.",
+                },
+                {
+                  letra: "p",
+                  texto:
+                    "El incumplimiento de las obligaciones en materia de prevención de riesgos laborales, cuando no constituya falta muy grave.",
+                },
+                {
+                  letra: "q",
+                  texto:
+                    "El incumplimiento de las normas sobre bajas por enfermedad o accidente.",
+                },
+                {
+                  letra: "r",
+                  texto:
+                    "La simulación de enfermedad o accidente cuando comporte ausencia del trabajo.",
+                },
+                {
+                  letra: "s",
+                  texto:
+                    "La ausencia injustificada del puesto de trabajo durante la jornada laboral.",
+                },
+                {
+                  letra: "t",
+                  texto:
+                    "Emplear o autorizar para usos particulares medios o recursos de carácter oficial o facilitarlos a terceros, salvo que por su escasa entidad constituya falta leve.",
+                },
+                {
+                  letra: "u",
+                  texto:
+                    "La falta de asistencia reiterada, sin causa justificada, a los programas de formación que estén inscritos, siempre que estos se desarrollen en horario laboral.",
+                },
+                {
+                  letra: "v",
+                  texto:
+                    "La negativa no motivada a participar como miembro de la junta electoral en las elecciones a representantes de personal.",
+                },
+                {
+                  letra: "w",
+                  texto:
+                    "La publicación o utilización indebida de la documentación o información a que tengan o hayan tenido acceso por razón de su cargo o función, cuando no constituya falta muy grave.",
+                },
+                {
+                  letra: "x",
+                  texto:
+                    "La emisión de informes sobre asuntos de servicio que, sin faltar abiertamente a la verdad, desnaturalicen la misma valiéndose de términos ambiguos, confusos o tendenciosos, o la alteren mediante inexactitudes, cuando desvirtuarla tenga por objeto la obtención de un beneficio propio o ajeno, o cause perjuicio a la Administración o a la ciudadanía.",
+                },
+              ],
+            },
+            {
+              numero: 180,
+              titulo: "Faltas leves",
+              texto: "Son faltas leves:",
+              letras: [
+                {
+                  letra: "a",
+                  texto:
+                    "La falta de consideración, atención o respeto a la ciudadanía, a las personas superiores jerárquicas, compañeras o subordinadas, cuando no sea constitutiva de falta grave.",
+                },
+                {
+                  letra: "b",
+                  texto:
+                    "No proporcionar a la ciudadanía la información debida, siempre que sea de la competencia de la unidad en la que presta sus funciones.",
+                },
+                {
+                  letra: "c",
+                  texto:
+                    "Causar daños en los bienes y documentos de la Administración pública y no velar con la diligencia debida por su conservación, cuando tales conductas no sean constitutivas de faltas graves.",
+                },
+                {
+                  letra: "d",
+                  texto:
+                    "Utilizar indebidamente los medios telemáticos que la Administración pública ha puesto a su disposición para el cumplimiento de sus funciones, cuando ello no constituya falta grave.",
+                },
+                {
+                  letra: "e",
+                  texto:
+                    "Ausentarse injustificadamente del puesto de trabajo durante la jornada laboral, cuando no sea constitutiva de falta grave.",
+                },
+                {
+                  letra: "f",
+                  texto:
+                    "No cumplimentar las encuestas que sobre los puestos de trabajo y sus funciones les sean remitidas por la Administración pública con el fin de racionalizar sus estructuras.",
+                },
+                {
+                  letra: "g",
+                  texto:
+                    "Incumplir de forma injustificada el horario de trabajo, cuando no suponga falta grave.",
+                },
+                {
+                  letra: "h",
+                  texto: "La falta de asistencia injustificada de un día.",
+                },
+                {
+                  letra: "i",
+                  texto:
+                    "La falta de cuidado o la negligencia en el ejercicio de sus funciones y en el cumplimiento de sus tareas cuando tales conductas no sean constitutivas de falta grave.",
+                },
+                {
+                  letra: "j",
+                  texto:
+                    "Cualquier incumplimiento de los deberes y obligaciones de los empleados públicos, así como de los principios éticos o de conducta, siempre que no sea calificado como falta grave o muy grave.",
+                },
+              ],
+            },
+            {
+              numero: 181,
+              titulo: "Criterios para la calificación de las faltas",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "La tipificación de los hechos susceptibles de ser calificados como falta se llevará a efecto atendiendo a las siguientes circunstancias:",
+                  letras: [
+                    {
+                      letra: "a",
+                      texto: "El grado en el que se haya vulnerado la legalidad.",
+                    },
+                    {
+                      letra: "b",
+                      texto:
+                        "La gravedad de los daños causados al interés público, patrimonio o bienes de la Administración o de la ciudadanía.",
+                    },
+                    {
+                      letra: "c",
+                      texto: "El descrédito para la imagen pública de la Administración.",
+                    },
+                  ],
+                },
+                {
+                  numero: 2,
+                  texto:
+                    "Las administraciones públicas vascas podrán establecer reglamentariamente la ordenación de la aplicación práctica de dichos criterios.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          tipo: "capitulo",
+          numero: "III",
+          titulo: "Sanciones disciplinarias",
+          articulos: [
+            {
+              numero: 182,
+              titulo: "Tipos de sanciones",
+              texto: "Por razón de las faltas cometidas podrán imponerse las siguientes sanciones:",
+              letras: [
+                {
+                  letra: "a",
+                  texto:
+                    "Separación del servicio del personal funcionario, que en el caso del personal interino comportará la revocación de su nombramiento y la baja definitiva de las bolsas de trabajo.",
+                },
+                {
+                  letra: "b",
+                  texto:
+                    "Despido disciplinario del personal laboral, que comportará la inhabilitación para ser titular de un nuevo contrato de trabajo, sea fijo, por tiempo indefinido o temporal, con funciones similares a las que desempeñaba.",
+                },
+                {
+                  letra: "c",
+                  texto:
+                    "Revocación del nombramiento del personal funcionario interino o extinción del contrato laboral temporal con baja del derecho a ser llamado de las bolsas de trabajo durante el tiempo establecido en la sanción impuesta.",
+                },
+                {
+                  letra: "d",
+                  texto:
+                    "Suspensión firme de las funciones, o de empleo y sueldo en el caso del personal laboral, con una duración máxima de seis años. La suspensión firme de funciones conllevará en todo caso la pérdida de la totalidad de las retribuciones durante el período correspondiente al cumplimiento de la sanción impuesta.",
+                },
+                {
+                  letra: "e",
+                  texto:
+                    "Traslado forzoso, con o sin cambio de centro orgánico, por el período que en cada caso se establezca. Dicho traslado forzoso podrá conllevar, en su caso, el cambio de localidad del centro de trabajo al que sea destinado el empleado público afectado.",
+                },
+                {
+                  letra: "f",
+                  texto:
+                    "Demérito, que consistirá en la penalización a efectos de carrera, promoción o movilidad voluntaria.",
+                },
+                { letra: "g", texto: "Apercibimiento." },
+                {
+                  letra: "h",
+                  texto:
+                    "Obligación de realizar programas o cursos de formación sobre ética pública.",
+                },
+              ],
+            },
+            {
+              numero: 183,
+              titulo: "Sanciones que pueden imponerse según el tipo de infracción",
+              apartados: [
+                {
+                  numero: 1,
+                  texto:
+                    "Por la comisión de faltas muy graves podrán imponerse las siguientes sanciones:",
+                  letras: [
+                    {
+                      letra: "a",
+                      texto:
+                        "Separación del servicio del personal funcionario, que en el caso del personal funcionario interino comportará la revocación de su nombramiento y, en su caso, la baja definitiva de las bolsas de trabajo.",
+                    },
+                    {
+                      letra: "b",
+                      texto:
+                        "Despido disciplinario del personal laboral, que comportará la inhabilitación para ser titular de un nuevo contrato de trabajo, sea fijo, por tiempo indefinido o temporal, con funciones similares a las que desempeñaba.",
+                    },
+                    {
+                      letra: "c",
+                      texto:
+                        "Revocación del nombramiento del personal funcionario interino o extinción del contrato laboral temporal, con baja del derecho a ser llamado de bolsas de trabajo por un período entre dos años y un día y seis años.",
+                    },
+                    {
+                      letra: "d",
+                      texto:
+                        "Suspensión firme de funciones por un período entre dos años y un día y seis años.",
+                    },
+                    {
+                      letra: "e",
+                      texto:
+                        "Traslado forzoso a otro puesto y destino, con o sin cambio de centro orgánico o localidad, por un período como mínimo de un año y un día y máximo de tres años.",
+                    },
+                    {
+                      letra: "f",
+                      texto:
+                        "La pérdida de un nivel de desarrollo profesional ya acreditado.",
+                    },
+                    {
+                      letra: "g",
+                      texto:
+                        "Demérito, que consistirá en la penalización a efectos de carrera, con la suspensión de los efectos económicos del último grado alcanzado de desarrollo profesional o, en su caso, de un grado personal, o en la promoción o movilidad voluntaria, en la forma que reglamentariamente se determine, y con un máximo de cinco años.",
+                    },
+                  ],
+                },
+                {
+                  numero: 2,
+                  texto:
+                    "Por la comisión de faltas graves podrán imponerse las siguientes sanciones:",
+                  letras: [
+                    {
+                      letra: "a",
+                      texto:
+                        "La suspensión firme de funciones por un período entre treinta y un días y dos años.",
+                    },
+                    {
+                      letra: "b",
+                      texto:
+                        "Revocación del nombramiento en el caso del personal funcionario interino o extinción del contrato laboral temporal y suspensión del derecho a ser nombrado personal funcionario interino o laboral temporal por un período idéntico al previsto en la letra anterior.",
+                    },
+                    {
+                      letra: "c",
+                      texto:
+                        "Traslado forzoso a otro puesto y destino, con o sin cambio de centro orgánico, por el período máximo de un año.",
+                    },
+                    {
+                      letra: "d",
+                      texto:
+                        "Demérito, que consistirá en la penalización a efectos de carrera, promoción o movilidad voluntaria, en la forma en que reglamentariamente se determine, y con un máximo de dos años.",
+                    },
+                  ],
+                },
+                {
+                  numero: 3,
+                  texto:
+                    "Por la comisión de faltas leves podrán imponerse las siguientes sanciones:",
+                  letras: [
+                    {
+                      letra: "a",
+                      texto:
+                        "La suspensión de funciones y retribuciones, o de empleo y sueldo en el caso del personal laboral, por un período de uno a treinta días.",
+                    },
+                    {
+                      letra: "b",
+                      texto:
+                        "El apercibimiento, en función de la afectación a la imagen pública de la Administración.",
+                    },
+                    {
+                      letra: "c",
+                      texto:
+                        "La obligación de realizar programas o cursos de formación sobre ética pública y de cualquier otro contenido relacionado con la naturaleza de la infracción cometida.",
+                    },
+                  ],
+                },
+                {
+                  numero: 4,
+                  texto:
+                    "El personal funcionario que haya sido sancionado con traslado forzoso con cambio de centro orgánico no podrá obtener nuevo destino por ningún procedimiento en el centro orgánico del que fue trasladado por un período desde un año y hasta tres años. Dicho plazo se computará desde el momento en que se efectuó el traslado.",
+                },
+                {
+                  numero: 5,
+                  texto:
+                    "Procederá la readmisión del personal laboral fijo cuando sea declarado improcedente el despido acordado como consecuencia de la incoación de un expediente disciplinario por la comisión de una falta muy grave.",
+                },
+              ],
+            },
+            {
+              numero: 184,
+              titulo: "Criterios para la graduación de las sanciones",
+              texto:
+                "Para graduar el alcance de cada sanción, se tendrán en cuenta los siguientes criterios:",
+              letras: [
+                {
+                  letra: "a",
+                  texto:
+                    "El grado de intencionalidad, descuido o negligencia que revele la conducta.",
+                },
+                {
+                  letra: "b",
+                  texto: "El grado de participación en la comisión o en la omisión.",
+                },
+                {
+                  letra: "c",
+                  texto: "La gravedad de los daños causados al interés público.",
+                },
+                {
+                  letra: "d",
+                  texto:
+                    "La reiteración o reincidencia. Hay reiteración cuando, al cometer la falta disciplinaria, la persona responsable ya ha sido sancionada por otra falta, ya sea de mayor, igual o inferior gravedad, por resolución firme. Hay reincidencia cuando, al cometer la falta disciplinaria, la persona responsable ya ha sido sancionada por una falta de la misma naturaleza por resolución firme. En ningún caso pueden computarse a efectos de reiteración o reincidencia los antecedentes cancelados o que debieran serlo.",
+                },
+                {
+                  letra: "e",
+                  texto:
+                    "La intensidad de la falta de respeto a las ciudadanas o ciudadanos o al resto del personal empleado público.",
+                },
+              ],
+            },
           ],
         },
       ],

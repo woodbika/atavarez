@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "tests-infracciones-sanciones-tema-09",
+    category: "Nuevos tests",
+    publishedAt: "2026-08-18T18:44:46+02:00",
+    title: "Nuevos tests de infracciones y sanciones disciplinarias",
+    description:
+      "El Tema 9 incorpora dos tests IVOT y 69 preguntas sobre los artículos 178 a 184, con teoría relacionada y explicaciones para cada respuesta. El test completo reúne ahora 165 preguntas.",
+  }),
+  Object.freeze({
     id: "orden-configurable-preguntas-respuestas",
     category: "Mejora",
     publishedAt: "2026-08-17T21:02:51+02:00",
