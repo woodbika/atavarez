@@ -6,6 +6,7 @@ import explicacionesArticulos53a55 from "./explanations/gobierno-vasco-administr
 import explicacionesArticulos10a13 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-espanola-articulos-10-a-13.js";
 import explicacionesArticulos14a29 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-espanola-articulos-14-a-29-2022.js";
 import explicacionesEstructuraConstitucion from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-estructura-constitucion-espanola.js";
+import explicacionesConstitucionKaixoOpe2022 from "./explanations/gobierno-vasco-administrativo-c1/tema-01/test-constitucion-estructura-contenido-derechos-deberes-fundamentales-kaixo.js";
 import explicacionesOrganizacionTerritorial1 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-1.js";
 import explicacionesOrganizacionTerritorial2 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-2.js";
 import explicacionesOrganizacionTerritorial3 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-3.js";
@@ -28,6 +29,7 @@ import testCapitulosIVyV from "./tests/gobierno-vasco-administrativo-c1/tema-01/
 import testArticulos10a13 from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-espanola-articulos-10-a-13.js";
 import testArticulos14a29 from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-espanola-articulos-14-a-29-2022.js";
 import testEstructura from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-estructura-constitucion-espanola.js";
+import testConstitucionKaixoOpe2022 from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-kaixo/test-constitucion-estructura-contenido-derechos-deberes-fundamentales.js";
 import testOrganizacionTerritorial1 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-1.js";
 import testOrganizacionTerritorial2 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-2.js";
 import testOrganizacionTerritorial3 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-3.js";
@@ -455,6 +457,7 @@ const relatedTheoryByTestId = new Map([
 ]);
 
 const theoryNoticeByTestId = new Map([
+  [testConstitucionKaixoOpe2022.id, "Sin vínculo teórico directo"],
   [testOrganizacionTerritorial2.id, "Sin vínculo teórico directo"],
   [testOrganizacionTerritorial3.id, "Sin vínculo teórico directo"],
   [testEspacioEuropeo1.id, "Sin vínculo teórico directo"],
@@ -471,6 +474,10 @@ const answerExplanationsByTestId = new Map([
   [explicacionesArticulos10a13.testId, explicacionesArticulos10a13],
   [explicacionesArticulos14a29.testId, explicacionesArticulos14a29],
   [explicacionesEstructuraConstitucion.testId, explicacionesEstructuraConstitucion],
+  [
+    explicacionesConstitucionKaixoOpe2022.testId,
+    explicacionesConstitucionKaixoOpe2022,
+  ],
   [explicacionesOrganizacionTerritorial1.testId, explicacionesOrganizacionTerritorial1],
   [explicacionesOrganizacionTerritorial2.testId, explicacionesOrganizacionTerritorial2],
   [explicacionesOrganizacionTerritorial3.testId, explicacionesOrganizacionTerritorial3],
@@ -511,6 +518,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testCapituloII),
   testResource(testPrincipiosRectores),
   testResource(testCapitulosIVyV),
+  testResource(testConstitucionKaixoOpe2022),
   theoryResource(teoriaOrganizacionTerritorial),
   testResource(testOrganizacionTerritorial1),
   testResource(testOrganizacionTerritorial2),

@@ -116,12 +116,13 @@ test("el registro contiene todos los tests con un formato válido", () => {
   });
 });
 
-test("todos los tests del Tema 1 explican sus respuestas", () => {
+test("todos los tests IVOT del Tema 1 explican sus respuestas", () => {
   const themeResources = resources.filter(
     (resource) =>
       resource.type === "test" &&
       resource.opposition.id === "gobierno-vasco-administrativo-c1" &&
-      resource.classification.tema.numero === "01",
+      resource.classification.tema.numero === "01" &&
+      resource.author?.id === "ivot",
   );
 
   assert.equal(themeResources.length, 6);
@@ -306,10 +307,10 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 84,
-    questions: 1744,
-    directReferences: 1668,
-    contextualReferences: 76,
+    tests: 85,
+    questions: 1764,
+    directReferences: 1673,
+    contextualReferences: 91,
     theoryDiscrepancies: 9,
   });
 });
@@ -361,15 +362,13 @@ test("el test completo conserva todas las explicaciones con ids compuestos", () 
     "test-completo-gobierno-vasco-administrativo-c1-tema-01",
   );
 
-  assert.equal(combinedTest.explicaciones.preguntas.length, 121);
+  assert.equal(combinedTest.explicaciones.preguntas.length, 141);
+  assert.equal(combinedTest.preguntas.length, 141);
+  assert.equal(combinedTest.explicaciones.parcial, undefined);
   assert.equal(combinedTest.explicaciones.schemaVersion, 2);
   assert.equal(
     combinedTest.explicaciones.theoryResourceId,
     "tema-01-constitucion-espanola",
-  );
-  assert.equal(
-    combinedTest.explicaciones.preguntas.length,
-    combinedTest.preguntas.length,
   );
   combinedTest.explicaciones.preguntas.forEach((explanation) => {
     assert.ok(
@@ -694,6 +693,28 @@ test("el tema 01 incluye un recurso teórico válido y estructurado", () => {
   assert.ok(theory.data.bloques.some((block) => block.tipo === "estructura"));
   assert.ok(theory.data.bloques.some((block) => block.tipo === "titulo"));
   assert.deepEqual(validateResources(resources), []);
+});
+
+test("el Tema 1 incorpora el test general de Kaixo sin vínculo teórico", () => {
+  const resource = resources.find(
+    (item) =>
+      item.id ===
+      "test-constitucion-estructura-contenido-derechos-deberes-fundamentales-kaixo",
+  );
+
+  assert.ok(resource);
+  assert.equal(resource.type, "test");
+  assert.equal(resource.author.id, "kaixo");
+  assert.equal(resource.author.nombre, "Kaixo");
+  assert.equal(resource.classification.tema.numero, "01");
+  assert.equal(resource.data.convocatoria.anio, 2022);
+  assert.equal(resource.data.fuente.tipo, "web");
+  assert.equal(resource.data.fuente.preguntas, 20);
+  assert.equal(resource.data.preguntas.length, 20);
+  assert.equal(resource.relatedTheory, undefined);
+  assert.equal(resource.theoryNotice, "Sin vínculo teórico directo");
+  assert.equal(resource.data.explicaciones.preguntas.length, 20);
+  assert.equal(resource.data.explicaciones.theoryResourceId, "tema-01-constitucion-espanola");
 });
 
 test("el tema 02 relaciona solo los tests con un intervalo teórico directo", () => {
@@ -2015,10 +2036,15 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
   assert.ok(repository.searchResources(theme01Resources, "constitucion").length > 0);
   assert.ok(repository.searchResources(theme17Resources, "empleo publico").length > 0);
   assert.equal(theme01Resources[0].type, "teoria");
-  assert.ok(
-    theme01Resources.slice(1, -1).every(
-      (resource) => resource.type === "test" && resource.author?.id === "ivot",
-    ),
+  const theme01SourceTests = theme01Resources.slice(1, -1);
+  assert.ok(theme01SourceTests.every((resource) => resource.type === "test"));
+  assert.equal(
+    theme01SourceTests.filter((resource) => resource.author?.id === "ivot").length,
+    6,
+  );
+  assert.equal(
+    theme01SourceTests.filter((resource) => resource.author?.id === "kaixo").length,
+    1,
   );
   assert.equal(theme01Resources.at(-1).variant, "complete");
   const expectedTheorySelections = new Map([
@@ -2035,6 +2061,7 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
     assert.deepEqual(resource.relatedTheory.selection, selection);
   });
   assert.ok(repository.searchResources(theme01Resources, "IVOT").length >= 6);
+  assert.equal(repository.searchResources(theme01Resources, "Kaixo").length, 1);
   assert.ok(repository.searchResources(theme17Resources, "IVOT").length >= 4);
   assert.equal(
     new Set(theme17SourceTests.map((resource) => resource.classification.tema.titulo)).size,

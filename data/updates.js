@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "test-kaixo-constitucion-ope-2022",
+    category: "Nuevo test",
+    publishedAt: "2026-08-24T19:11:35+02:00",
+    title: "Nuevo test Kaixo de la Constitución",
+    description:
+      "El Tema 1 incorpora un test general de la OPE 2022 con 20 preguntas y explicaciones razonadas para cada respuesta. La recopilación completa del tema reúne ahora 141 preguntas.",
+  }),
+  Object.freeze({
     id: "explicaciones-completas-gobierno-vasco",
     category: "Mejora",
     publishedAt: "2026-08-23T19:47:35+02:00",

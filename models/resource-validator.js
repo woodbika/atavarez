@@ -75,6 +75,19 @@ function validateDocumentSource(
     return;
   }
 
+  if (source.tipo === "web") {
+    if (
+      !isNonEmptyString(source.url) ||
+      !/^https?:\/\/[^\s]+$/iu.test(source.url)
+    ) {
+      errors.push(`${path}.url: debe contener una dirección web válida.`);
+    }
+    if (!Number.isInteger(source.preguntas) || source.preguntas < 1) {
+      errors.push(`${path}.preguntas: debe ser un entero positivo.`);
+    }
+    return;
+  }
+
   if (!isNonEmptyString(source.archivo)) {
     errors.push(`${path}.archivo: debe contener texto.`);
   } else if (/\.pdf\.pdf$/iu.test(source.archivo)) {
