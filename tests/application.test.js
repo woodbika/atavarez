@@ -208,12 +208,20 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests de los Temas 3, 4, 9 y 18 explican todas sus respuestas", () => {
+test("los tests de los Temas 3, 4, 9, 17, 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
     ["09", { tests: 7, questions: 165 }],
+    ["17", { tests: 4, questions: 97 }],
     ["18", { tests: 18, questions: 235 }],
+    ["28", { tests: 2, questions: 47 }],
+    ["29", { tests: 5, questions: 92 }],
+    ["30", { tests: 5, questions: 96 }],
+    ["31", { tests: 3, questions: 65 }],
+    ["32", { tests: 14, questions: 238 }],
+    ["33", { tests: 4, questions: 117 }],
+    ["34", { tests: 2, questions: 35 }],
   ]);
 
   expectedByTheme.forEach((expected, themeNumber) => {
@@ -298,10 +306,10 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 45,
-    questions: 957,
-    directReferences: 892,
-    contextualReferences: 65,
+    tests: 84,
+    questions: 1744,
+    directReferences: 1668,
+    contextualReferences: 76,
     theoryDiscrepancies: 9,
   });
 });
@@ -392,13 +400,21 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3, 4, 9 y 18 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3, 4, 9, 17, 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
     ["09", 165],
+    ["17", 97],
     ["18", 235],
+    ["28", 47],
+    ["29", 92],
+    ["30", 96],
+    ["31", 65],
+    ["32", 238],
+    ["33", 117],
+    ["34", 35],
   ]);
 
   expectedByTheme.forEach((expectedQuestions, themeNumber) => {
@@ -998,7 +1014,7 @@ test("los temas 29 y 30 relacionan cada test con sus artículos teóricos", () =
           "test-ley-39-2015-silencio-administrativo-articulos-24-y-25",
           { from: 24, to: 25 },
         ],
-        ["test-ley-39-2015-articulos-34-a-40", { from: 34, to: 40 }],
+        ["test-ley-39-2015-articulos-34-a-40", { from: 34, to: 41 }],
         ["test-ley-39-2015-articulos-41-a-44", { from: 41, to: 44 }],
         ["test-ley-39-2015-articulos-45-y-46", { from: 45, to: 46 }],
         ["test-ley-39-2015-articulos-47-a-52", { from: 47, to: 52 }],
@@ -1047,7 +1063,7 @@ test("los temas 31 y 32 vinculan cada test con su selección teórica exacta", (
         }],
         ["test-ley-39-2015-articulos-9-a-12", {
           blockIds: ["ley-39-2015-interesados"],
-          articles: { from: 9, to: 12 },
+          articles: { from: 7, to: 12 },
         }],
         ["test-ley-40-2015-articulos-23-y-24", {
           blockIds: ["ley-40-2015-abstencion-recusacion"],
@@ -1065,11 +1081,11 @@ test("los temas 31 y 32 vinculan cada test con su selección teórica exacta", (
         ["test-ley-39-2015-articulo-53", { articleNumbers: [53] }],
         ["test-ley-39-2015-articulos-55-a-62", { articles: { from: 55, to: 62 } }],
         ["test-ley-39-2015-articulos-62-a-66", { articles: { from: 62, to: 66 } }],
-        ["test-ley-39-2015-articulos-67-y-68", { articleNumbers: [67, 68] }],
+        ["test-ley-39-2015-articulos-67-y-68", { articleNumbers: [66, 67, 68] }],
         ["test-ley-39-2015-articulos-67-69-y-70", { articleNumbers: [67, 69, 70] }],
         ["test-ley-39-2015-articulos-70-a-74", { articles: { from: 70, to: 74 } }],
         ["test-ley-39-2015-articulos-75-a-77", { articles: { from: 75, to: 77 } }],
-        ["test-ley-39-2015-articulos-78-79-80-y-82", { articleNumbers: [78, 79, 80, 82] }],
+        ["test-ley-39-2015-articulos-78-79-80-y-82", { articleNumbers: [75, 78, 79, 80, 82] }],
         ["test-ley-39-2015-articulo-83", { articleNumbers: [83] }],
         ["test-ley-39-2015-articulos-85-y-86", { articleNumbers: [85, 86] }],
         ["test-ley-39-2015-articulos-87-y-88", { articleNumbers: [87, 88] }],
@@ -1114,10 +1130,10 @@ test("los temas 33 y 34 relacionan cada test con sus artículos teóricos", () =
       pdf: "tema-33-revision-actos.pdf",
       pages: 9,
       selections: new Map([
-        ["test-ley-39-2015-articulos-106-a-109", { from: 106, to: 109 }],
-        ["test-ley-39-2015-articulos-112-a-120", { from: 112, to: 120 }],
-        ["test-ley-39-2015-articulos-121-a-124", { from: 121, to: 124 }],
-        ["test-ley-39-2015-articulos-125-y-126", { from: 125, to: 126 }],
+        ["test-ley-39-2015-articulos-106-a-109", { articleNumbers: [106, 107, 108, 109, 112] }],
+        ["test-ley-39-2015-articulos-112-a-120", { articles: { from: 112, to: 120 } }],
+        ["test-ley-39-2015-articulos-121-a-124", { articleNumbers: [112, 121, 122, 123, 124] }],
+        ["test-ley-39-2015-articulos-125-y-126", { articleNumbers: [114, 123, 124, 125, 126] }],
       ]),
     },
     {
@@ -1127,8 +1143,8 @@ test("los temas 33 y 34 relacionan cada test con sus artículos teóricos", () =
       pdf: "tema-34-responsabilidad-administraciones.pdf",
       pages: 5,
       selections: new Map([
-        ["test-ley-40-2015-articulos-32-y-33", { from: 32, to: 33 }],
-        ["test-ley-40-2015-articulos-34-a-37", { from: 34, to: 37 }],
+        ["test-ley-40-2015-articulos-32-y-33", { articles: { from: 32, to: 33 } }],
+        ["test-ley-40-2015-articulos-34-a-37", { articles: { from: 34, to: 37 } }],
       ]),
     },
   ];
@@ -1149,9 +1165,10 @@ test("los temas 33 y 34 relacionan cada test con sus artículos teóricos", () =
     assert.equal(themeResources[0].type, "teoria");
     themeTests.forEach((resource) => {
       assert.equal(resource.relatedTheory.resourceId, theory.id);
-      assert.deepEqual(resource.relatedTheory.selection, {
-        articles: configuration.selections.get(resource.id),
-      });
+      assert.deepEqual(
+        resource.relatedTheory.selection,
+        configuration.selections.get(resource.id),
+      );
     });
   });
   assert.deepEqual(validateResources(resources), []);

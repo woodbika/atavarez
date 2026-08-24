@@ -13,7 +13,15 @@ import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco
 import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1/tema-03/index.js";
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
+import explicacionesTema17 from "./explanations/gobierno-vasco-administrativo-c1/tema-17/index.js";
 import explicacionesTema18 from "./explanations/gobierno-vasco-administrativo-c1/tema-18/index.js";
+import explicacionesTema28 from "./explanations/gobierno-vasco-administrativo-c1/tema-28/index.js";
+import explicacionesTema29 from "./explanations/gobierno-vasco-administrativo-c1/tema-29/index.js";
+import explicacionesTema30 from "./explanations/gobierno-vasco-administrativo-c1/tema-30/index.js";
+import explicacionesTema31 from "./explanations/gobierno-vasco-administrativo-c1/tema-31/index.js";
+import explicacionesTema32 from "./explanations/gobierno-vasco-administrativo-c1/tema-32/index.js";
+import explicacionesTema33 from "./explanations/gobierno-vasco-administrativo-c1/tema-33/index.js";
+import explicacionesTema34 from "./explanations/gobierno-vasco-administrativo-c1/tema-34/index.js";
 import testPrincipiosRectores from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/capitulo-iii-titulo-i-ce-principios-rectores.js";
 import testCapituloII from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-capitulo-ii-titulo-i-ce.js";
 import testCapitulosIVyV from "./tests/gobierno-vasco-administrativo-c1/tema-01/tests-ivot/test-constitucion-capitulo-iv-y-v.js";
@@ -329,7 +337,7 @@ const relatedTheoryByTestId = new Map([
   }],
   [testLey39Articulos34a40.id, {
     resourceId: teoriaActoAdministrativo.id,
-    selection: { articles: { from: 34, to: 40 } },
+    selection: { articles: { from: 34, to: 41 } },
   }],
   [testLey39Articulos41a44.id, {
     resourceId: teoriaActoAdministrativo.id,
@@ -354,7 +362,7 @@ const relatedTheoryByTestId = new Map([
     resourceId: teoriaProcedimientoAdministrativo.id,
     selection: {
       blockIds: ["ley-39-2015-interesados"],
-      articles: { from: 9, to: 12 },
+      articles: { from: 7, to: 12 },
     },
   }],
   [testLey40Articulos23y24.id, {
@@ -378,7 +386,7 @@ const relatedTheoryByTestId = new Map([
   }],
   [testLey39Articulos67y68.id, {
     resourceId: teoriaFasesProcedimientoAdministrativo.id,
-    selection: { articleNumbers: [67, 68] },
+    selection: { articleNumbers: [66, 67, 68] },
   }],
   [testLey39Articulos6769y70.id, {
     resourceId: teoriaFasesProcedimientoAdministrativo.id,
@@ -394,7 +402,7 @@ const relatedTheoryByTestId = new Map([
   }],
   [testLey39Articulos787980y82.id, {
     resourceId: teoriaFasesProcedimientoAdministrativo.id,
-    selection: { articleNumbers: [78, 79, 80, 82] },
+    selection: { articleNumbers: [75, 78, 79, 80, 82] },
   }],
   [testLey39Articulo83.id, {
     resourceId: teoriaFasesProcedimientoAdministrativo.id,
@@ -422,7 +430,7 @@ const relatedTheoryByTestId = new Map([
   }],
   [testLey39Articulos106a109.id, {
     resourceId: teoriaRevisionActos.id,
-    selection: { articles: { from: 106, to: 109 } },
+    selection: { articleNumbers: [106, 107, 108, 109, 112] },
   }],
   [testLey39Articulos112a120.id, {
     resourceId: teoriaRevisionActos.id,
@@ -430,11 +438,11 @@ const relatedTheoryByTestId = new Map([
   }],
   [testLey39Articulos121a124.id, {
     resourceId: teoriaRevisionActos.id,
-    selection: { articles: { from: 121, to: 124 } },
+    selection: { articleNumbers: [112, 121, 122, 123, 124] },
   }],
   [testLey39Articulos125y126.id, {
     resourceId: teoriaRevisionActos.id,
-    selection: { articles: { from: 125, to: 126 } },
+    selection: { articleNumbers: [114, 123, 124, 125, 126] },
   }],
   [testLey40Articulos32y33.id, {
     resourceId: teoriaResponsabilidadAdministraciones.id,
@@ -470,7 +478,15 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema03.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema17.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema18.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema28.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema29.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema30.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema31.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema32.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema33.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema34.map((explanations) => [explanations.testId, explanations]),
 ]);
 
 const {

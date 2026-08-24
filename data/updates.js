@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "explicaciones-completas-gobierno-vasco",
+    category: "Mejora",
+    publishedAt: "2026-08-23T19:47:35+02:00",
+    title: "Explicaciones en todos los tests del Gobierno Vasco",
+    description:
+      "Los tests de los temas 17 y 28 a 34 incorporan explicaciones individualizadas, claras y verificables para cada respuesta. Con esta ampliación, los 84 tests disponibles del Gobierno Vasco cuentan con apoyo razonado durante la revisión.",
+  }),
+  Object.freeze({
     id: "tests-infracciones-sanciones-tema-09",
     category: "Nuevos tests",
     publishedAt: "2026-08-18T18:44:46+02:00",
