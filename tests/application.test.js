@@ -2283,6 +2283,46 @@ test("el tema 09 reúne sus tests IVOT en un test completo", () => {
   );
 });
 
+test("el tema 15 reúne sus dos tests IVOT en un test completo", () => {
+  const repository = new ResourceRepository(resources);
+  const opposition = repository.getOpposition(
+    "gobierno-vasco-administrativo-c1",
+  );
+  const theme15 = repository.getTheme(opposition.id, "15");
+  const theme15Resources = repository.getResources(opposition.id, "15");
+  const sourceTests = theme15Resources.filter(
+    (resource) => resource.type === "test" && resource.author?.id === "ivot",
+  );
+  const completeTest = theme15Resources.find(
+    (resource) => resource.variant === "complete",
+  );
+  const expectedTestIds = [
+    "test-presupuesto-gastos-ejecucion-gasto-numero-1",
+    "test-presupuesto-gastos-ejecucion-gasto-numero-2",
+  ];
+
+  assert.ok(theme15);
+  assert.equal(theme15.category, "Presupuesto y contabilidad");
+  assert.deepEqual(
+    sourceTests.map((resource) => resource.id),
+    expectedTestIds,
+  );
+  assert.ok(
+    sourceTests.every(
+      (resource) =>
+        resource.data.preguntas.length === 16 &&
+        resource.theoryNotice === "Sin vínculo teórico directo",
+    ),
+  );
+  assert.ok(completeTest);
+  assert.equal(completeTest.data.preguntas.length, 32);
+  assert.deepEqual(completeTest.data.fuente.tests, expectedTestIds);
+  assert.equal(
+    new Set(completeTest.data.preguntas.map((question) => question.id)).size,
+    32,
+  );
+});
+
 test("el tema 18 reúne sus tests IVOT en un test completo", () => {
   const repository = new ResourceRepository(resources);
   const opposition = repository

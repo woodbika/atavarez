@@ -51,6 +51,8 @@ import testEmpleoPublico167a171 from "./tests/gobierno-vasco-administrativo-c1/t
 import testEmpleoPublico172a177 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177.js";
 import testEmpleoPublico178a180TiposFaltas from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-178-a-180-tipos-de-faltas.js";
 import testEmpleoPublico181a184 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-181-a-184.js";
+import testPresupuestoGastosEjecucion1 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-1.js";
+import testPresupuestoGastosEjecucion2 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-2.js";
 import testEmpleoPublico40a44 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-40-a-44.js";
 import testEmpleoPublico45a50 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
@@ -465,6 +467,8 @@ const theoryNoticeByTestId = new Map([
   [testEspacioEuropeo3.id, "Sin vínculo teórico directo"],
   [testInstitucionesUnionEuropea1.id, "Sin vínculo teórico directo"],
   [testInstitucionesUnionEuropea2.id, "Sin vínculo teórico directo"],
+  [testPresupuestoGastosEjecucion1.id, "Sin vínculo teórico directo"],
+  [testPresupuestoGastosEjecucion2.id, "Sin vínculo teórico directo"],
 ]);
 
 const answerExplanationsByTestId = new Map([
@@ -544,6 +548,8 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico172a177),
   testResource(testEmpleoPublico178a180TiposFaltas),
   testResource(testEmpleoPublico181a184),
+  testResource(testPresupuestoGastosEjecucion1),
+  testResource(testPresupuestoGastosEjecucion2),
   theoryResource(teoriaEmpleoPublicoVasco),
   testResource(testEmpleoPublico40a44),
   testResource(testEmpleoPublico45a50),
