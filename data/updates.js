@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-presupuesto-gastos-tema-15",
+    category: "Nuevo recurso",
+    publishedAt: "2026-09-05T17:16:35+02:00",
+    title: "Teoría del presupuesto de gastos",
+    description:
+      "El Tema 15 incorpora una lectura estructurada, acceso al PDF y consulta de la teoría correspondiente desde sus dos tests IVOT. Sus 32 preguntas incluyen explicaciones individualizadas para cada respuesta.",
+  }),
+  Object.freeze({
     id: "test-kaixo-constitucion-ope-2022",
     category: "Nuevo test",
     publishedAt: "2026-08-24T19:11:35+02:00",

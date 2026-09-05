@@ -14,6 +14,7 @@ import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco
 import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1/tema-03/index.js";
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
+import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema17 from "./explanations/gobierno-vasco-administrativo-c1/tema-17/index.js";
 import explicacionesTema18 from "./explanations/gobierno-vasco-administrativo-c1/tema-18/index.js";
 import explicacionesTema28 from "./explanations/gobierno-vasco-administrativo-c1/tema-28/index.js";
@@ -115,6 +116,7 @@ import teoriaOrganizacionTerritorial from "./resources/gobierno-vasco-administra
 import teoriaUnionEuropea from "./resources/gobierno-vasco-administrativo-c1/tema-03/teoria/tema-03-union-europea.js";
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
+import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
 import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
 import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-administrativo-c1/tema-18/resumen/resumen-situaciones-administrativas.js";
@@ -207,6 +209,22 @@ const relatedTheoryByTestId = new Map([
   [testEmpleoPublico181a184.id, {
     resourceId: teoriaPersonalServicioPublico.id,
     selection: { articles: { from: 181, to: 184 } },
+  }],
+  [testPresupuestoGastosEjecucion1.id, {
+    resourceId: teoriaPresupuestoGastos.id,
+    selection: { blockIds: ["concepto-gasto-publico"] },
+  }],
+  [testPresupuestoGastosEjecucion2.id, {
+    resourceId: teoriaPresupuestoGastos.id,
+    selection: {
+      blockIds: [
+        "fases-ejecucion",
+        "principios-ejecucion",
+        "competencias-ejecucion",
+        "autorizacion-definicion",
+        "autorizacion-tecnicas-presupuestarias",
+      ],
+    },
   }],
   [testEmpleoPublico40a44.id, {
     resourceId: teoriaEmpleoPublicoVasco.id,
@@ -467,8 +485,6 @@ const theoryNoticeByTestId = new Map([
   [testEspacioEuropeo3.id, "Sin vínculo teórico directo"],
   [testInstitucionesUnionEuropea1.id, "Sin vínculo teórico directo"],
   [testInstitucionesUnionEuropea2.id, "Sin vínculo teórico directo"],
-  [testPresupuestoGastosEjecucion1.id, "Sin vínculo teórico directo"],
-  [testPresupuestoGastosEjecucion2.id, "Sin vínculo teórico directo"],
 ]);
 
 const answerExplanationsByTestId = new Map([
@@ -489,6 +505,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema03.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema17.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema18.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema28.map((explanations) => [explanations.testId, explanations]),
@@ -548,6 +565,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico172a177),
   testResource(testEmpleoPublico178a180TiposFaltas),
   testResource(testEmpleoPublico181a184),
+  theoryResource(teoriaPresupuestoGastos),
   testResource(testPresupuestoGastosEjecucion1),
   testResource(testPresupuestoGastosEjecucion2),
   theoryResource(teoriaEmpleoPublicoVasco),

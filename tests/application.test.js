@@ -209,11 +209,12 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests de los Temas 3, 4, 9, 17, 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests de los Temas 3, 4, 9, 15, 17, 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
     ["09", { tests: 7, questions: 165 }],
+    ["15", { tests: 2, questions: 32 }],
     ["17", { tests: 4, questions: 97 }],
     ["18", { tests: 18, questions: 235 }],
     ["28", { tests: 2, questions: 47 }],
@@ -307,9 +308,9 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 85,
-    questions: 1764,
-    directReferences: 1673,
+    tests: 87,
+    questions: 1796,
+    directReferences: 1705,
     contextualReferences: 91,
     theoryDiscrepancies: 9,
   });
@@ -399,12 +400,13 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3, 4, 9, 17, 18 y 28 a 34 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3, 4, 9, 15, 17, 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
     ["09", 165],
+    ["15", 32],
     ["17", 97],
     ["18", 235],
     ["28", 47],
@@ -2296,6 +2298,7 @@ test("el tema 15 reúne sus dos tests IVOT en un test completo", () => {
   const completeTest = theme15Resources.find(
     (resource) => resource.variant === "complete",
   );
+  const theory = theme15Resources.find((resource) => resource.type === "teoria");
   const expectedTestIds = [
     "test-presupuesto-gastos-ejecucion-gasto-numero-1",
     "test-presupuesto-gastos-ejecucion-gasto-numero-2",
@@ -2303,6 +2306,10 @@ test("el tema 15 reúne sus dos tests IVOT en un test completo", () => {
 
   assert.ok(theme15);
   assert.equal(theme15.category, "Presupuesto y contabilidad");
+  assert.equal(theme15Resources[0], theory);
+  assert.equal(theory.id, "tema-15-presupuesto-gastos");
+  assert.equal(theory.data.bloques.length, 13);
+  assert.equal(theory.source.url.endsWith("tema-15-presupuesto-gastos.pdf"), true);
   assert.deepEqual(
     sourceTests.map((resource) => resource.id),
     expectedTestIds,
@@ -2311,9 +2318,22 @@ test("el tema 15 reúne sus dos tests IVOT en un test completo", () => {
     sourceTests.every(
       (resource) =>
         resource.data.preguntas.length === 16 &&
-        resource.theoryNotice === "Sin vínculo teórico directo",
+        resource.relatedTheory.resourceId === theory.id &&
+        resource.data.explicaciones.preguntas.length === 16,
     ),
   );
+  assert.deepEqual(sourceTests[0].relatedTheory.selection, {
+    blockIds: ["concepto-gasto-publico"],
+  });
+  assert.deepEqual(sourceTests[1].relatedTheory.selection, {
+    blockIds: [
+      "fases-ejecucion",
+      "principios-ejecucion",
+      "competencias-ejecucion",
+      "autorizacion-definicion",
+      "autorizacion-tecnicas-presupuestarias",
+    ],
+  });
   assert.ok(completeTest);
   assert.equal(completeTest.data.preguntas.length, 32);
   assert.deepEqual(completeTest.data.fuente.tests, expectedTestIds);
