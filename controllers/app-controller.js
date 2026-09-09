@@ -8,6 +8,7 @@ import { parseHashRoute } from "../utils/router.js";
 import { supportsTestLaunchConfiguration } from "../utils/test-launch.js";
 import { renderNotFound } from "../views/layout.js";
 import { renderOppositions, renderThemes } from "../views/portal-view.js";
+import { renderPracticalCase } from "../views/practical-case-view.js";
 import { renderResults } from "../views/results-view.js";
 import { renderReview } from "../views/review-view.js";
 import { renderTest } from "../views/test-view.js";
@@ -97,6 +98,8 @@ export class AppController {
       this.showResources(id, subId);
     } else if (section === "test" && id) {
       this.showTest(id, subsection, subId, optionId);
+    } else if (section === "caso-practico" && id) {
+      this.showPracticalCase(id);
     } else if (section === "resultados" && id) this.showResults(id);
     else if (section === "revision" && id) this.showReview(id);
     else renderNotFound(this.root);
@@ -221,6 +224,85 @@ export class AppController {
       this.testControls.setFontLevel(fontLevels[this.testPreferences.fontSize] ?? 1);
       this.testControls.setFocusMode(this.testPreferences.focusMode);
     }
+  }
+
+  showPracticalCase(id) {
+    const resource = this.repository.getById(id);
+    const practicalCase = resource?.type === "caso-practico"
+      ? resource.data
+      : null;
+    if (!practicalCase) {
+      return renderNotFound(
+        this.root,
+        "El caso práctico solicitado no existe.",
+      );
+    }
+
+    this.showTestStudyContext(resource, practicalCase);
+    if (!this.session || this.session.test.id !== id) {
+      this.session = new TestSession(practicalCase);
+      this.sessionOrder = "natural";
+      this.sessionAnswerOrder = "natural";
+      this.sessionSelectionKey = "";
+      this.sessionRouteSuffix = "";
+    }
+    renderPracticalCase(
+      this.root,
+      this.session,
+      this.resourceContext(practicalCase),
+    );
+    this.bindPracticalCase();
+  }
+
+  bindPracticalCase() {
+    const form = this.root.querySelector("#practical-case-form");
+    if (!form) return;
+
+    form.addEventListener("click", (event) => {
+      const input = event.target.closest("[data-practical-answer]");
+      if (!input) return;
+      const questionId = input.dataset.questionId;
+      if (this.session.selectedAnswer(questionId) !== input.value) return;
+      event.preventDefault();
+      this.session.clearAnswerForQuestion(questionId);
+      input.checked = false;
+      input.closest(".practical-option")?.classList.remove("is-selected");
+      this.updatePracticalCaseProgress();
+    });
+
+    form.addEventListener("change", (event) => {
+      const input = event.target.closest("[data-practical-answer]");
+      if (!input) return;
+      const questionId = input.dataset.questionId;
+      this.session.selectAnswerForQuestion(questionId, input.value);
+      input
+        .closest(".practical-options")
+        ?.querySelectorAll(".practical-option")
+        .forEach((option) => option.classList.remove("is-selected"));
+      input.closest(".practical-option")?.classList.add("is-selected");
+      this.updatePracticalCaseProgress();
+    });
+
+    this.root
+      .querySelector("[data-practical-finish]")
+      ?.addEventListener("click", () => this.finishTest("Actividad incompleta"));
+    this.root
+      .querySelector('[data-action="leave-practical-case"]')
+      ?.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.confirmLeaveTest(event.currentTarget.getAttribute("href"));
+      });
+  }
+
+  updatePracticalCaseProgress() {
+    const answered = this.session.answeredCount();
+    const total = this.session.test.preguntas.length;
+    const progressbar = this.root.querySelector(".practical-progress .progress-track");
+    const progress = this.root.querySelector("[data-practical-progress]");
+    const label = this.root.querySelector("[data-practical-answered]");
+    if (label) label.textContent = `${answered} de ${total} respondidas`;
+    if (progressbar) progressbar.setAttribute("aria-valuenow", String(answered));
+    if (progress) progress.style.width = `${total ? (answered / total) * 100 : 0}%`;
   }
 
   resourceContext(test) {
@@ -460,14 +542,14 @@ export class AppController {
     this.root.querySelector(".question-card")?.focus({ preventScroll: true });
   }
 
-  finishTest() {
+  finishTest(incompleteTitle = "Test incompleto") {
     const unanswered = this.session.unansweredCount();
     if (unanswered > 0) {
       const pending = unanswered === 1
         ? "Queda 1 pregunta sin responder."
         : `Quedan ${unanswered} preguntas sin responder.`;
       this.openConfirmation({
-        title: "Test incompleto",
+        title: incompleteTitle,
         message: `${pending} Las preguntas en blanco no suman ni restan.`,
         confirmLabel: "Finalizar de todas formas",
         onConfirm: () => this.completeTest(),
@@ -520,7 +602,8 @@ export class AppController {
   }
 
   showResults(id) {
-    const test = this.repository.getTestById(id);
+    const resource = this.repository.getById(id);
+    const test = this.repository.getAssessmentById(id);
     const result = this.currentResult?.testId === id ? this.currentResult : null;
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para consultarlo.");
@@ -532,10 +615,20 @@ export class AppController {
       result.questionOrder,
       result.answerOrder,
     );
-    renderResults(this.root, attemptedTest, result, this.resourceContext(test));
+    renderResults(this.root, attemptedTest, result, {
+      ...this.resourceContext(test),
+      repeatLabel:
+        resource?.type === "caso-practico"
+          ? "Repetir caso práctico"
+          : "Repetir test",
+    });
     this.root.querySelector('[data-action="repeat"]').addEventListener("click", () => {
       this.currentResult = null;
       this.session = null;
+      if (resource?.type === "caso-practico") {
+        location.hash = `#/caso-practico/${encodeURIComponent(id)}`;
+        return;
+      }
       const routeSuffix = result.routeSuffix ??
         (result.orderMode === "aleatorio" ? "/aleatorio" : "/natural");
       location.hash = `#/test/${encodeURIComponent(id)}${routeSuffix}`;
@@ -543,7 +636,7 @@ export class AppController {
   }
 
   showReview(id) {
-    const test = this.repository.getTestById(id);
+    const test = this.repository.getAssessmentById(id);
     const result = this.currentResult?.testId === id ? this.currentResult : null;
     if (!test) return renderNotFound(this.root, "El test solicitado no existe.");
     if (!result) return renderNotFound(this.root, "El resultado ya no está disponible. Completa de nuevo el test para revisarlo.");

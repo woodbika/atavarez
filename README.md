@@ -7,6 +7,7 @@ Aplicación web estática para organizar oposiciones, apartados del temario y re
 - Navegación jerárquica por tarjetas: oposiciones, apartados del temario y recursos.
 - Recursos teóricos estructurados, con navegación por capítulos y fragmentos relacionados desde los tests.
 - Recursos tipados para admitir tests y otros materiales progresivamente.
+- Casos prácticos continuos, agrupados por supuesto, con evaluación y revisión final.
 - Test completo generado automáticamente en los apartados que lo admiten, con orden natural o aleatorio.
 - Tests configurables por orden, selección aleatoria o intervalo de preguntas.
 - Búsqueda de recursos integrada en la cabecera de cada apartado.
@@ -37,6 +38,7 @@ Aplicación web estática para organizar oposiciones, apartados del temario y re
 │   ├── resources.js          # Agregador de los registros de cada oposición
 │   ├── resource-factory.js   # Normalización común de los recursos
 │   ├── explanations/          # Explicaciones, esquema y plantilla canónica
+│   ├── practical-cases/       # Casos prácticos por oposición, apartado y número
 │   ├── *-resources.js        # Registro propio de cada oposición
 │   ├── updates.js            # Novedades visibles en la cabecera
 │   ├── resources/            # Materiales agrupados por oposición y apartado
@@ -102,9 +104,14 @@ cambiarse a `status: "available"` y configurar sus portadas.
 1. Añade el archivo `.js` dentro de la carpeta de su oposición y apartado.
 2. Abre el archivo `data/<id>-resources.js` de esa oposición.
 3. Para un test, impórtalo y añádelo al array `resources` mediante `testResource(testImportado)`.
-4. Para teoría, resúmenes o explicaciones utiliza respectivamente `theoryResource()`, `summaryResource()` o `explanationResource()`.
+4. Para teoría, resúmenes, explicaciones o casos prácticos utiliza respectivamente `theoryResource()`, `summaryResource()`, `explanationResource()` o `practicalCaseResource()`.
 
 Los recursos teóricos se guardan en `data/resources/<id>/tema-XX/teoria/`, junto con su fuente original cuando corresponda. Su contenido estructurado se registra con `type: "teoria"` para presentarlo como lectura dentro de la aplicación.
+
+Los casos prácticos se guardan en
+`data/practical-cases/<id>/tema-XX/caso-practico-XX/`, junto con su PDF. Cada caso
+agrupa un supuesto y sus preguntas; el recurso mantiene el orden continuo de los
+casos, utiliza la evaluación común y queda fuera del test completo del tema.
 
 Las explicaciones prácticas de artículos se guardan en
 `data/resources/<id>/tema-XX/explicaciones/`. Se registran con

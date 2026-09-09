@@ -13,7 +13,11 @@ export class TestSession {
   }
 
   selectAnswer(optionId) {
-    const questionId = String(this.currentQuestion.id);
+    return this.selectAnswerForQuestion(this.currentQuestion.id, optionId);
+  }
+
+  selectAnswerForQuestion(questionId, optionId) {
+    questionId = String(questionId);
     if (this.liveLockedQuestions.has(questionId)) return false;
     this.answers[questionId] = optionId;
     if (this.liveResponseEnabled) this.liveLockedQuestions.add(questionId);
@@ -21,7 +25,11 @@ export class TestSession {
   }
 
   clearCurrentAnswer() {
-    const questionId = String(this.currentQuestion.id);
+    return this.clearAnswerForQuestion(this.currentQuestion.id);
+  }
+
+  clearAnswerForQuestion(questionId) {
+    questionId = String(questionId);
     if (this.liveLockedQuestions.has(questionId)) return false;
     delete this.answers[questionId];
     return true;

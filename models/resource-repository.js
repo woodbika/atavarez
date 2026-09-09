@@ -13,8 +13,9 @@ function resourceDisplayOrder(resource) {
   if (resource.type === "teoria") return 0;
   if (resource.type === "resumen") return 1;
   if (resource.type === "explicacion") return 2;
-  if (resource.variant === "complete") return 4;
-  return 3;
+  if (resource.type === "caso-practico") return 3;
+  if (resource.variant === "complete") return 5;
+  return 4;
 }
 
 function combinedTestTitle(theme) {
@@ -146,6 +147,13 @@ export class ResourceRepository {
   getTestById(id) {
     const resource = this.getById(id);
     return resource?.type === "test" ? resource.data : null;
+  }
+
+  getAssessmentById(id) {
+    const resource = this.getById(id);
+    return ["test", "caso-practico"].includes(resource?.type)
+      ? resource.data
+      : null;
   }
 
   getQuestionBankById(id) {

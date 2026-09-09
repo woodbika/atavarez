@@ -329,6 +329,7 @@ export function renderResources(
         const isTheory = resource.type === "teoria";
         const isSummary = resource.type === "resumen";
         const isExplanation = resource.type === "explicacion";
+        const isPracticalCase = resource.type === "caso-practico";
         const hasRelatedTheory = Boolean(resource.relatedTheory);
         const theoryNotice = resource.theoryNotice;
         const usesLightTestTitle = resource.type === "test" && !isComplete;
@@ -343,11 +344,15 @@ export function renderResources(
                 : isSummary
                   ? "Resumen"
                   : isExplanation
-                    ? "Explicación"
+                  ? "Explicación"
+                  : isPracticalCase
+                    ? "Caso práctico"
                   : resource.type;
         const href = resource.type === "test"
           ? `#/test/${encodeURIComponent(resource.id)}`
-          : resource.href;
+          : isPracticalCase
+            ? `#/caso-practico/${encodeURIComponent(resource.id)}`
+            : resource.href;
         const directHref =
           resource.defaultOrder && resource.defaultOrder !== "natural"
             ? `${href}/${encodeURIComponent(resource.defaultOrder)}`
@@ -360,12 +365,16 @@ export function renderResources(
               ? "Consultar resumen"
               : isExplanation
                 ? "Consultar explicación"
+              : isPracticalCase
+                ? "Empezar"
             : resource.actionLabel ?? "Abrir recurso";
         return `
-          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isTheory ? "resource-card-theory" : ""} ${isSummary ? "resource-card-summary" : ""} ${isExplanation ? "resource-card-explanation" : ""}">
+          <article class="resource-card ${isComplete ? "resource-card-complete" : ""} ${isTheory ? "resource-card-theory" : ""} ${isSummary ? "resource-card-summary" : ""} ${isExplanation ? "resource-card-explanation" : ""} ${isPracticalCase ? "resource-card-practical" : ""}">
             <div class="card-topline">
-              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""} ${isSummary ? "resource-type-summary" : ""} ${isExplanation ? "resource-type-explanation" : ""}">${escapeHtml(resourceTypeLabel)}</span>
-              ${resource.type === "test"
+              <span class="resource-type ${isComplete ? "resource-type-complete" : ""} ${isTheory ? "resource-type-theory" : ""} ${isSummary ? "resource-type-summary" : ""} ${isExplanation ? "resource-type-explanation" : ""} ${isPracticalCase ? "resource-type-practical" : ""}">${escapeHtml(resourceTypeLabel)}</span>
+              ${isPracticalCase
+                ? `<span class="question-count">${test.casos.length} casos · ${test.preguntas.length} preguntas</span>`
+                : resource.type === "test"
                 ? `<span class="question-count">${escapeHtml(resource.questionCountLabel ?? `${test.preguntas.length} preguntas`)}</span>`
                 : ""}
             </div>
@@ -377,6 +386,8 @@ export function renderResources(
                 : isSummary
                   ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
                 : isExplanation
+                  ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
+                : isPracticalCase
                   ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
                 : resource.description
                   ? `<p class="complete-description">${escapeHtml(resource.description)}</p>`
@@ -423,6 +434,17 @@ export function renderResources(
                   ? `<button class="resource-action" type="button" data-summary-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
                 : isExplanation
                   ? `<button class="resource-action" type="button" data-explanation-resource="${escapeHtml(resource.id)}">${escapeHtml(actionLabel)}</button>`
+                : isPracticalCase
+                  ? `<div class="resource-card-theory-actions">
+                      <a class="resource-action" href="${escapeHtml(directHref)}">${escapeHtml(actionLabel)}</a>
+                      <a class="theory-pdf-link" href="${escapeHtml(resource.source.url)}" target="_blank" rel="noopener" aria-label="Abrir el PDF del caso práctico en otra pestaña" title="Abrir PDF">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M7 3.75h6.8L18 7.95v12.3H7z"></path>
+                          <path d="M13.5 3.75V8.2H18M9.5 15.6h5M9.5 12.5h5"></path>
+                        </svg>
+                        <span>PDF</span>
+                      </a>
+                    </div>`
                 : `<div class="resource-card-actions">
                     ${hasRelatedTheory
                       ? `<button class="resource-theory-action" type="button" data-related-theory="${escapeHtml(resource.id)}">Consultar teoría</button>`

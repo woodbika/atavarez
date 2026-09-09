@@ -123,6 +123,7 @@ import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-admini
 import explicacionAdscripcionProvisional from "./resources/gobierno-vasco-administrativo-c1/tema-18/explicaciones/articulo-105-adscripcion-provisional.js";
 import teoriaFuentesDerechoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-28/teoria/tema-28-fuentes-derecho-administrativo.js";
 import teoriaOrganizacionAdministrativa from "./resources/gobierno-vasco-administrativo-c1/tema-29/teoria/tema-29-organizacion-administrativa.js";
+import casoPracticoLey40Articulos5a18 from "./practical-cases/gobierno-vasco-administrativo-c1/tema-29/caso-practico-01/caso-practico-ley-40-2015-articulos-5-a-18.js";
 import teoriaActoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-30/teoria/tema-30-acto-administrativo.js";
 import teoriaProcedimientoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-31/teoria/tema-31-procedimiento-administrativo.js";
 import teoriaFasesProcedimientoAdministrativo from "./resources/gobierno-vasco-administrativo-c1/tema-32/teoria/tema-32-fases-procedimiento-administrativo.js";
@@ -522,6 +523,7 @@ const {
   summaryResource,
   testResource,
   theoryResource,
+  practicalCaseResource,
 } = createOppositionResourceFactory(
   GOBIERNO_VASCO_ADMINISTRATIVO_C1,
   {
@@ -598,6 +600,7 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testFuentesDerecho1),
   testResource(testFuentesDerecho2),
   theoryResource(teoriaOrganizacionAdministrativa),
+  practicalCaseResource(casoPracticoLey40Articulos5a18),
   testResource(testLey40Articulos5a7),
   testResource(testLey40Articulos8y9),
   testResource(testLey40Articulos10y11),

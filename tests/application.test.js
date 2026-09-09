@@ -64,6 +64,7 @@ import {
 } from "../utils/test-launch.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
 import { renderReview } from "../views/review-view.js";
+import { renderPracticalCase } from "../views/practical-case-view.js";
 
 const tests = resources
   .filter((resource) => resource.type === "test")
@@ -114,6 +115,60 @@ test("el registro contiene todos los tests con un formato válido", () => {
       assert.ok(question.opciones.some((option) => option.id === question.respuestaCorrecta));
     });
   });
+});
+
+test("el tema 29 incorpora el caso práctico 1 como recurso evaluable independiente", () => {
+  const resource = resources.find(
+    (item) =>
+      item.id === "caso-practico-ley-40-2015-articulos-5-a-18-numero-1",
+  );
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+
+  assert.equal(resource.type, "caso-practico");
+  assert.equal(resource.data.numero, 1);
+  assert.equal(resource.data.casos.length, 14);
+  assert.equal(resource.data.preguntas.length, 48);
+  assert.deepEqual(
+    resource.data.casos.map((item) => item.articulo),
+    Array.from({ length: 14 }, (_, index) => index + 5),
+  );
+  assert.ok(resource.data.preguntas.every((question) => question.explicacion));
+  assert.equal(repository.getTestById(resource.id), null);
+  assert.equal(repository.getAssessmentById(resource.id), resource.data);
+
+  const combinedTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-29",
+  );
+  assert.equal(combinedTest.preguntas.length, 92);
+  assert.ok(
+    combinedTest.preguntas.every(
+      (question) => !String(question.id).startsWith(`${resource.id}:`),
+    ),
+  );
+
+  const session = new TestSession(resource.data);
+  const root = { innerHTML: "" };
+  renderPracticalCase(root, session, {
+    backHref: "#/recursos",
+    backLabel: "Recursos del tema",
+  });
+  assert.ok(root.innerHTML.indexOf("Caso 1 · Artículo 5") >= 0);
+  assert.ok(
+    root.innerHTML.indexOf("Caso 1 · Artículo 5") <
+      root.innerHTML.indexOf("Caso 2 · Artículo 6"),
+  );
+  assert.ok(root.innerHTML.includes("data-practical-finish"));
+
+  session.selectAnswerForQuestion(
+    resource.data.preguntas[0].id,
+    resource.data.preguntas[0].respuestaCorrecta,
+  );
+  const reviewRoot = { innerHTML: "" };
+  renderReview(reviewRoot, resource.data, session.calculateResult(), {
+    backHref: "#/recursos",
+  });
+  assert.ok(reviewRoot.innerHTML.includes("La Consejería de Educación"));
+  assert.ok(reviewRoot.innerHTML.includes("Explicación de la solución"));
 });
 
 test("todos los tests IVOT del Tema 1 explican sus respuestas", () => {

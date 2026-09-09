@@ -1,7 +1,12 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
-export function renderResults(root, test, result, { backHref, backLabel }) {
+export function renderResults(
+  root,
+  test,
+  result,
+  { backHref, backLabel, repeatLabel = "Repetir test" },
+) {
   const visualScore = Math.min(Math.max(result.score, 0), 10);
   const formattedScore = result.score.toLocaleString("es-ES", {
     minimumFractionDigits: 2,
@@ -67,7 +72,7 @@ export function renderResults(root, test, result, { backHref, backLabel }) {
 
       <div class="view-actions view-actions-three">
         <a class="button button-primary" href="#/revision/${encodeURIComponent(test.id)}">Revisar respuestas</a>
-        <button class="button button-secondary" type="button" data-action="repeat">Repetir test</button>
+        <button class="button button-secondary" type="button" data-action="repeat">${escapeHtml(repeatLabel)}</button>
         <a class="button button-secondary" href="${backHref}">Volver a los recursos</a>
       </div>
     </section>

@@ -159,5 +159,26 @@ export function createOppositionResourceFactory(
         },
       };
     },
+    practicalCaseResource(practicalCase) {
+      const classification = canonicalClassification(
+        opposition,
+        practicalCase.clasificacion,
+      );
+      return {
+        id: practicalCase.id,
+        type: "caso-practico",
+        title: practicalCase.titulo,
+        description:
+          "Resuelve cada supuesto y sus preguntas en una única sesión continua.",
+        opposition,
+        classification,
+        sourceClassification: practicalCase.clasificacion,
+        source: practicalCase.fuente,
+        data: {
+          ...practicalCase,
+          clasificacion: classification,
+        },
+      };
+    },
   });
 }

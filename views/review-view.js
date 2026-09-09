@@ -88,7 +88,25 @@ function renderOptions(question, selected) {
 }
 
 function renderExplanation(question, explanation) {
-  if (!explanation) return "";
+  if (!explanation && !question.explicacion) return "";
+  if (!explanation) {
+    return `
+      <details class="review-explanation review-practical-explanation">
+        <summary>
+          <span>Mostrar explicación</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"></path></svg>
+        </summary>
+        <div class="review-explanation-content">
+          <p class="review-explanation-reference">
+            <span>Referencia teórica</span>
+            Artículo ${escapeHtml(question.caso.articulo)}
+          </p>
+          <p class="review-explanation-label">Explicación de la solución</p>
+          <p>${escapeHtml(question.explicacion)}</p>
+        </div>
+      </details>
+    `;
+  }
   const discardedOptions = question.opciones.filter(
     (option) => option.id !== question.respuestaCorrecta,
   );
@@ -155,8 +173,17 @@ export function renderReview(root, test, result, { backHref }) {
             const state = stateFor(question, selected);
             const explanation = explanationByQuestionId.get(String(question.id));
             const hasTheoryNote = Boolean(explanation?.notaRevision);
+            const previousCaseId = test.preguntas[index - 1]?.caso?.id;
+            const startsCase = question.caso && question.caso.id !== previousCaseId;
             return `
               <li class="review-summary-row${hasTheoryNote ? " has-theory-note" : ""}" data-review-state="${state.key}">
+                ${startsCase
+                  ? `<section class="review-case-context" aria-label="Caso ${question.caso.numero}">
+                      <p class="eyebrow">Caso ${question.caso.numero} · Artículo ${question.caso.articulo}</p>
+                      <h2>${escapeHtml(question.caso.titulo)}</h2>
+                      <p>${escapeHtml(question.caso.supuesto)}</p>
+                    </section>`
+                  : ""}
                 <div class="review-summary-heading">
                   <span class="review-question-number">Pregunta ${index + 1}</span>
                   <span class="review-summary-statuses">

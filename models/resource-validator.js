@@ -7,6 +7,7 @@ const SUPPORTED_RESOURCE_TYPES = new Set([
   "teoria",
   "resumen",
   "explicacion",
+  "caso-practico",
 ]);
 
 function validateAuthor(
@@ -422,6 +423,97 @@ function validateTest(resource, path, errors, authorById) {
   }
   validateQuestions(test.preguntas, `${path}.data.preguntas`, errors);
   validateAnswerExplanations(test, `${path}.data.explicaciones`, errors);
+}
+
+function validatePracticalCase(resource, path, errors) {
+  const practicalCase = resource.data;
+  if (!practicalCase || typeof practicalCase !== "object") {
+    errors.push(`${path}.data: falta el contenido del caso práctico.`);
+    return;
+  }
+  if (practicalCase.schemaVersion !== 1) {
+    errors.push(`${path}.data.schemaVersion: debe ser 1.`);
+  }
+  if (practicalCase.id !== resource.id) {
+    errors.push(`${path}.data.id: debe coincidir con el recurso.`);
+  }
+  if (!Number.isInteger(practicalCase.numero) || practicalCase.numero < 1) {
+    errors.push(`${path}.data.numero: debe ser un entero positivo.`);
+  }
+  if (!isNonEmptyString(practicalCase.titulo)) {
+    errors.push(`${path}.data.titulo: debe contener texto.`);
+  }
+  if (resource.title !== practicalCase.titulo) {
+    errors.push(`${path}.title: debe coincidir con el título del caso práctico.`);
+  }
+  if (!new RegExp(`\\b${practicalCase.numero}\\b`).test(practicalCase.titulo)) {
+    errors.push(`${path}.data.titulo: debe identificar el número del caso práctico.`);
+  }
+  if (!classificationsMatch(resource.classification, practicalCase.clasificacion)) {
+    errors.push(
+      `${path}.classification: debe coincidir con la clasificación del caso práctico.`,
+    );
+  }
+  validateClassification(practicalCase.clasificacion, `${path}.data`, errors);
+  validateDocumentSource(practicalCase.fuente, `${path}.data.fuente`, errors, {
+    requireUrl: true,
+  });
+  validateQuestions(practicalCase.preguntas, `${path}.data.preguntas`, errors);
+
+  if (!Array.isArray(practicalCase.casos) || practicalCase.casos.length === 0) {
+    errors.push(`${path}.data.casos: debe contener al menos un supuesto.`);
+    return;
+  }
+
+  const caseIds = new Set();
+  const nestedQuestionIds = [];
+  practicalCase.casos.forEach((item, index) => {
+    const casePath = `${path}.data.casos[${index}]`;
+    if (!item || typeof item !== "object") {
+      errors.push(`${casePath}: debe ser un objeto.`);
+      return;
+    }
+    if (!isStableId(item.id)) {
+      errors.push(`${casePath}.id: debe ser un identificador estable.`);
+    } else if (caseIds.has(item.id)) {
+      errors.push(`${casePath}.id: está duplicado.`);
+    } else {
+      caseIds.add(item.id);
+    }
+    if (!Number.isInteger(item.numero) || item.numero < 1) {
+      errors.push(`${casePath}.numero: debe ser un entero positivo.`);
+    }
+    if (!Number.isInteger(item.articulo) || item.articulo < 1) {
+      errors.push(`${casePath}.articulo: debe ser un entero positivo.`);
+    }
+    if (!isNonEmptyString(item.titulo)) {
+      errors.push(`${casePath}.titulo: debe contener texto.`);
+    }
+    if (!isNonEmptyString(item.supuesto)) {
+      errors.push(`${casePath}.supuesto: debe contener texto.`);
+    }
+    validateQuestions(item.preguntas, `${casePath}.preguntas`, errors);
+    (item.preguntas ?? []).forEach((question, questionIndex) => {
+      nestedQuestionIds.push(String(question?.id ?? ""));
+      if (!isNonEmptyString(question?.explicacion)) {
+        errors.push(
+          `${casePath}.preguntas[${questionIndex}].explicacion: debe contener texto.`,
+        );
+      }
+    });
+  });
+
+  const flatQuestionIds = (practicalCase.preguntas ?? []).map((question) =>
+    String(question?.id ?? ""),
+  );
+  if (
+    nestedQuestionIds.length !== flatQuestionIds.length ||
+    nestedQuestionIds.some((id, index) => id !== flatQuestionIds[index])
+  ) {
+    errors.push(
+      `${path}.data.preguntas: debe conservar el mismo orden que las preguntas de los supuestos.`,
+    );
+  }
 }
 
 function validateTestConfiguration(resource, path, errors) {
@@ -1173,6 +1265,9 @@ export function validateResources(
       validateTest(resource, path, errors, authorById);
       validateTestConfiguration(resource, path, errors);
       validateTestPreset(resource, path, errors, questionBankById);
+    }
+    if (resource.type === "caso-practico") {
+      validatePracticalCase(resource, path, errors);
     }
     if (resource.type === "teoria") {
       validateTheory(resource, path, errors, authorById);

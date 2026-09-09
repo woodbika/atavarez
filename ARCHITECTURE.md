@@ -25,7 +25,7 @@ Los paneles laterales de configuración y novedades comparten `SidePanelControll
 
 ## Estado
 
-El intento activo vive exclusivamente en memoria mediante `TestSession`. Al abandonar o recargar la aplicación se descartan respuestas y resultados. Solo las preferencias del panel se conservan en `localStorage`; no se utiliza `sessionStorage`, IndexedDB ni cookies.
+El intento activo, tanto de un test como de un caso práctico evaluable, vive exclusivamente en memoria mediante `TestSession`. Al abandonar o recargar la aplicación se descartan respuestas y resultados. Solo las preferencias del panel se conservan en `localStorage`; no se utiliza `sessionStorage`, IndexedDB ni cookies.
 
 ## Datos
 
@@ -46,9 +46,16 @@ Antes de iniciar la aplicación, `opposition-validator.js` y
 - existencia de la respuesta correcta;
 - coherencia entre modos de orden, selección de preguntas y recopilaciones automáticas.
 
+Los casos prácticos usan el tipo `caso-practico` y se almacenan en
+`data/practical-cases/<oposicion>/<apartado>/caso-practico-XX/`. Cada recurso
+conserva los supuestos y sus preguntas como grupos ordenados, además de una vista
+plana de las preguntas para compartir la puntuación y la revisión. La factoría y el
+validador comprueban que ambas representaciones coincidan. Estos recursos no se
+incorporan a los tests completos generados automáticamente.
+
 El mismo control puede ejecutarse con `npm run validate:data` y forma parte de la
 integración continua. `npm run validate:assets` comprueba además que todas las
-portadas y fuentes teóricas locales referenciadas existen antes de publicar.
+portadas y fuentes PDF locales referenciadas existen antes de publicar.
 
 Las novedades tienen un esquema independiente y se validan con `update-validator.js`;
 la verificación conjunta cubre oposiciones, recursos, preguntas y novedades antes de

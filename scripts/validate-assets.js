@@ -13,7 +13,9 @@ const references = [
     })),
   ),
   ...resources
-    .filter((resource) => resource.type === "teoria")
+    .filter((resource) =>
+      ["teoria", "caso-practico"].includes(resource.type),
+    )
     .map((resource) => ({
       label: `resources.${resource.id}.source.url`,
       path: resource.source?.url,
