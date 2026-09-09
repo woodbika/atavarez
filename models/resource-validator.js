@@ -483,8 +483,21 @@ function validatePracticalCase(resource, path, errors) {
     if (!Number.isInteger(item.numero) || item.numero < 1) {
       errors.push(`${casePath}.numero: debe ser un entero positivo.`);
     }
-    if (!Number.isInteger(item.articulo) || item.articulo < 1) {
-      errors.push(`${casePath}.articulo: debe ser un entero positivo.`);
+    const hasArticle = Number.isInteger(item.articulo) && item.articulo > 0;
+    const hasArticles =
+      Array.isArray(item.articulos) &&
+      item.articulos.length > 0 &&
+      item.articulos.every(
+        (article) => Number.isInteger(article) && article > 0,
+      ) &&
+      new Set(item.articulos).size === item.articulos.length;
+    if (!hasArticle && !hasArticles) {
+      errors.push(
+        `${casePath}: debe identificar uno o varios artículos válidos.`,
+      );
+    }
+    if (hasArticle && hasArticles) {
+      errors.push(`${casePath}: no debe combinar articulo y articulos.`);
     }
     if (!isNonEmptyString(item.titulo)) {
       errors.push(`${casePath}.titulo: debe contener texto.`);

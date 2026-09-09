@@ -1,14 +1,7 @@
-const optionIds = ["a", "b", "c", "d"];
-
-function pregunta(id, enunciado, opciones, respuestaCorrecta, explicacion) {
-  return {
-    id,
-    enunciado,
-    opciones: opciones.map((texto, index) => ({ id: optionIds[index], texto })),
-    respuestaCorrecta,
-    explicacion,
-  };
-}
+import {
+  buildPracticalCase,
+  practicalQuestion as pregunta,
+} from "../../../practical-case-builder.js";
 
 const casos = [
   {
@@ -187,20 +180,7 @@ const casos = [
   },
 ];
 
-const preguntas = casos.flatMap((caso) =>
-  caso.preguntas.map((item) => ({
-    ...item,
-    caso: {
-      id: caso.id,
-      numero: caso.numero,
-      articulo: caso.articulo,
-      titulo: caso.titulo,
-      supuesto: caso.supuesto,
-    },
-  })),
-);
-
-const casoPractico = {
+const casoPractico = buildPracticalCase({
   schemaVersion: 1,
   id: "caso-practico-ley-40-2015-articulos-5-a-18-numero-1",
   numero: 1,
@@ -222,7 +202,6 @@ const casoPractico = {
     paginas: 19,
   },
   casos,
-  preguntas,
-};
+});
 
 export default casoPractico;

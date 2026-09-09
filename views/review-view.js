@@ -3,6 +3,7 @@ import {
   displayOptionId,
   remapOptionReferences,
 } from "../utils/answer-order.js";
+import { practicalCaseArticleLabel } from "../utils/practical-case.js";
 import { backLink, questionCount, themeDisclosure } from "./layout.js";
 
 function stateFor(question, selected) {
@@ -99,7 +100,7 @@ function renderExplanation(question, explanation) {
         <div class="review-explanation-content">
           <p class="review-explanation-reference">
             <span>Referencia teórica</span>
-            Artículo ${escapeHtml(question.caso.articulo)}
+            ${escapeHtml(practicalCaseArticleLabel(question.caso))}
           </p>
           <p class="review-explanation-label">Explicación de la solución</p>
           <p>${escapeHtml(question.explicacion)}</p>
@@ -179,7 +180,7 @@ export function renderReview(root, test, result, { backHref }) {
               <li class="review-summary-row${hasTheoryNote ? " has-theory-note" : ""}" data-review-state="${state.key}">
                 ${startsCase
                   ? `<section class="review-case-context" aria-label="Caso ${question.caso.numero}">
-                      <p class="eyebrow">Caso ${question.caso.numero} · Artículo ${question.caso.articulo}</p>
+                      <p class="eyebrow">Caso ${question.caso.numero} · ${escapeHtml(practicalCaseArticleLabel(question.caso))}</p>
                       <h2>${escapeHtml(question.caso.titulo)}</h2>
                       <p>${escapeHtml(question.caso.supuesto)}</p>
                     </section>`

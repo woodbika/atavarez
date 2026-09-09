@@ -1,4 +1,5 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
+import { practicalCaseArticleLabel } from "../utils/practical-case.js";
 import { backLink, themeDisclosure } from "./layout.js";
 
 function renderQuestion(question, questionNumber, selected) {
@@ -64,7 +65,7 @@ export function renderPracticalCase(root, session, { backHref, backLabel }) {
           <article class="practical-case-block" aria-labelledby="${escapeHtml(item.id)}-title">
             <header class="practical-case-block-heading">
               <div>
-                <p class="eyebrow">Caso ${item.numero} · Artículo ${item.articulo}</p>
+                <p class="eyebrow">Caso ${item.numero} · ${escapeHtml(practicalCaseArticleLabel(item))}</p>
                 <h2 id="${escapeHtml(item.id)}-title">${escapeHtml(item.titulo)}</h2>
               </div>
               <span>${item.preguntas.length} ${item.preguntas.length === 1 ? "pregunta" : "preguntas"}</span>

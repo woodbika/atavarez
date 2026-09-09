@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "caso-practico-avanzado-ley-40-2015-tema-29",
+    category: "Nuevo recurso",
+    publishedAt: "2026-09-09T22:02:17+02:00",
+    title: "Nuevo caso práctico avanzado de organización administrativa",
+    description:
+      "El Tema 29 incorpora un segundo caso práctico con 8 supuestos y 48 preguntas sobre los artículos 5 a 18 de la Ley 40/2015, soluciones explicadas y acceso al PDF.",
+  }),
+  Object.freeze({
     id: "caso-practico-ley-40-2015-tema-29",
     category: "Nuevo recurso",
     publishedAt: "2026-09-09T20:47:41+02:00",

@@ -171,6 +171,50 @@ test("el tema 29 incorpora el caso práctico 1 como recurso evaluable independie
   assert.ok(reviewRoot.innerHTML.includes("Explicación de la solución"));
 });
 
+test("el tema 29 incorpora el caso práctico 2 avanzado con sus ocho supuestos", () => {
+  const resource = resources.find(
+    (item) =>
+      item.id === "caso-practico-ley-40-2015-articulos-5-a-18-numero-2",
+  );
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+
+  assert.equal(resource.type, "caso-practico");
+  assert.equal(resource.data.numero, 2);
+  assert.equal(resource.data.casos.length, 8);
+  assert.equal(resource.data.preguntas.length, 48);
+  assert.deepEqual(resource.data.casos[0].articulos, [5, 6, 7]);
+  assert.equal(resource.data.casos[5].articulo, 17);
+  assert.deepEqual(
+    resource.data.casos[7].articulos,
+    Array.from({ length: 14 }, (_, index) => index + 5),
+  );
+  assert.deepEqual(
+    resource.data.preguntas.map((question) => question.respuestaCorrecta),
+    [
+      "c", "a", "d", "b", "b", "c", "a", "d", "c", "b", "d", "a",
+      "b", "c", "a", "d", "c", "b", "a", "d", "d", "a", "c", "b",
+      "a", "d", "b", "c", "b", "c", "d", "a", "c", "b", "a", "d",
+      "d", "c", "b", "a", "a", "d", "c", "b", "b", "a", "d", "c",
+    ],
+  );
+  assert.ok(resource.data.preguntas.every((question) => question.explicacion));
+  assert.equal(repository.getAssessmentById(resource.id), resource.data);
+
+  const combinedTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-29",
+  );
+  assert.equal(combinedTest.preguntas.length, 92);
+
+  const root = { innerHTML: "" };
+  renderPracticalCase(root, new TestSession(resource.data), {
+    backHref: "#/recursos",
+    backLabel: "Recursos del tema",
+  });
+  assert.ok(root.innerHTML.includes("Caso 1 · Artículos 5 a 7"));
+  assert.ok(root.innerHTML.includes("Caso 8 · Artículos 5 a 18"));
+  assert.ok(root.innerHTML.includes("data-practical-finish"));
+});
+
 test("todos los tests IVOT del Tema 1 explican sus respuestas", () => {
   const themeResources = resources.filter(
     (resource) =>
