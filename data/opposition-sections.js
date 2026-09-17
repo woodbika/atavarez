@@ -61,49 +61,54 @@ export const GOBIERNO_VASCO_ADMINISTRATIVO_C1_SECTIONS = Object.freeze([
     6,
   ),
   gobiernoVascoSection(
+    "16",
+    "El presupuesto de ingresos. Tipos de ingresos. Fases de ejecución del presupuesto de ingresos: Derechos reconocidos, ingresos. Devolución de ingresos indebidos. Derechos reconocidos pendientes de cobro. Documentos contables de ingresos.",
+    7,
+  ),
+  gobiernoVascoSection(
     "17",
     "Estructura y organización del empleo en las administraciones públicas vascas. Relación de puestos de trabajo. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco.",
-    7,
+    8,
   ),
   gobiernoVascoSection(
     "18",
     "Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco.",
-    8,
+    9,
   ),
   gobiernoVascoSection(
     "28",
     "Fuentes del derecho administrativo. La ley: concepto y clases. El reglamento: titularidad de la potestad reglamentaria y sus límites. La jerarquía normativa. El principio de legalidad en la administración pública.",
-    9,
+    10,
   ),
   gobiernoVascoSection(
     "29",
     "La organización administrativa: los órganos administrativos. Órganos colegiados. Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público.",
-    10,
+    11,
   ),
   gobiernoVascoSection(
     "30",
     "El acto administrativo: concepto, producción, contenido, motivación y forma. La eficacia del acto administrativo. Silencio administrativo. Nulidad y anulabilidad. Ley 39/2015, de 1 de octubre, de Procedimiento Administrativo Común de las Administraciones Públicas.",
-    11,
+    12,
   ),
   gobiernoVascoSection(
     "31",
     "Procedimiento administrativo: principios generales. Personas interesadas. Abstención y recusación. Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público.",
-    12,
+    13,
   ),
   gobiernoVascoSection(
     "32",
     "Fases del procedimiento administrativo (Artículos del 53 al 96).",
-    13,
+    14,
   ),
   gobiernoVascoSection(
     "33",
     "Ley 39/2015, de 1 de octubre, de Procedimiento Administrativo Común de las Administraciones Públicas. Revisión de los actos: recursos administrativos, revisión de oficio y revocación. Rectificación de errores materiales.",
-    14,
+    15,
   ),
   gobiernoVascoSection(
     "34",
     "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público. La responsabilidad de las Administraciones Públicas, de sus autoridades y su personal (Artículos del 32 al 37).",
-    15,
+    16,
   ),
 ]);
 

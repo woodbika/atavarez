@@ -15,6 +15,7 @@ import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
+import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
 import explicacionesTema17 from "./explanations/gobierno-vasco-administrativo-c1/tema-17/index.js";
 import explicacionesTema18 from "./explanations/gobierno-vasco-administrativo-c1/tema-18/index.js";
 import explicacionesTema28 from "./explanations/gobierno-vasco-administrativo-c1/tema-28/index.js";
@@ -54,6 +55,8 @@ import testEmpleoPublico178a180TiposFaltas from "./tests/gobierno-vasco-administ
 import testEmpleoPublico181a184 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-181-a-184.js";
 import testPresupuestoGastosEjecucion1 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-1.js";
 import testPresupuestoGastosEjecucion2 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-2.js";
+import testPresupuestosClasificacionIngresos from "./tests/gobierno-vasco-administrativo-c1/tema-16/tests-ivot/test-presupuestos-clasificacion-ingresos.js";
+import testPresupuestoIngresosClasificacionFases from "./tests/gobierno-vasco-administrativo-c1/tema-16/tests-ivot/test-presupuesto-ingresos-clasificacion-y-fases-ejecucion.js";
 import testEmpleoPublico40a44 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-40-a-44.js";
 import testEmpleoPublico45a50 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-45-a-50.js";
 import testEmpleoPublico51y52 from "./tests/gobierno-vasco-administrativo-c1/tema-17/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-51-y-52.js";
@@ -117,6 +120,7 @@ import teoriaUnionEuropea from "./resources/gobierno-vasco-administrativo-c1/tem
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
+import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
 import teoriaAccesoEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-18/teoria/tema-18-empleo-publico-vasco.js";
 import resumenSituacionesAdministrativas from "./resources/gobierno-vasco-administrativo-c1/tema-18/resumen/resumen-situaciones-administrativas.js";
@@ -225,6 +229,19 @@ const relatedTheoryByTestId = new Map([
         "competencias-ejecucion",
         "autorizacion-definicion",
         "autorizacion-tecnicas-presupuestarias",
+      ],
+    },
+  }],
+  [testPresupuestosClasificacionIngresos.id, {
+    resourceId: teoriaPresupuestoIngresos.id,
+    selection: { blockIds: ["ejecucion-presupuesto-ingresos"] },
+  }],
+  [testPresupuestoIngresosClasificacionFases.id, {
+    resourceId: teoriaPresupuestoIngresos.id,
+    selection: {
+      blockIds: [
+        "ejecucion-presupuesto-ingresos",
+        "fases-ejecucion-presupuesto-ingresos",
       ],
     },
   }],
@@ -508,6 +525,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema17.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema18.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema28.map((explanations) => [explanations.testId, explanations]),
@@ -571,6 +589,9 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   theoryResource(teoriaPresupuestoGastos),
   testResource(testPresupuestoGastosEjecucion1),
   testResource(testPresupuestoGastosEjecucion2),
+  theoryResource(teoriaPresupuestoIngresos),
+  testResource(testPresupuestosClasificacionIngresos),
+  testResource(testPresupuestoIngresosClasificacionFases),
   theoryResource(teoriaEmpleoPublicoVasco),
   testResource(testEmpleoPublico40a44),
   testResource(testEmpleoPublico45a50),

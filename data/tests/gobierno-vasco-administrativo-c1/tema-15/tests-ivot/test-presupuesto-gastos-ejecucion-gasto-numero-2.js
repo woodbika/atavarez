@@ -6,7 +6,7 @@ const test = {
   schemaVersion: 1,
   id: "test-presupuesto-gastos-ejecucion-gasto-numero-2",
   autor: { id: "ivot", nombre: "IVOT" },
-  titulo: "TEST DE EL PRESUPUESTO DE GASTOS: EJECUCIÓN DEL GASTO Nº 2",
+  titulo: "Test del presupuesto de gastos: ejecución del gasto Nº 2",
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",

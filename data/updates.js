@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-presupuesto-ingresos-tema-16",
+    category: "Nuevos recursos",
+    publishedAt: "2026-09-17T20:28:10+02:00",
+    title: "Teoría y tests del presupuesto de ingresos",
+    description:
+      "El Tema 16 incorpora una lectura estructurada con acceso al PDF, dos tests IVOT y un test completo con 52 preguntas. Todas las respuestas incluyen explicaciones vinculadas a la teoría.",
+  }),
+  Object.freeze({
     id: "caso-practico-avanzado-ley-40-2015-tema-29",
     category: "Nuevo recurso",
     publishedAt: "2026-09-09T22:02:17+02:00",
