@@ -1,4 +1,5 @@
 import { normalizeText } from "../utils/text.js";
+import { selectAvailableQuestions } from "../utils/question-availability.js";
 
 function oppositionId(resource) {
   return resource.opposition?.id ?? resource.classification?.oposicionId ?? "";
@@ -75,14 +76,18 @@ export class ResourceRepository {
       const first = themeResources[0];
       const themeNumber = String(first.classification.tema.numero);
       const id = `test-completo-${oppositionId(first)}-tema-${themeNumber}`;
-      const preguntas = themeResources.flatMap((resource) =>
-        resource.data.preguntas.map((question) => ({
+      const availableTests = themeResources.map((resource) => ({
+        resource,
+        test: selectAvailableQuestions(resource.data),
+      }));
+      const preguntas = availableTests.flatMap(({ resource, test }) =>
+        test.preguntas.map((question) => ({
           ...question,
           id: `${resource.id}:${question.id}`,
         })),
       );
-      const explanationEntries = themeResources.flatMap((resource) =>
-        (resource.data.explicaciones?.preguntas ?? []).map((explanation) => ({
+      const explanationEntries = availableTests.flatMap(({ resource, test }) =>
+        (test.explicaciones?.preguntas ?? []).map((explanation) => ({
           ...explanation,
           preguntaId: `${resource.id}:${explanation.preguntaId}`,
         })),

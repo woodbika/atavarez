@@ -1,6 +1,10 @@
 import { escapeHtml, formatDisplayTitle } from "../utils/text.js";
 import { coverImageUrl } from "../utils/assets.js";
 import { supportsTestLaunchConfiguration } from "../utils/test-launch.js";
+import {
+  availableQuestionCount,
+  unavailableQuestionCount,
+} from "../utils/question-availability.js";
 import { backLink } from "./layout.js";
 
 function plural(count, singular, pluralForm) {
@@ -330,6 +334,18 @@ export function renderResources(
         const isSummary = resource.type === "resumen";
         const isExplanation = resource.type === "explicacion";
         const isPracticalCase = resource.type === "caso-practico";
+        const availableCount = resource.type === "test"
+          ? availableQuestionCount(test)
+          : 0;
+        const unavailableCount = resource.type === "test"
+          ? unavailableQuestionCount(test)
+          : 0;
+        const questionCountLabel = resource.questionCountLabel ??
+          `${availableCount} ${availableCount === 1 ? "pregunta" : "preguntas"}${
+            unavailableCount
+              ? ` · ${unavailableCount} no ${unavailableCount === 1 ? "disponible" : "disponibles"}`
+              : ""
+          }`;
         const hasRelatedTheory = Boolean(resource.relatedTheory);
         const theoryNotice = resource.theoryNotice;
         const usesLightTestTitle = resource.type === "test" && !isComplete;
@@ -375,7 +391,7 @@ export function renderResources(
               ${isPracticalCase
                 ? `<span class="question-count">${test.casos.length} casos · ${test.preguntas.length} preguntas</span>`
                 : resource.type === "test"
-                ? `<span class="question-count">${escapeHtml(resource.questionCountLabel ?? `${test.preguntas.length} preguntas`)}</span>`
+                ? `<span class="question-count">${escapeHtml(questionCountLabel)}</span>`
                 : ""}
             </div>
             <h3 class="${usesLightTestTitle ? "resource-test-title" : ""}">${escapeHtml(formatDisplayTitle(resource.title))}</h3>

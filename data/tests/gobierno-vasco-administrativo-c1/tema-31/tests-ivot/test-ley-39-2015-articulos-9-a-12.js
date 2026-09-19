@@ -84,6 +84,7 @@ const test = {
     },
     {
       "id": 4,
+      "disponible": false,
       "enunciado": "Para dicha inscripción en el registro se requiere autorización por parte de:",
       "opciones": [
         {
@@ -103,6 +104,7 @@ const test = {
     },
     {
       "id": 5,
+      "disponible": false,
       "enunciado": "Dicha denegación sólo se podrá denegar:",
       "opciones": [
         {
@@ -122,6 +124,7 @@ const test = {
     },
     {
       "id": 6,
+      "disponible": false,
       "enunciado": "Para dicha denegación se requiere el informe de:",
       "opciones": [
         {
@@ -141,6 +144,7 @@ const test = {
     },
     {
       "id": 7,
+      "disponible": false,
       "enunciado": "La autorización habrá de ser emitida en el plazo máximo de:",
       "opciones": [
         {
@@ -160,6 +164,7 @@ const test = {
     },
     {
       "id": 8,
+      "disponible": false,
       "enunciado": "La falta de resolución de la solicitud de autorización:",
       "opciones": [
         {

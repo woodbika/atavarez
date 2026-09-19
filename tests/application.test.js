@@ -63,6 +63,7 @@ import {
   supportsTestLaunchConfiguration,
 } from "../utils/test-launch.js";
 import { formatCountdown, testDurationSeconds } from "../utils/test-timer.js";
+import { availableQuestionCount } from "../utils/question-availability.js";
 import { renderReview } from "../views/review-view.js";
 import { renderPracticalCase } from "../views/practical-case-view.js";
 
@@ -515,7 +516,7 @@ test("los tests completos de los Temas 3, 4, 9, 15 a 18 y 28 a 34 conservan sus 
     ["28", 47],
     ["29", 92],
     ["30", 96],
-    ["31", 65],
+    ["31", 60],
     ["32", 238],
     ["33", 117],
     ["34", 35],
@@ -2043,7 +2044,7 @@ test("el portal agrupa oposiciones, temas y recursos", () => {
         (total, resource) =>
           resource.includeInCombinedTest === false
             ? total
-            : total + resource.data.preguntas.length,
+            : total + availableQuestionCount(resource.data),
         0,
       );
       const combinedResourceCount = expectedQuestionCount ? 1 : 0;
@@ -2703,6 +2704,18 @@ test("el tema 31 reúne sus tests IVOT en un test completo", () => {
     "test-ley-40-2015-articulos-23-y-24",
   ];
   const sourceTestIds = new Set(sourceTests.map((resource) => resource.id));
+  const affectedResource = sourceTests.find(
+    (resource) => resource.id === "test-ley-39-2015-articulos-9-a-12",
+  );
+  const unavailableQuestions = affectedResource.data.preguntas.filter(
+    (question) => question.disponible === false,
+  );
+  const attempt = createTestAttempt(
+    affectedResource,
+    affectedResource.data,
+    { requestedOrder: "natural" },
+  );
+  const session = new TestSession(affectedResource.data);
 
   assert.ok(theme31);
   assert.ok(completeTest);
@@ -2712,14 +2725,60 @@ test("el tema 31 reúne sus tests IVOT en un test completo", () => {
     requiredTestIds,
   );
   assert.equal(sourceQuestionCount, 65);
-  assert.equal(completeTest.data.preguntas.length, sourceQuestionCount);
+  assert.deepEqual(
+    unavailableQuestions.map((question) => question.id),
+    [4, 5, 6, 7, 8],
+  );
+  assert.equal(attempt.test.preguntas.length, 22);
+  assert.equal(session.test.preguntas.length, 22);
+  assert.ok(
+    attempt.test.preguntas.every(
+      (question) => ![4, 5, 6, 7, 8].includes(question.id),
+    ),
+  );
+  attempt.test.preguntas.forEach((question) => {
+    session.selectAnswerForQuestion(question.id, question.respuestaCorrecta);
+  });
+  assert.deepEqual(session.calculateResult(), {
+    testId: affectedResource.id,
+    answers: Object.fromEntries(
+      attempt.test.preguntas.map((question) => [
+        String(question.id),
+        question.respuestaCorrecta,
+      ]),
+    ),
+    total: 22,
+    correct: 22,
+    incorrect: 0,
+    unanswered: 0,
+    percentage: 100,
+    score: 10,
+    questionOrder: attempt.test.preguntas.map((question) => String(question.id)),
+    answerOrder: Object.fromEntries(
+      attempt.test.preguntas.map((question) => [
+        String(question.id),
+        question.opciones.map((option) => String(option.id)),
+      ]),
+    ),
+  });
+  assert.equal(completeTest.data.preguntas.length, 60);
+  assert.equal(completeTest.data.explicaciones.preguntas.length, 60);
+  assert.ok(
+    completeTest.data.preguntas.every(
+      (question) =>
+        ![4, 5, 6, 7, 8].some(
+          (questionId) =>
+            question.id === `${affectedResource.id}:${questionId}`,
+        ),
+    ),
+  );
   assert.deepEqual(
     new Set(completeTest.data.fuente.tests),
     new Set(sourceTests.map((resource) => resource.id)),
   );
   assert.equal(
     new Set(completeTest.data.preguntas.map((question) => question.id)).size,
-    sourceQuestionCount,
+    60,
   );
 });
 

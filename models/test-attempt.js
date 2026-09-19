@@ -9,6 +9,7 @@ import {
   randomizeTestAnswers,
   restoreTestAnswers,
 } from "../utils/answer-order.js";
+import { selectAvailableQuestions } from "../utils/question-availability.js";
 
 export function createTestAttempt(
   resource,
@@ -20,6 +21,7 @@ export function createTestAttempt(
     random = Math.random,
   } = {},
 ) {
+  test = selectAvailableQuestions(test);
   const selection = resource?.questionSelection;
   const availableAnswerOrderModes = resource?.answerOrderModes ?? ["natural"];
   const answerOrderMode = availableAnswerOrderModes.includes(requestedAnswerOrder)
@@ -84,7 +86,7 @@ export function createTestAttempt(
 
 export function restoreTestAttempt(test, questionOrder, answerOrder) {
   return restoreTestAnswers(
-    selectQuestionsByOrder(test, questionOrder),
+    selectQuestionsByOrder(selectAvailableQuestions(test), questionOrder),
     answerOrder,
   );
 }

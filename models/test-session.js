@@ -1,6 +1,8 @@
+import { selectAvailableQuestions } from "../utils/question-availability.js";
+
 export class TestSession {
   constructor(test) {
-    this.test = test;
+    this.test = selectAvailableQuestions(test);
     this.answers = {};
     this.currentIndex = 0;
     this.liveResponseEnabled = false;

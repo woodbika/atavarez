@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "preguntas-no-disponibles-test-articulos-9-a-12-tema-31",
+    category: "Mejora",
+    publishedAt: "2026-09-19T12:24:44+02:00",
+    title: "Ajuste de preguntas en el Tema 31",
+    description:
+      "Las preguntas 4 a 8 del test de los artículos 9 a 12 quedan marcadas como no disponibles y se excluyen de la navegación, los resultados y la puntuación. El test ofrece 22 preguntas evaluables y el test completo del tema reúne 60.",
+  }),
+  Object.freeze({
     id: "teoria-tests-presupuesto-ingresos-tema-16",
     category: "Nuevos recursos",
     publishedAt: "2026-09-17T20:28:10+02:00",

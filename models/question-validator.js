@@ -20,6 +20,12 @@ export function validateQuestions(questions, path, errors) {
     if (!isNonEmptyString(question?.enunciado)) {
       errors.push(`${questionPath}.enunciado: debe contener texto.`);
     }
+    if (
+      question?.disponible !== undefined &&
+      typeof question.disponible !== "boolean"
+    ) {
+      errors.push(`${questionPath}.disponible: debe ser un valor lógico.`);
+    }
     if (!Array.isArray(question?.opciones) || question.opciones.length < 2) {
       errors.push(`${questionPath}.opciones: debe contener al menos dos opciones.`);
       return;
