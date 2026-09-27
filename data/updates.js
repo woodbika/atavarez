@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "tests-kaixo-temas-02-03-04",
+    category: "Nuevos tests",
+    publishedAt: "2026-09-27T20:08:40+02:00",
+    title: "Nuevos tests Kaixo en los Temas 2, 3 y 4",
+    description:
+      "Se incorporan 62 preguntas de la OPE 2022 sobre organización territorial del Estado, Unión Europea y organización política y administrativa de la CAE. Cada test se ofrece como recurso independiente y queda fuera del test completo de su tema.",
+  }),
+  Object.freeze({
     id: "preguntas-no-disponibles-test-articulos-9-a-12-tema-31",
     category: "Mejora",
     publishedAt: "2026-09-19T12:24:44+02:00",

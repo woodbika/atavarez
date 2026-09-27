@@ -36,16 +36,19 @@ import testOrganizacionTerritorial1 from "./tests/gobierno-vasco-administrativo-
 import testOrganizacionTerritorial2 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-2.js";
 import testOrganizacionTerritorial3 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-3.js";
 import testOrganizacionTerritorial4 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-ivot/test-organizacion-territorial-del-estado-numero-4-competencias.js";
+import testOrganizacionTerritorialKaixoOpe2022 from "./tests/gobierno-vasco-administrativo-c1/tema-02/tests-kaixo/test-organizacion-territorial-del-estado.js";
 import testEspacioEuropeo1 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-espacio-europeo-i.js";
 import testEspacioEuropeo2 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-espacio-europeo-ii.js";
 import testEspacioEuropeo3 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-espacio-europeo-iii.js";
 import testInstitucionesUnionEuropea1 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-instituciones-union-europea-i.js";
 import testInstitucionesUnionEuropea2 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-ivot/test-instituciones-union-europea-ii.js";
+import testUnionEuropeaKaixoOpe2022 from "./tests/gobierno-vasco-administrativo-c1/tema-03/tests-kaixo/test-derecho-union-europea-instituciones-actos-juridicos.js";
 import testEstatutoVascoTituloPreliminar from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-titulo-preliminar.js";
 import testEstatutoVascoCompetencias1 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-1.js";
 import testEstatutoVascoCompetencias2 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-2.js";
 import testEstatutoVascoCompetencias3 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-3.js";
 import testEstatutoVascoArticulos24a33 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-articulos-24-a-33.js";
+import testOrganizacionPoliticaVascaKaixoOpe2022 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-kaixo/test-organizacion-politica-administrativa-cae.js";
 import testEmpleoPublico26a30 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30.js";
 import testEmpleoPublico161y162Derechos from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162.js";
 import testEmpleoPublico161a166 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166.js";
@@ -497,6 +500,7 @@ const relatedTheoryByTestId = new Map([
 
 const theoryNoticeByTestId = new Map([
   [testConstitucionKaixoOpe2022.id, "Sin vínculo teórico directo"],
+  [testOrganizacionTerritorialKaixoOpe2022.id, "Sin vínculo teórico directo"],
   [testOrganizacionTerritorial2.id, "Sin vínculo teórico directo"],
   [testOrganizacionTerritorial3.id, "Sin vínculo teórico directo"],
   [testEspacioEuropeo1.id, "Sin vínculo teórico directo"],
@@ -504,6 +508,8 @@ const theoryNoticeByTestId = new Map([
   [testEspacioEuropeo3.id, "Sin vínculo teórico directo"],
   [testInstitucionesUnionEuropea1.id, "Sin vínculo teórico directo"],
   [testInstitucionesUnionEuropea2.id, "Sin vínculo teórico directo"],
+  [testUnionEuropeaKaixoOpe2022.id, "Sin vínculo teórico directo"],
+  [testOrganizacionPoliticaVascaKaixoOpe2022.id, "Sin vínculo teórico directo"],
 ]);
 
 const answerExplanationsByTestId = new Map([
@@ -566,18 +572,21 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testOrganizacionTerritorial2),
   testResource(testOrganizacionTerritorial3),
   testResource(testOrganizacionTerritorial4),
+  testResource(testOrganizacionTerritorialKaixoOpe2022),
   theoryResource(teoriaUnionEuropea),
   testResource(testEspacioEuropeo1),
   testResource(testEspacioEuropeo2),
   testResource(testEspacioEuropeo3),
   testResource(testInstitucionesUnionEuropea1),
   testResource(testInstitucionesUnionEuropea2),
+  testResource(testUnionEuropeaKaixoOpe2022),
   theoryResource(teoriaOrganizacionPoliticaCapv),
   testResource(testEstatutoVascoTituloPreliminar),
   testResource(testEstatutoVascoCompetencias1),
   testResource(testEstatutoVascoCompetencias2),
   testResource(testEstatutoVascoCompetencias3),
   testResource(testEstatutoVascoArticulos24a33),
+  testResource(testOrganizacionPoliticaVascaKaixoOpe2022),
   theoryResource(teoriaPersonalServicioPublico),
   testResource(testEmpleoPublico26a30),
   testResource(testEmpleoPublico161y162Derechos),

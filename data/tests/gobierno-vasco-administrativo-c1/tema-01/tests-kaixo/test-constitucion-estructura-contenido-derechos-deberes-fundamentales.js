@@ -15,6 +15,7 @@ const test = {
     nombre: "OPE 2022",
     anio: 2022,
   },
+  includeInCombinedTest: false,
   clasificacion: {
     administracion: "EUSKO JAURLARITZA / GOBIERNO VASCO",
     oposicion: "Cuerpo Administrativo",

@@ -263,12 +263,13 @@ test("todos los tests IVOT del Tema 1 explican sus respuestas", () => {
   });
 });
 
-test("todos los tests del Tema 2 explican sus respuestas", () => {
+test("todos los tests IVOT del Tema 2 explican sus respuestas", () => {
   const themeResources = resources.filter(
     (resource) =>
       resource.type === "test" &&
       resource.opposition.id === "gobierno-vasco-administrativo-c1" &&
-      resource.classification.tema.numero === "02",
+      resource.classification.tema.numero === "02" &&
+      resource.author?.id === "ivot",
   );
 
   assert.equal(themeResources.length, 4);
@@ -309,7 +310,7 @@ test("todos los tests del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests de los Temas 3, 4, 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests IVOT de los Temas 3, 4, 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
@@ -332,7 +333,8 @@ test("los tests de los Temas 3, 4, 9, 15 a 18 y 28 a 34 explican todas sus respu
       (resource) =>
         resource.type === "test" &&
         resource.opposition.id === "gobierno-vasco-administrativo-c1" &&
-        resource.classification.tema.numero === themeNumber,
+        resource.classification.tema.numero === themeNumber &&
+        resource.author?.id === "ivot",
     );
 
     assert.equal(themeResources.length, expected.tests);
@@ -466,8 +468,8 @@ test("el test completo conserva todas las explicaciones con ids compuestos", () 
     "test-completo-gobierno-vasco-administrativo-c1-tema-01",
   );
 
-  assert.equal(combinedTest.explicaciones.preguntas.length, 141);
-  assert.equal(combinedTest.preguntas.length, 141);
+  assert.equal(combinedTest.explicaciones.preguntas.length, 121);
+  assert.equal(combinedTest.preguntas.length, 121);
   assert.equal(combinedTest.explicaciones.parcial, undefined);
   assert.equal(combinedTest.explicaciones.schemaVersion, 2);
   assert.equal(
@@ -817,10 +819,57 @@ test("el Tema 1 incorpora el test general de Kaixo sin vínculo teórico", () =>
   assert.equal(resource.data.fuente.tipo, "web");
   assert.equal(resource.data.fuente.preguntas, 20);
   assert.equal(resource.data.preguntas.length, 20);
+  assert.equal(resource.includeInCombinedTest, false);
   assert.equal(resource.relatedTheory, undefined);
   assert.equal(resource.theoryNotice, "Sin vínculo teórico directo");
   assert.equal(resource.data.explicaciones.preguntas.length, 20);
   assert.equal(resource.data.explicaciones.theoryResourceId, "tema-01-constitucion-espanola");
+});
+
+test("los tests Kaixo de los Temas 2, 3 y 4 se ofrecen como recursos independientes", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const expectedResources = [
+    {
+      id: "test-organizacion-territorial-del-estado-kaixo",
+      themeNumber: "02",
+      questions: 20,
+    },
+    {
+      id: "test-derecho-union-europea-instituciones-actos-juridicos-kaixo",
+      themeNumber: "03",
+      questions: 21,
+    },
+    {
+      id: "test-organizacion-politica-administrativa-cae-kaixo",
+      themeNumber: "04",
+      questions: 21,
+    },
+  ];
+
+  expectedResources.forEach(({ id, themeNumber, questions }) => {
+    const resource = resources.find((item) => item.id === id);
+
+    assert.ok(resource);
+    assert.equal(resource.type, "test");
+    assert.equal(resource.author.id, "kaixo");
+    assert.equal(resource.author.nombre, "Kaixo");
+    assert.equal(resource.classification.tema.numero, themeNumber);
+    assert.equal(resource.data.convocatoria.anio, 2022);
+    assert.equal(resource.data.fuente.tipo, "web");
+    assert.equal(resource.data.fuente.preguntas, questions);
+    assert.equal(resource.data.preguntas.length, questions);
+    assert.equal(resource.includeInCombinedTest, false);
+    assert.equal(resource.relatedTheory, undefined);
+    assert.equal(resource.theoryNotice, "Sin vínculo teórico directo");
+    assert.equal(resource.data.explicaciones, undefined);
+    assert.ok(
+      !repository
+        .getTestById(
+          `test-completo-gobierno-vasco-administrativo-c1-tema-${themeNumber}`,
+        )
+        .fuente.tests.includes(id),
+    );
+  });
 });
 
 test("el tema 02 relaciona solo los tests con un intervalo teórico directo", () => {

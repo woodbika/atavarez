@@ -72,6 +72,9 @@ export function createOppositionResourceFactory(
       classification,
       sourceClassification: test.clasificacion,
       sourceAuthor: test.autor,
+      ...(test.includeInCombinedTest === false
+        ? { includeInCombinedTest: false }
+        : {}),
       ...(relatedTheory ? { relatedTheory } : {}),
       ...(theoryNotice ? { theoryNotice } : {}),
       data: {
