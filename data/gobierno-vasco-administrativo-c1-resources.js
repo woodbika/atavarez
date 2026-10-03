@@ -13,6 +13,7 @@ import explicacionesOrganizacionTerritorial3 from "./explanations/gobierno-vasco
 import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco-administrativo-c1/tema-02/test-organizacion-territorial-del-estado-numero-4-competencias.js";
 import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1/tema-03/index.js";
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
+import explicacionesTema05 from "./explanations/gobierno-vasco-administrativo-c1/tema-05/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
@@ -49,6 +50,9 @@ import testEstatutoVascoCompetencias2 from "./tests/gobierno-vasco-administrativ
 import testEstatutoVascoCompetencias3 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-competencias-numero-3.js";
 import testEstatutoVascoArticulos24a33 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-ivot/test-estatuto-autonomia-pais-vasco-articulos-24-a-33.js";
 import testOrganizacionPoliticaVascaKaixoOpe2022 from "./tests/gobierno-vasco-administrativo-c1/tema-04/tests-kaixo/test-organizacion-politica-administrativa-cae.js";
+import testAspectosGeneralesCompetencias1 from "./tests/gobierno-vasco-administrativo-c1/tema-05/tests-ivot/test-aspectos-generales-distribucion-competencias-numero-1.js";
+import testAspectosGeneralesCompetencias2 from "./tests/gobierno-vasco-administrativo-c1/tema-05/tests-ivot/test-aspectos-generales-distribucion-competencias-numero-2.js";
+import testAspectosGeneralesCompetencias3 from "./tests/gobierno-vasco-administrativo-c1/tema-05/tests-ivot/test-aspectos-generales-distribucion-competencias-numero-3.js";
 import testEmpleoPublico26a30 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30.js";
 import testEmpleoPublico161y162Derechos from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162.js";
 import testEmpleoPublico161a166 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166.js";
@@ -121,6 +125,7 @@ import teoriaConstitucion from "./resources/gobierno-vasco-administrativo-c1/tem
 import teoriaOrganizacionTerritorial from "./resources/gobierno-vasco-administrativo-c1/tema-02/teoria/tema-2-organizacion-territorial.js";
 import teoriaUnionEuropea from "./resources/gobierno-vasco-administrativo-c1/tema-03/teoria/tema-03-union-europea.js";
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
+import teoriaGobiernoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-05/teoria/tema-05-gobierno-vasco.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
@@ -190,6 +195,18 @@ const relatedTheoryByTestId = new Map([
   [testEstatutoVascoArticulos24a33.id, {
     resourceId: teoriaOrganizacionPoliticaCapv.id,
     selection: { articles: { from: 24, to: 33 } },
+  }],
+  [testAspectosGeneralesCompetencias1.id, {
+    resourceId: teoriaGobiernoVasco.id,
+    selection: { blockIds: ["distribucion-general-competencias-capv"] },
+  }],
+  [testAspectosGeneralesCompetencias2.id, {
+    resourceId: teoriaGobiernoVasco.id,
+    selection: { blockIds: ["autonomia-financiera-haciendas-vascas"] },
+  }],
+  [testAspectosGeneralesCompetencias3.id, {
+    resourceId: teoriaGobiernoVasco.id,
+    selection: { blockIds: ["competencias-entidades-locales"] },
   }],
   [testEmpleoPublico26a30.id, {
     resourceId: teoriaPersonalServicioPublico.id,
@@ -529,6 +546,7 @@ const answerExplanationsByTestId = new Map([
   [explicacionesOrganizacionTerritorial4.testId, explicacionesOrganizacionTerritorial4],
   ...explicacionesTema03.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema05.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
@@ -587,6 +605,10 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEstatutoVascoCompetencias3),
   testResource(testEstatutoVascoArticulos24a33),
   testResource(testOrganizacionPoliticaVascaKaixoOpe2022),
+  theoryResource(teoriaGobiernoVasco),
+  testResource(testAspectosGeneralesCompetencias1),
+  testResource(testAspectosGeneralesCompetencias2),
+  testResource(testAspectosGeneralesCompetencias3),
   theoryResource(teoriaPersonalServicioPublico),
   testResource(testEmpleoPublico26a30),
   testResource(testEmpleoPublico161y162Derechos),

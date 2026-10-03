@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-distribucion-competencias-tema-05",
+    category: "Nuevos recursos",
+    publishedAt: "2026-10-03T18:32:02+02:00",
+    title: "Teoría y tests sobre la distribución de competencias",
+    description:
+      "El Tema 05 incorpora una lectura estructurada con acceso al PDF, tres tests IVOT y un test completo con 40 preguntas. Las respuestas incluyen explicaciones vinculadas a la distribución institucional, las Haciendas vascas y las competencias locales.",
+  }),
+  Object.freeze({
     id: "tests-kaixo-temas-02-03-04",
     category: "Nuevos tests",
     publishedAt: "2026-09-27T20:08:40+02:00",

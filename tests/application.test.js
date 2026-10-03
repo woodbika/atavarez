@@ -310,10 +310,11 @@ test("todos los tests IVOT del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests IVOT de los Temas 3, 4, 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests IVOT de los Temas 3 a 5, 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
+    ["05", { tests: 3, questions: 40 }],
     ["09", { tests: 7, questions: 165 }],
     ["15", { tests: 2, questions: 32 }],
     ["16", { tests: 2, questions: 52 }],
@@ -383,6 +384,7 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-instituciones-union-europea-ii", 11, "b"],
     ["test-instituciones-union-europea-ii", 22, "b"],
     ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", 2, "b"],
+    ["test-aspectos-generales-distribucion-competencias-numero-1", 17, "b"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105", 6, "a"],
@@ -413,11 +415,11 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 89,
-    questions: 1848,
-    directReferences: 1756,
+    tests: 92,
+    questions: 1888,
+    directReferences: 1796,
     contextualReferences: 92,
-    theoryDiscrepancies: 11,
+    theoryDiscrepancies: 12,
   });
 });
 
@@ -505,11 +507,12 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3, 4, 9, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3 a 5, 9, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
+    ["05", 40],
     ["09", 165],
     ["15", 32],
     ["16", 52],
@@ -940,6 +943,73 @@ test("el tema 03 identifica los tests sin vínculo teórico directo", () => {
     ),
   );
   assert.deepEqual(validateResources(resources), []);
+});
+
+test("el tema 05 incorpora teoría, tres tests vinculados y un test completo", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const theory = repository.getById("tema-05-gobierno-vasco");
+  const sourceTests = resources.filter(
+    (resource) =>
+      resource.type === "test" &&
+      resource.classification.tema.numero === "05" &&
+      resource.author?.id === "ivot",
+  );
+  const completeTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-05",
+  );
+  const expectedSelections = new Map([
+    [
+      "test-aspectos-generales-distribucion-competencias-numero-1",
+      ["distribucion-general-competencias-capv"],
+    ],
+    [
+      "test-aspectos-generales-distribucion-competencias-numero-2",
+      ["autonomia-financiera-haciendas-vascas"],
+    ],
+    [
+      "test-aspectos-generales-distribucion-competencias-numero-3",
+      ["competencias-entidades-locales"],
+    ],
+  ]);
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "05");
+  assert.equal(theory.data.fuente.archivo, "tema-05-gobierno-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 6);
+  assert.deepEqual(
+    theory.data.bloques.map((block) => block.id),
+    [
+      "distribucion-general-competencias-capv",
+      "autonomia-financiera-haciendas-vascas",
+      "competencias-entidades-locales",
+    ],
+  );
+  assert.equal(sourceTests.length, 3);
+  assert.equal(
+    sourceTests.reduce(
+      (total, resource) => total + resource.data.preguntas.length,
+      0,
+    ),
+    40,
+  );
+  expectedSelections.forEach((blockIds, resourceId) => {
+    const resource = repository.getById(resourceId);
+
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(resource.relatedTheory.selection, { blockIds });
+    assert.equal(resource.theoryNotice, undefined);
+    assert.equal(
+      resource.data.explicaciones.preguntas.length,
+      resource.data.preguntas.length,
+    );
+  });
+  assert.equal(completeTest.preguntas.length, 40);
+  assert.equal(completeTest.explicaciones.preguntas.length, 40);
+  assert.deepEqual(
+    new Set(completeTest.fuente.tests),
+    new Set(expectedSelections.keys()),
+  );
 });
 
 test("el tema 09 relaciona cada test con su intervalo de teoría", () => {
