@@ -14,6 +14,7 @@ import explicacionesOrganizacionTerritorial4 from "./explanations/gobierno-vasco
 import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1/tema-03/index.js";
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
 import explicacionesTema05 from "./explanations/gobierno-vasco-administrativo-c1/tema-05/index.js";
+import explicacionesTema06 from "./explanations/gobierno-vasco-administrativo-c1/tema-06/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
@@ -53,6 +54,11 @@ import testOrganizacionPoliticaVascaKaixoOpe2022 from "./tests/gobierno-vasco-ad
 import testAspectosGeneralesCompetencias1 from "./tests/gobierno-vasco-administrativo-c1/tema-05/tests-ivot/test-aspectos-generales-distribucion-competencias-numero-1.js";
 import testAspectosGeneralesCompetencias2 from "./tests/gobierno-vasco-administrativo-c1/tema-05/tests-ivot/test-aspectos-generales-distribucion-competencias-numero-2.js";
 import testAspectosGeneralesCompetencias3 from "./tests/gobierno-vasco-administrativo-c1/tema-05/tests-ivot/test-aspectos-generales-distribucion-competencias-numero-3.js";
+import testIgualdadArticulos1a3 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-igualdad-articulos-1-a-3.js";
+import testCompetenciasIgualdadArticulos4a8 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-competencias-de-igualdad-articulos-4-a-8.js";
+import testIgualdadArticulos19a21 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-igualdad-articulos-19-a-21.js";
+import testIgualdadArticulos23a25 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25.js";
+import testIgualdadViolenciaMachista from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-violencia-machista-contra-las-mujeres.js";
 import testEmpleoPublico26a30 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30.js";
 import testEmpleoPublico161y162Derechos from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162.js";
 import testEmpleoPublico161a166 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166.js";
@@ -126,6 +132,7 @@ import teoriaOrganizacionTerritorial from "./resources/gobierno-vasco-administra
 import teoriaUnionEuropea from "./resources/gobierno-vasco-administrativo-c1/tema-03/teoria/tema-03-union-europea.js";
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaGobiernoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-05/teoria/tema-05-gobierno-vasco.js";
+import teoriaIgualdad from "./resources/gobierno-vasco-administrativo-c1/tema-06/teoria/tema-06-igualdad.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
@@ -207,6 +214,22 @@ const relatedTheoryByTestId = new Map([
   [testAspectosGeneralesCompetencias3.id, {
     resourceId: teoriaGobiernoVasco.id,
     selection: { blockIds: ["competencias-entidades-locales"] },
+  }],
+  [testIgualdadArticulos1a3.id, {
+    resourceId: teoriaIgualdad.id,
+    selection: { articles: { from: 1, to: 3 } },
+  }],
+  [testCompetenciasIgualdadArticulos4a8.id, {
+    resourceId: teoriaIgualdad.id,
+    selection: { articles: { from: 4, to: 8 } },
+  }],
+  [testIgualdadArticulos19a21.id, {
+    resourceId: teoriaIgualdad.id,
+    selection: { articles: { from: 19, to: 21 } },
+  }],
+  [testIgualdadArticulos23a25.id, {
+    resourceId: teoriaIgualdad.id,
+    selection: { articles: { from: 23, to: 25 } },
   }],
   [testEmpleoPublico26a30.id, {
     resourceId: teoriaPersonalServicioPublico.id,
@@ -527,6 +550,7 @@ const theoryNoticeByTestId = new Map([
   [testInstitucionesUnionEuropea2.id, "Sin vínculo teórico directo"],
   [testUnionEuropeaKaixoOpe2022.id, "Sin vínculo teórico directo"],
   [testOrganizacionPoliticaVascaKaixoOpe2022.id, "Sin vínculo teórico directo"],
+  [testIgualdadViolenciaMachista.id, "Sin vínculo teórico directo"],
 ]);
 
 const answerExplanationsByTestId = new Map([
@@ -547,6 +571,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema03.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema05.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema06.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
@@ -609,6 +634,12 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testAspectosGeneralesCompetencias1),
   testResource(testAspectosGeneralesCompetencias2),
   testResource(testAspectosGeneralesCompetencias3),
+  theoryResource(teoriaIgualdad),
+  testResource(testIgualdadArticulos1a3),
+  testResource(testCompetenciasIgualdadArticulos4a8),
+  testResource(testIgualdadArticulos19a21),
+  testResource(testIgualdadArticulos23a25),
+  testResource(testIgualdadViolenciaMachista),
   theoryResource(teoriaPersonalServicioPublico),
   testResource(testEmpleoPublico26a30),
   testResource(testEmpleoPublico161y162Derechos),

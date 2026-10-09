@@ -310,11 +310,12 @@ test("todos los tests IVOT del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests IVOT de los Temas 3 a 5, 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests IVOT de los Temas 3 a 6, 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
     ["05", { tests: 3, questions: 40 }],
+    ["06", { tests: 5, questions: 134 }],
     ["09", { tests: 7, questions: 165 }],
     ["15", { tests: 2, questions: 32 }],
     ["16", { tests: 2, questions: 52 }],
@@ -385,6 +386,11 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-instituciones-union-europea-ii", 22, "b"],
     ["test-estatuto-autonomia-pais-vasco-articulos-24-a-33", 2, "b"],
     ["test-aspectos-generales-distribucion-competencias-numero-1", 17, "b"],
+    ["test-decreto-legislativo-1-2023-igualdad-articulos-1-a-3", 6, "b"],
+    ["test-decreto-legislativo-1-2023-igualdad-articulos-1-a-3", 26, "c"],
+    ["test-competencias-de-igualdad-articulos-4-a-8", 31, "a"],
+    ["test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25", 12, "b"],
+    ["test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25", 16, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105", 6, "a"],
@@ -415,11 +421,11 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 92,
-    questions: 1888,
-    directReferences: 1796,
-    contextualReferences: 92,
-    theoryDiscrepancies: 12,
+    tests: 97,
+    questions: 2022,
+    directReferences: 1914,
+    contextualReferences: 108,
+    theoryDiscrepancies: 17,
   });
 });
 
@@ -507,12 +513,13 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3 a 5, 9, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3 a 6, 9, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
     ["04", 169],
     ["05", 40],
+    ["06", 134],
     ["09", 165],
     ["15", 32],
     ["16", 52],
@@ -1009,6 +1016,80 @@ test("el tema 05 incorpora teoría, tres tests vinculados y un test completo", (
   assert.deepEqual(
     new Set(completeTest.fuente.tests),
     new Set(expectedSelections.keys()),
+  );
+});
+
+test("el tema 06 incorpora teoría, cinco tests y sus explicaciones", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const theory = repository.getById("tema-06-igualdad");
+  const sourceTests = resources.filter(
+    (resource) =>
+      resource.type === "test" &&
+      resource.classification.tema.numero === "06" &&
+      resource.author?.id === "ivot",
+  );
+  const completeTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-06",
+  );
+  const expectedSelections = new Map([
+    [
+      "test-decreto-legislativo-1-2023-igualdad-articulos-1-a-3",
+      { articles: { from: 1, to: 3 } },
+    ],
+    [
+      "test-competencias-de-igualdad-articulos-4-a-8",
+      { articles: { from: 4, to: 8 } },
+    ],
+    [
+      "test-decreto-legislativo-1-2023-igualdad-articulos-19-a-21",
+      { articles: { from: 19, to: 21 } },
+    ],
+    [
+      "test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25",
+      { articles: { from: 23, to: 25 } },
+    ],
+  ]);
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "06");
+  assert.equal(theory.data.fuente.archivo, "tema-06-igualdad.pdf");
+  assert.equal(theory.data.fuente.paginas, 24);
+  assert.deepEqual(
+    theory.data.bloques.map((block) => block.id),
+    ["titulo-preliminar", "titulo-i", "titulo-ii"],
+  );
+  assert.equal(sourceTests.length, 5);
+  assert.equal(
+    sourceTests.reduce(
+      (total, resource) => total + resource.data.preguntas.length,
+      0,
+    ),
+    134,
+  );
+  expectedSelections.forEach((selection, resourceId) => {
+    const resource = repository.getById(resourceId);
+
+    assert.equal(resource.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(resource.relatedTheory.selection, selection);
+    assert.equal(resource.theoryNotice, undefined);
+  });
+  const violenceTest = repository.getById(
+    "test-decreto-legislativo-1-2023-violencia-machista-contra-las-mujeres",
+  );
+  assert.equal(violenceTest.relatedTheory, undefined);
+  assert.equal(violenceTest.theoryNotice, "Sin vínculo teórico directo");
+  sourceTests.forEach((resource) => {
+    assert.equal(
+      resource.data.explicaciones.preguntas.length,
+      resource.data.preguntas.length,
+    );
+  });
+  assert.equal(completeTest.preguntas.length, 134);
+  assert.equal(completeTest.explicaciones.preguntas.length, 134);
+  assert.deepEqual(
+    new Set(completeTest.fuente.tests),
+    new Set(sourceTests.map((resource) => resource.id)),
   );
 });
 

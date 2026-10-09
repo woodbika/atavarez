@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-igualdad-tema-06",
+    category: "Nuevos recursos",
+    publishedAt: "2026-10-09T14:59:41+02:00",
+    title: "Teoría y tests sobre igualdad",
+    description:
+      "El Tema 06 incorpora una lectura estructurada con acceso al PDF, cinco tests IVOT y un test completo con 134 preguntas. Todas las respuestas incluyen explicaciones vinculadas a la teoría o, cuando esta no contiene el desarrollo específico, una referencia contextual claramente identificada.",
+  }),
+  Object.freeze({
     id: "teoria-tests-distribucion-competencias-tema-05",
     category: "Nuevos recursos",
     publishedAt: "2026-10-03T18:32:02+02:00",
