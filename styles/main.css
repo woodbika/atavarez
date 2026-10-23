@@ -26,6 +26,7 @@
   --shell: 1040px;
   --reading-column: 760px;
   --site-header-height: 61px;
+  --theme-card-height: 405px;
 }
 
 html[data-palette="mist"] {
@@ -1518,8 +1519,8 @@ h3 {
 }
 
 .theme-card {
-  height: 340px;
-  min-height: 340px;
+  height: var(--theme-card-height);
+  min-height: var(--theme-card-height);
 }
 
 .theme-card h3.theme-card-title {
@@ -5438,6 +5439,10 @@ html[data-theme="dark"] .scroll-top:hover {
 }
 
 @media (max-width: 900px) {
+  :root {
+    --theme-card-height: 375px;
+  }
+
   .navigation-grid,
   .resource-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5550,8 +5555,8 @@ html[data-theme="dark"] .scroll-top:hover {
   }
 
   .navigation-card.theme-card {
-    height: 340px;
-    min-height: 340px;
+    height: var(--theme-card-height);
+    min-height: var(--theme-card-height);
   }
 
   .results-hero {
@@ -5666,6 +5671,7 @@ html[data-theme="dark"] .scroll-top:hover {
 @media (max-width: 520px) {
   :root {
     --view-heading-padding: 22px;
+    --theme-card-height: 345px;
   }
 
   .shell {
@@ -5739,8 +5745,8 @@ html[data-theme="dark"] .scroll-top:hover {
   }
 
   .navigation-card.theme-card {
-    height: 300px;
-    min-height: 300px;
+    height: var(--theme-card-height);
+    min-height: var(--theme-card-height);
   }
 
   .results-hero {

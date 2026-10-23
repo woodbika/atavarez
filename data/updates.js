@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-test-administracion-electronica-tema-07",
+    category: "Nuevos recursos",
+    publishedAt: "2026-10-23T10:53:49+02:00",
+    title: "Teoría y test de administración electrónica",
+    description:
+      "El Tema 07 incorpora una lectura estructurada con acceso al PDF, un test IVOT y un test completo con 16 preguntas sobre los artículos 38 a 46 de la Ley 40/2015. Todas las respuestas incluyen explicaciones vinculadas a la teoría.",
+  }),
+  Object.freeze({
     id: "teoria-tests-igualdad-tema-06",
     category: "Nuevos recursos",
     publishedAt: "2026-10-09T14:59:41+02:00",

@@ -15,6 +15,7 @@ import explicacionesTema03 from "./explanations/gobierno-vasco-administrativo-c1
 import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1/tema-04/index.js";
 import explicacionesTema05 from "./explanations/gobierno-vasco-administrativo-c1/tema-05/index.js";
 import explicacionesTema06 from "./explanations/gobierno-vasco-administrativo-c1/tema-06/index.js";
+import explicacionesTema07 from "./explanations/gobierno-vasco-administrativo-c1/tema-07/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
@@ -59,6 +60,7 @@ import testCompetenciasIgualdadArticulos4a8 from "./tests/gobierno-vasco-adminis
 import testIgualdadArticulos19a21 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-igualdad-articulos-19-a-21.js";
 import testIgualdadArticulos23a25 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25.js";
 import testIgualdadViolenciaMachista from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-violencia-machista-contra-las-mujeres.js";
+import testAdministracionElectronica38a46 from "./tests/gobierno-vasco-administrativo-c1/tema-07/tests-ivot/test-ley-40-2015-funcionamiento-electronico-sector-publico-articulos-38-a-46.js";
 import testEmpleoPublico26a30 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30.js";
 import testEmpleoPublico161y162Derechos from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162.js";
 import testEmpleoPublico161a166 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166.js";
@@ -133,6 +135,7 @@ import teoriaUnionEuropea from "./resources/gobierno-vasco-administrativo-c1/tem
 import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administrativo-c1/tema-04/teoria/tema-4-organizacion-politica-administrativa-capv.js";
 import teoriaGobiernoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-05/teoria/tema-05-gobierno-vasco.js";
 import teoriaIgualdad from "./resources/gobierno-vasco-administrativo-c1/tema-06/teoria/tema-06-igualdad.js";
+import teoriaAdministracionElectronica from "./resources/gobierno-vasco-administrativo-c1/tema-07/teoria/tema-07-administracion-electronica.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
@@ -230,6 +233,10 @@ const relatedTheoryByTestId = new Map([
   [testIgualdadArticulos23a25.id, {
     resourceId: teoriaIgualdad.id,
     selection: { articles: { from: 23, to: 25 } },
+  }],
+  [testAdministracionElectronica38a46.id, {
+    resourceId: teoriaAdministracionElectronica.id,
+    selection: { articles: { from: 38, to: 46 } },
   }],
   [testEmpleoPublico26a30.id, {
     resourceId: teoriaPersonalServicioPublico.id,
@@ -572,6 +579,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema04.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema05.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema06.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema07.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
@@ -640,6 +648,8 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testIgualdadArticulos19a21),
   testResource(testIgualdadArticulos23a25),
   testResource(testIgualdadViolenciaMachista),
+  theoryResource(teoriaAdministracionElectronica),
+  testResource(testAdministracionElectronica38a46),
   theoryResource(teoriaPersonalServicioPublico),
   testResource(testEmpleoPublico26a30),
   testResource(testEmpleoPublico161y162Derechos),
