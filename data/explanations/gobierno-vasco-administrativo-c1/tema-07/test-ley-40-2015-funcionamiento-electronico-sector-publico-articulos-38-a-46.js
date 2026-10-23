@@ -18,16 +18,11 @@ const explanations = {
     },
     {
       preguntaId: 2,
-      justificacion: "Se conserva la opción C registrada. No obstante, el artículo 38.2 responsabiliza al titular de la integridad, veracidad y actualización de la información y los servicios, mientras el apartado 3 atribuye a cada Administración la determinación de las condiciones e instrumentos de creación.",
+      justificacion: "El artículo 38.2 responsabiliza al titular de la sede de la integridad, veracidad y actualización de la información y de los servicios accesibles a través de ella. Esa es exactamente la obligación recogida en la opción A.",
       descartes: {
-        a: "Esta alternativa reproduce por sí sola la responsabilidad que el artículo 38.2 impone al titular de la sede.",
         b: "Determinar las condiciones e instrumentos de creación corresponde a cada Administración Pública; el precepto no lo presenta como responsabilidad general de cualquier titular.",
+        c: "Las dos alternativas no son correctas: la opción B atribuye al titular una función que el artículo 38.3 reserva a cada Administración Pública.",
         d: "La teoría sí contiene una regla aplicable: la responsabilidad sobre la integridad, veracidad y actualización.",
-      },
-      notaRevision: {
-        tipo: "discrepancia-teorica",
-        titulo: "La solución del test no coincide con la teoría",
-        texto: "La opción C combina dos reglas dirigidas a sujetos distintos. Según el artículo 38.2, el titular responde de la integridad, veracidad y actualización; el artículo 38.3 reserva a cada Administración Pública la determinación de las condiciones e instrumentos de creación. Se mantiene la respuesta C almacenada.",
       },
     },
     {

@@ -392,7 +392,6 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-competencias-de-igualdad-articulos-4-a-8", 31, "a"],
     ["test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25", 12, "b"],
     ["test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25", 16, "a"],
-    ["test-ley-40-2015-funcionamiento-electronico-sector-publico-articulos-38-a-46", 2, "c"],
     ["test-ley-40-2015-funcionamiento-electronico-sector-publico-articulos-38-a-46", 3, "c"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
@@ -428,7 +427,7 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
     questions: 2038,
     directReferences: 1930,
     contextualReferences: 108,
-    theoryDiscrepancies: 19,
+    theoryDiscrepancies: 18,
   });
 });
 
