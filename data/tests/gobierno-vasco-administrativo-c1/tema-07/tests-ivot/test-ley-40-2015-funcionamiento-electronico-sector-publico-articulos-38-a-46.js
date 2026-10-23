@@ -29,7 +29,7 @@ const test = {
       id: 2,
       enunciado: "Una sede electrónica garantiza el acceso a la información y servicios competencia del titular de la misma. Dicho titular es responsable de: artículo 38",
       opciones: [{ id: "a", texto: "La integridad, veracidad y actualización de la información y servicios." }, { id: "b", texto: "La determinación de las condiciones e instrumentos de creación de la misma." }, { id: "c", texto: "Ambas respuestas son correctas." }, { id: "d", texto: "Ninguna respuesta de las anteriores es correcta." }],
-      respuestaCorrecta: "c",
+      respuestaCorrecta: "a",
     },
     {
       id: 3,
