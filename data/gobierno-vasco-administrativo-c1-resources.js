@@ -16,6 +16,7 @@ import explicacionesTema04 from "./explanations/gobierno-vasco-administrativo-c1
 import explicacionesTema05 from "./explanations/gobierno-vasco-administrativo-c1/tema-05/index.js";
 import explicacionesTema06 from "./explanations/gobierno-vasco-administrativo-c1/tema-06/index.js";
 import explicacionesTema07 from "./explanations/gobierno-vasco-administrativo-c1/tema-07/index.js";
+import explicacionesTema08 from "./explanations/gobierno-vasco-administrativo-c1/tema-08/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
@@ -61,6 +62,13 @@ import testIgualdadArticulos19a21 from "./tests/gobierno-vasco-administrativo-c1
 import testIgualdadArticulos23a25 from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-igualdad-articulos-23-a-25.js";
 import testIgualdadViolenciaMachista from "./tests/gobierno-vasco-administrativo-c1/tema-06/tests-ivot/test-decreto-legislativo-1-2023-violencia-machista-contra-las-mujeres.js";
 import testAdministracionElectronica38a46 from "./tests/gobierno-vasco-administrativo-c1/tema-07/tests-ivot/test-ley-40-2015-funcionamiento-electronico-sector-publico-articulos-38-a-46.js";
+import testNormalizacionLinguistica1a3 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-1-a-3.js";
+import testNormalizacionLinguistica4a6 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-4-a-6.js";
+import testNormalizacionLinguistica7a11 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-7-a-11.js";
+import testNormalizacionLinguistica11y12 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-11-y-12.js";
+import testNormalizacionLinguistica13a16 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-13-a-16.js";
+import testNormalizacionLinguistica17a21 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-17-a-21.js";
+import testNormalizacionLinguistica22a25 from "./tests/gobierno-vasco-administrativo-c1/tema-08/tests-ivot/test-normalizacion-linguistica-articulos-22-a-25.js";
 import testEmpleoPublico26a30 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30.js";
 import testEmpleoPublico161y162Derechos from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-y-162.js";
 import testEmpleoPublico161a166 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-161-a-166.js";
@@ -136,6 +144,7 @@ import teoriaOrganizacionPoliticaCapv from "./resources/gobierno-vasco-administr
 import teoriaGobiernoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-05/teoria/tema-05-gobierno-vasco.js";
 import teoriaIgualdad from "./resources/gobierno-vasco-administrativo-c1/tema-06/teoria/tema-06-igualdad.js";
 import teoriaAdministracionElectronica from "./resources/gobierno-vasco-administrativo-c1/tema-07/teoria/tema-07-administracion-electronica.js";
+import teoriaNormalizacionLinguistica from "./resources/gobierno-vasco-administrativo-c1/tema-08/teoria/tema-08-normalizacion-linguistica.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
@@ -237,6 +246,34 @@ const relatedTheoryByTestId = new Map([
   [testAdministracionElectronica38a46.id, {
     resourceId: teoriaAdministracionElectronica.id,
     selection: { articles: { from: 38, to: 46 } },
+  }],
+  [testNormalizacionLinguistica1a3.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 1, to: 3 } },
+  }],
+  [testNormalizacionLinguistica4a6.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 4, to: 6 } },
+  }],
+  [testNormalizacionLinguistica7a11.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 7, to: 11 } },
+  }],
+  [testNormalizacionLinguistica11y12.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 11, to: 12 } },
+  }],
+  [testNormalizacionLinguistica13a16.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 13, to: 16 } },
+  }],
+  [testNormalizacionLinguistica17a21.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 17, to: 21 } },
+  }],
+  [testNormalizacionLinguistica22a25.id, {
+    resourceId: teoriaNormalizacionLinguistica.id,
+    selection: { articles: { from: 22, to: 25 } },
   }],
   [testEmpleoPublico26a30.id, {
     resourceId: teoriaPersonalServicioPublico.id,
@@ -580,6 +617,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema05.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema06.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema07.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema08.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
@@ -650,6 +688,14 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testIgualdadViolenciaMachista),
   theoryResource(teoriaAdministracionElectronica),
   testResource(testAdministracionElectronica38a46),
+  theoryResource(teoriaNormalizacionLinguistica),
+  testResource(testNormalizacionLinguistica1a3),
+  testResource(testNormalizacionLinguistica4a6),
+  testResource(testNormalizacionLinguistica7a11),
+  testResource(testNormalizacionLinguistica11y12),
+  testResource(testNormalizacionLinguistica13a16),
+  testResource(testNormalizacionLinguistica17a21),
+  testResource(testNormalizacionLinguistica22a25),
   theoryResource(teoriaPersonalServicioPublico),
   testResource(testEmpleoPublico26a30),
   testResource(testEmpleoPublico161y162Derechos),

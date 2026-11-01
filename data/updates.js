@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-normalizacion-linguistica-tema-08",
+    category: "Nuevos recursos",
+    publishedAt: "2026-11-01T16:12:27+01:00",
+    title: "Teoría y tests de normalización lingüística",
+    description:
+      "El Tema 08 incorpora una lectura estructurada con acceso al PDF, siete tests IVOT y un test completo con 92 preguntas sobre los artículos 1 a 25. Todas las respuestas incluyen explicaciones vinculadas a la teoría.",
+  }),
+  Object.freeze({
     id: "teoria-test-administracion-electronica-tema-07",
     category: "Nuevos recursos",
     publishedAt: "2026-10-23T10:53:49+02:00",

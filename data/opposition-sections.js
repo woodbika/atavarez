@@ -66,64 +66,69 @@ export const GOBIERNO_VASCO_ADMINISTRATIVO_C1_SECTIONS = Object.freeze([
     7,
   ),
   gobiernoVascoSection(
+    "08",
+    "Normalización lingüística del uso del euskera en la administración general. Principios generales. El perfil lingüístico. La preceptividad de los perfiles lingüísticos. Los planes de normalización lingüística.",
+    8,
+  ),
+  gobiernoVascoSection(
     "09",
     "Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco. Personal al servicio de las administraciones públicas vascas: clases de personal empleado público, derechos de este personal, principios que inspiran el código ético y de conducta del mismo, y régimen disciplinario.",
-    8,
+    9,
   ),
   gobiernoVascoSection(
     "15",
     "Presupuesto de gastos. Conceptos relevantes: aplicación presupuestaria, vinculación, referencia de intervención, créditos de compromiso y pagos a justificar. Ejecución del presupuesto de gastos: autorización del gasto, disposición del gasto, contracción de la obligación, disposición del pago. Residuos de gastos. Fondos anticipados.",
-    9,
+    10,
   ),
   gobiernoVascoSection(
     "16",
     "El presupuesto de ingresos. Tipos de ingresos. Fases de ejecución del presupuesto de ingresos: Derechos reconocidos, ingresos. Devolución de ingresos indebidos. Derechos reconocidos pendientes de cobro. Documentos contables de ingresos.",
-    10,
+    11,
   ),
   gobiernoVascoSection(
     "17",
     "Estructura y organización del empleo en las administraciones públicas vascas. Relación de puestos de trabajo. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco.",
-    11,
+    12,
   ),
   gobiernoVascoSection(
     "18",
     "Acceso al empleo público y la provisión de puestos de trabajo en las administraciones públicas vascas. Clasificación en Cuerpos y Escalas. Ley 11/2022, de 1 de diciembre, de Empleo Público Vasco.",
-    12,
+    13,
   ),
   gobiernoVascoSection(
     "28",
     "Fuentes del derecho administrativo. La ley: concepto y clases. El reglamento: titularidad de la potestad reglamentaria y sus límites. La jerarquía normativa. El principio de legalidad en la administración pública.",
-    13,
+    14,
   ),
   gobiernoVascoSection(
     "29",
     "La organización administrativa: los órganos administrativos. Órganos colegiados. Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público.",
-    14,
+    15,
   ),
   gobiernoVascoSection(
     "30",
     "El acto administrativo: concepto, producción, contenido, motivación y forma. La eficacia del acto administrativo. Silencio administrativo. Nulidad y anulabilidad. Ley 39/2015, de 1 de octubre, de Procedimiento Administrativo Común de las Administraciones Públicas.",
-    15,
+    16,
   ),
   gobiernoVascoSection(
     "31",
     "Procedimiento administrativo: principios generales. Personas interesadas. Abstención y recusación. Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público.",
-    16,
+    17,
   ),
   gobiernoVascoSection(
     "32",
     "Fases del procedimiento administrativo (Artículos del 53 al 96).",
-    17,
+    18,
   ),
   gobiernoVascoSection(
     "33",
     "Ley 39/2015, de 1 de octubre, de Procedimiento Administrativo Común de las Administraciones Públicas. Revisión de los actos: recursos administrativos, revisión de oficio y revocación. Rectificación de errores materiales.",
-    18,
+    19,
   ),
   gobiernoVascoSection(
     "34",
     "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público. La responsabilidad de las Administraciones Públicas, de sus autoridades y su personal (Artículos del 32 al 37).",
-    19,
+    20,
   ),
 ]);
 
