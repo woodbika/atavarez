@@ -310,7 +310,7 @@ test("todos los tests IVOT del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests IVOT de los Temas 3 a 9, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests IVOT de los Temas 3 a 10, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
@@ -319,6 +319,7 @@ test("los tests IVOT de los Temas 3 a 9, 15 a 18 y 28 a 34 explican todas sus re
     ["07", { tests: 1, questions: 16 }],
     ["08", { tests: 7, questions: 92 }],
     ["09", { tests: 7, questions: 165 }],
+    ["10", { tests: 3, questions: 47 }],
     ["15", { tests: 2, questions: 32 }],
     ["16", { tests: 2, questions: 52 }],
     ["17", { tests: 4, questions: 97 }],
@@ -400,6 +401,8 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-normalizacion-linguistica-articulos-11-y-12", 13, "b"],
     ["test-normalizacion-linguistica-articulos-13-a-16", 7, "b"],
     ["test-normalizacion-linguistica-articulos-17-a-21", 20, "c"],
+    ["test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12", 14, "b"],
+    ["test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12", 22, "c"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105", 6, "a"],
@@ -430,11 +433,11 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 105,
-    questions: 2130,
-    directReferences: 2022,
+    tests: 108,
+    questions: 2177,
+    directReferences: 2069,
     contextualReferences: 108,
-    theoryDiscrepancies: 24,
+    theoryDiscrepancies: 26,
   });
 });
 
@@ -522,7 +525,7 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3 a 9, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3 a 10, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
@@ -532,6 +535,7 @@ test("los tests completos de los Temas 3 a 9, 15 a 18 y 28 a 34 conservan sus ex
     ["07", 16],
     ["08", 92],
     ["09", 165],
+    ["10", 47],
     ["15", 32],
     ["16", 52],
     ["17", 97],
@@ -1199,6 +1203,60 @@ test("el tema 08 incorpora teoría, siete tests vinculados y un test completo", 
 
   assert.equal(completeTest.preguntas.length, 92);
   assert.equal(completeTest.explicaciones.preguntas.length, 92);
+  assert.deepEqual(completeTest.fuente.tests, [...expectedSelections.keys()]);
+  assert.deepEqual(validateResources(resources), []);
+});
+
+test("el tema 10 incorpora teoría, tres tests vinculados y un test completo", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const theory = repository.getById("tema-10-gobierno-vasco");
+  const expectedSelections = new Map([
+    ["test-ley-organica-3-2018-proteccion-datos-articulos-1-a-3", { from: 1, to: 3 }],
+    ["test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12", { from: 4, to: 12 }],
+    ["test-ley-organica-3-2018-proteccion-datos-articulos-13-a-18", { from: 13, to: 18 }],
+  ]);
+  const sourceTests = [...expectedSelections.keys()].map((testId) =>
+    repository.getById(testId));
+  const completeTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-10",
+  );
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "10");
+  assert.equal(theory.data.fuente.archivo, "tema-10-gobierno-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 16);
+  assert.deepEqual(
+    theory.data.bloques.map((block) => block.id),
+    [
+      "normativa-proteccion-datos",
+      "titulo-i-disposiciones-generales",
+      "titulo-ii-principios-proteccion-datos",
+      "titulo-iii-derechos-personas",
+    ],
+  );
+
+  sourceTests.forEach((sourceTest) => {
+    assert.ok(sourceTest);
+    assert.equal(sourceTest.author.id, "ivot");
+    assert.equal(sourceTest.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(sourceTest.relatedTheory.selection, {
+      articles: expectedSelections.get(sourceTest.id),
+    });
+    assert.equal(sourceTest.theoryNotice, undefined);
+    assert.equal(
+      sourceTest.data.explicaciones.preguntas.length,
+      sourceTest.data.preguntas.length,
+    );
+    assert.equal(sourceTest.data.fuente.archivo.endsWith(".pdf.pdf"), false);
+  });
+  assert.equal(
+    sourceTests.reduce((total, sourceTest) => total + sourceTest.data.preguntas.length, 0),
+    47,
+  );
+
+  assert.equal(completeTest.preguntas.length, 47);
+  assert.equal(completeTest.explicaciones.preguntas.length, 47);
   assert.deepEqual(completeTest.fuente.tests, [...expectedSelections.keys()]);
   assert.deepEqual(validateResources(resources), []);
 });

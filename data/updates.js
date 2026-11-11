@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-proteccion-datos-tema-10",
+    category: "Nuevos recursos",
+    publishedAt: "2026-11-11T09:24:13+01:00",
+    title: "Teoría y tests de protección de datos",
+    description:
+      "El Tema 10 incorpora una lectura estructurada con acceso al PDF, tres tests IVOT y un test completo con 47 preguntas sobre los artículos 1 a 18 de la Ley Orgánica 3/2018. Todas las respuestas incluyen explicaciones vinculadas a la teoría.",
+  }),
+  Object.freeze({
     id: "teoria-tests-normalizacion-linguistica-tema-08",
     category: "Nuevos recursos",
     publishedAt: "2026-11-01T16:12:27+01:00",

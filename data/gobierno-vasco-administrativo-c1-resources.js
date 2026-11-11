@@ -18,6 +18,7 @@ import explicacionesTema06 from "./explanations/gobierno-vasco-administrativo-c1
 import explicacionesTema07 from "./explanations/gobierno-vasco-administrativo-c1/tema-07/index.js";
 import explicacionesTema08 from "./explanations/gobierno-vasco-administrativo-c1/tema-08/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
+import explicacionesTema10 from "./explanations/gobierno-vasco-administrativo-c1/tema-10/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
 import explicacionesTema17 from "./explanations/gobierno-vasco-administrativo-c1/tema-17/index.js";
@@ -76,6 +77,9 @@ import testEmpleoPublico167a171 from "./tests/gobierno-vasco-administrativo-c1/t
 import testEmpleoPublico172a177 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177.js";
 import testEmpleoPublico178a180TiposFaltas from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-178-a-180-tipos-de-faltas.js";
 import testEmpleoPublico181a184 from "./tests/gobierno-vasco-administrativo-c1/tema-09/tests-ivot/test-ley-11-2022-empleo-publico-vasco-articulos-181-a-184.js";
+import testProteccionDatos1a3 from "./tests/gobierno-vasco-administrativo-c1/tema-10/tests-ivot/test-ley-organica-3-2018-proteccion-datos-articulos-1-a-3.js";
+import testProteccionDatos4a12 from "./tests/gobierno-vasco-administrativo-c1/tema-10/tests-ivot/test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12.js";
+import testProteccionDatos13a18 from "./tests/gobierno-vasco-administrativo-c1/tema-10/tests-ivot/test-ley-organica-3-2018-proteccion-datos-articulos-13-a-18.js";
 import testPresupuestoGastosEjecucion1 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-1.js";
 import testPresupuestoGastosEjecucion2 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-2.js";
 import testPresupuestosClasificacionIngresos from "./tests/gobierno-vasco-administrativo-c1/tema-16/tests-ivot/test-presupuestos-clasificacion-ingresos.js";
@@ -146,6 +150,7 @@ import teoriaIgualdad from "./resources/gobierno-vasco-administrativo-c1/tema-06
 import teoriaAdministracionElectronica from "./resources/gobierno-vasco-administrativo-c1/tema-07/teoria/tema-07-administracion-electronica.js";
 import teoriaNormalizacionLinguistica from "./resources/gobierno-vasco-administrativo-c1/tema-08/teoria/tema-08-normalizacion-linguistica.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
+import teoriaProteccionDatos from "./resources/gobierno-vasco-administrativo-c1/tema-10/teoria/tema-10-gobierno-vasco.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
@@ -302,6 +307,18 @@ const relatedTheoryByTestId = new Map([
   [testEmpleoPublico181a184.id, {
     resourceId: teoriaPersonalServicioPublico.id,
     selection: { articles: { from: 181, to: 184 } },
+  }],
+  [testProteccionDatos1a3.id, {
+    resourceId: teoriaProteccionDatos.id,
+    selection: { articles: { from: 1, to: 3 } },
+  }],
+  [testProteccionDatos4a12.id, {
+    resourceId: teoriaProteccionDatos.id,
+    selection: { articles: { from: 4, to: 12 } },
+  }],
+  [testProteccionDatos13a18.id, {
+    resourceId: teoriaProteccionDatos.id,
+    selection: { articles: { from: 13, to: 18 } },
   }],
   [testPresupuestoGastosEjecucion1.id, {
     resourceId: teoriaPresupuestoGastos.id,
@@ -619,6 +636,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema07.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema08.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema10.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema17.map((explanations) => [explanations.testId, explanations]),
@@ -704,6 +722,10 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testEmpleoPublico172a177),
   testResource(testEmpleoPublico178a180TiposFaltas),
   testResource(testEmpleoPublico181a184),
+  theoryResource(teoriaProteccionDatos),
+  testResource(testProteccionDatos1a3),
+  testResource(testProteccionDatos4a12),
+  testResource(testProteccionDatos13a18),
   theoryResource(teoriaPresupuestoGastos),
   testResource(testPresupuestoGastosEjecucion1),
   testResource(testPresupuestoGastosEjecucion2),
