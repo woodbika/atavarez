@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-prevencion-riesgos-laborales-tema-11",
+    category: "Nuevos recursos",
+    publishedAt: "2026-11-18T16:12:14+01:00",
+    title: "Teoría y tests de prevención de riesgos laborales",
+    description:
+      "El Tema 11 incorpora una lectura estructurada con acceso al PDF, cuatro tests IVOT y un test completo con 96 preguntas sobre la Ley 31/1995. Todas las respuestas incluyen explicaciones vinculadas a la teoría o, cuando el contenido específico no está incluido en el material, una referencia contextual claramente identificada.",
+  }),
+  Object.freeze({
     id: "teoria-tests-proteccion-datos-tema-10",
     category: "Nuevos recursos",
     publishedAt: "2026-11-11T09:24:13+01:00",

@@ -310,7 +310,7 @@ test("todos los tests IVOT del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests IVOT de los Temas 3 a 10, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests IVOT de los Temas 3 a 11, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
@@ -320,6 +320,7 @@ test("los tests IVOT de los Temas 3 a 10, 15 a 18 y 28 a 34 explican todas sus r
     ["08", { tests: 7, questions: 92 }],
     ["09", { tests: 7, questions: 165 }],
     ["10", { tests: 3, questions: 47 }],
+    ["11", { tests: 4, questions: 96 }],
     ["15", { tests: 2, questions: 32 }],
     ["16", { tests: 2, questions: 52 }],
     ["17", { tests: 4, questions: 97 }],
@@ -403,6 +404,8 @@ test("las discrepancias con la teoría se documentan sin cambiar las soluciones"
     ["test-normalizacion-linguistica-articulos-17-a-21", 20, "c"],
     ["test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12", 14, "b"],
     ["test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12", 22, "c"],
+    ["test-ley-31-1995-prevencion-riesgos-laborales-numero-2", 34, "b"],
+    ["test-ley-31-1995-prevencion-riesgos-laborales-numero-2", 52, "b"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-26-a-30", 31, "a"],
     ["test-ley-11-2022-empleo-publico-vasco-articulos-172-a-177", 6, "c"],
     ["test-de-la-ley-11-2022-de-empleo-publico-vasco-articulo-105", 6, "a"],
@@ -433,11 +436,11 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 108,
-    questions: 2177,
-    directReferences: 2069,
-    contextualReferences: 108,
-    theoryDiscrepancies: 26,
+    tests: 112,
+    questions: 2273,
+    directReferences: 2139,
+    contextualReferences: 134,
+    theoryDiscrepancies: 28,
   });
 });
 
@@ -525,7 +528,7 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3 a 10, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3 a 11, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
@@ -536,6 +539,7 @@ test("los tests completos de los Temas 3 a 10, 15 a 18 y 28 a 34 conservan sus e
     ["08", 92],
     ["09", 165],
     ["10", 47],
+    ["11", 96],
     ["15", 32],
     ["16", 52],
     ["17", 97],
@@ -1258,6 +1262,76 @@ test("el tema 10 incorpora teoría, tres tests vinculados y un test completo", (
   assert.equal(completeTest.preguntas.length, 47);
   assert.equal(completeTest.explicaciones.preguntas.length, 47);
   assert.deepEqual(completeTest.fuente.tests, [...expectedSelections.keys()]);
+  assert.deepEqual(validateResources(resources), []);
+});
+
+test("el tema 11 incorpora teoría, cuatro tests y un test completo", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const theory = repository.getById("tema-11-gobierno-vasco");
+  const directSelections = new Map([
+    ["test-ley-31-1995-prevencion-riesgos-laborales-articulos-1-a-4", { from: 1, to: 4 }],
+    ["test-ley-31-1995-prevencion-riesgos-laborales-numero-2", { from: 14, to: 25 }],
+  ]);
+  const contextualTestIds = [
+    "test-ley-31-1995-consulta-participacion-trabajadores",
+    "test-ley-31-1995-comite-seguridad-salud",
+  ];
+  const sourceTestIds = [...directSelections.keys(), ...contextualTestIds];
+  const sourceTests = sourceTestIds.map((testId) => repository.getById(testId));
+  const completeTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-11",
+  );
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "11");
+  assert.equal(theory.data.fuente.archivo, "tema-11-gobierno-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 15);
+  assert.deepEqual(
+    theory.data.bloques.map((block) => block.id),
+    [
+      "capitulo-i-objeto-ambito-aplicacion-definiciones",
+      "capitulo-iii-derechos-obligaciones",
+    ],
+  );
+
+  directSelections.forEach((articles, testId) => {
+    const sourceTest = repository.getById(testId);
+    assert.equal(sourceTest.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(sourceTest.relatedTheory.selection, { articles });
+    assert.equal(sourceTest.theoryNotice, undefined);
+    assert.ok(
+      sourceTest.data.explicaciones.preguntas.every(
+        (explanation) => explanation.referencia.alcance === "directa",
+      ),
+    );
+  });
+  contextualTestIds.forEach((testId) => {
+    const sourceTest = repository.getById(testId);
+    assert.equal(sourceTest.relatedTheory, undefined);
+    assert.equal(sourceTest.theoryNotice, "Sin vínculo teórico directo");
+    assert.ok(
+      sourceTest.data.explicaciones.preguntas.every(
+        (explanation) => explanation.referencia.alcance === "contextual",
+      ),
+    );
+  });
+  sourceTests.forEach((sourceTest) => {
+    assert.equal(sourceTest.author.id, "ivot");
+    assert.equal(
+      sourceTest.data.explicaciones.preguntas.length,
+      sourceTest.data.preguntas.length,
+    );
+    assert.equal(sourceTest.data.fuente.archivo.endsWith(".pdf.pdf"), false);
+  });
+  assert.equal(
+    sourceTests.reduce((total, sourceTest) => total + sourceTest.data.preguntas.length, 0),
+    96,
+  );
+
+  assert.equal(completeTest.preguntas.length, 96);
+  assert.equal(completeTest.explicaciones.preguntas.length, 96);
+  assert.deepEqual(completeTest.fuente.tests, sourceTestIds);
   assert.deepEqual(validateResources(resources), []);
 });
 

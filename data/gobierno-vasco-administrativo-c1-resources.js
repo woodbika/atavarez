@@ -19,6 +19,7 @@ import explicacionesTema07 from "./explanations/gobierno-vasco-administrativo-c1
 import explicacionesTema08 from "./explanations/gobierno-vasco-administrativo-c1/tema-08/index.js";
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema10 from "./explanations/gobierno-vasco-administrativo-c1/tema-10/index.js";
+import explicacionesTema11 from "./explanations/gobierno-vasco-administrativo-c1/tema-11/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
 import explicacionesTema17 from "./explanations/gobierno-vasco-administrativo-c1/tema-17/index.js";
@@ -80,6 +81,10 @@ import testEmpleoPublico181a184 from "./tests/gobierno-vasco-administrativo-c1/t
 import testProteccionDatos1a3 from "./tests/gobierno-vasco-administrativo-c1/tema-10/tests-ivot/test-ley-organica-3-2018-proteccion-datos-articulos-1-a-3.js";
 import testProteccionDatos4a12 from "./tests/gobierno-vasco-administrativo-c1/tema-10/tests-ivot/test-ley-organica-3-2018-proteccion-datos-articulos-4-a-12.js";
 import testProteccionDatos13a18 from "./tests/gobierno-vasco-administrativo-c1/tema-10/tests-ivot/test-ley-organica-3-2018-proteccion-datos-articulos-13-a-18.js";
+import testPrevencionRiesgos1a4 from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-prevencion-riesgos-laborales-articulos-1-a-4.js";
+import testPrevencionRiesgosNumero2 from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-prevencion-riesgos-laborales-numero-2.js";
+import testPrevencionRiesgosConsultaParticipacion from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-consulta-participacion-trabajadores.js";
+import testPrevencionRiesgosComiteSeguridadSalud from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-comite-seguridad-salud.js";
 import testPresupuestoGastosEjecucion1 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-1.js";
 import testPresupuestoGastosEjecucion2 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-2.js";
 import testPresupuestosClasificacionIngresos from "./tests/gobierno-vasco-administrativo-c1/tema-16/tests-ivot/test-presupuestos-clasificacion-ingresos.js";
@@ -151,6 +156,7 @@ import teoriaAdministracionElectronica from "./resources/gobierno-vasco-administ
 import teoriaNormalizacionLinguistica from "./resources/gobierno-vasco-administrativo-c1/tema-08/teoria/tema-08-normalizacion-linguistica.js";
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaProteccionDatos from "./resources/gobierno-vasco-administrativo-c1/tema-10/teoria/tema-10-gobierno-vasco.js";
+import teoriaPrevencionRiesgosLaborales from "./resources/gobierno-vasco-administrativo-c1/tema-11/teoria/tema-11-gobierno-vasco.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
@@ -319,6 +325,14 @@ const relatedTheoryByTestId = new Map([
   [testProteccionDatos13a18.id, {
     resourceId: teoriaProteccionDatos.id,
     selection: { articles: { from: 13, to: 18 } },
+  }],
+  [testPrevencionRiesgos1a4.id, {
+    resourceId: teoriaPrevencionRiesgosLaborales.id,
+    selection: { articles: { from: 1, to: 4 } },
+  }],
+  [testPrevencionRiesgosNumero2.id, {
+    resourceId: teoriaPrevencionRiesgosLaborales.id,
+    selection: { articles: { from: 14, to: 25 } },
   }],
   [testPresupuestoGastosEjecucion1.id, {
     resourceId: teoriaPresupuestoGastos.id,
@@ -612,6 +626,8 @@ const theoryNoticeByTestId = new Map([
   [testUnionEuropeaKaixoOpe2022.id, "Sin vínculo teórico directo"],
   [testOrganizacionPoliticaVascaKaixoOpe2022.id, "Sin vínculo teórico directo"],
   [testIgualdadViolenciaMachista.id, "Sin vínculo teórico directo"],
+  [testPrevencionRiesgosConsultaParticipacion.id, "Sin vínculo teórico directo"],
+  [testPrevencionRiesgosComiteSeguridadSalud.id, "Sin vínculo teórico directo"],
 ]);
 
 const answerExplanationsByTestId = new Map([
@@ -637,6 +653,7 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema08.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema10.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema11.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema17.map((explanations) => [explanations.testId, explanations]),
@@ -726,6 +743,11 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testProteccionDatos1a3),
   testResource(testProteccionDatos4a12),
   testResource(testProteccionDatos13a18),
+  theoryResource(teoriaPrevencionRiesgosLaborales),
+  testResource(testPrevencionRiesgos1a4),
+  testResource(testPrevencionRiesgosNumero2),
+  testResource(testPrevencionRiesgosConsultaParticipacion),
+  testResource(testPrevencionRiesgosComiteSeguridadSalud),
   theoryResource(teoriaPresupuestoGastos),
   testResource(testPresupuestoGastosEjecucion1),
   testResource(testPresupuestoGastosEjecucion2),
