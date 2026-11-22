@@ -20,6 +20,8 @@ import explicacionesTema08 from "./explanations/gobierno-vasco-administrativo-c1
 import explicacionesTema09 from "./explanations/gobierno-vasco-administrativo-c1/tema-09/index.js";
 import explicacionesTema10 from "./explanations/gobierno-vasco-administrativo-c1/tema-10/index.js";
 import explicacionesTema11 from "./explanations/gobierno-vasco-administrativo-c1/tema-11/index.js";
+import explicacionesTema12 from "./explanations/gobierno-vasco-administrativo-c1/tema-12/index.js";
+import explicacionesTema13 from "./explanations/gobierno-vasco-administrativo-c1/tema-13/index.js";
 import explicacionesTema15 from "./explanations/gobierno-vasco-administrativo-c1/tema-15/index.js";
 import explicacionesTema16 from "./explanations/gobierno-vasco-administrativo-c1/tema-16/index.js";
 import explicacionesTema17 from "./explanations/gobierno-vasco-administrativo-c1/tema-17/index.js";
@@ -85,6 +87,9 @@ import testPrevencionRiesgos1a4 from "./tests/gobierno-vasco-administrativo-c1/t
 import testPrevencionRiesgosNumero2 from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-prevencion-riesgos-laborales-numero-2.js";
 import testPrevencionRiesgosConsultaParticipacion from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-consulta-participacion-trabajadores.js";
 import testPrevencionRiesgosComiteSeguridadSalud from "./tests/gobierno-vasco-administrativo-c1/tema-11/tests-ivot/test-ley-31-1995-comite-seguridad-salud.js";
+import testPantallasVisualizacionDatos1 from "./tests/gobierno-vasco-administrativo-c1/tema-12/tests-ivot/test-prevencion-riesgos-laborales-pantallas-visualizacion-datos-numero-1.js";
+import testPantallasVisualizacionDatos2 from "./tests/gobierno-vasco-administrativo-c1/tema-12/tests-ivot/test-prevencion-riesgos-laborales-pantallas-visualizacion-datos-numero-2.js";
+import testNocionesBasicasPrimerosAuxilios from "./tests/gobierno-vasco-administrativo-c1/tema-13/tests-ivot/test-nociones-basicas-primeros-auxilios.js";
 import testPresupuestoGastosEjecucion1 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-1.js";
 import testPresupuestoGastosEjecucion2 from "./tests/gobierno-vasco-administrativo-c1/tema-15/tests-ivot/test-presupuesto-gastos-ejecucion-gasto-numero-2.js";
 import testPresupuestosClasificacionIngresos from "./tests/gobierno-vasco-administrativo-c1/tema-16/tests-ivot/test-presupuestos-clasificacion-ingresos.js";
@@ -157,6 +162,8 @@ import teoriaNormalizacionLinguistica from "./resources/gobierno-vasco-administr
 import teoriaPersonalServicioPublico from "./resources/gobierno-vasco-administrativo-c1/tema-09/teoria/tema-9-personal-al-servicio.js";
 import teoriaProteccionDatos from "./resources/gobierno-vasco-administrativo-c1/tema-10/teoria/tema-10-gobierno-vasco.js";
 import teoriaPrevencionRiesgosLaborales from "./resources/gobierno-vasco-administrativo-c1/tema-11/teoria/tema-11-gobierno-vasco.js";
+import teoriaPantallasVisualizacionDatos from "./resources/gobierno-vasco-administrativo-c1/tema-12/teoria/tema-12-gobierno-vasco.js";
+import teoriaPrimerosAuxilios from "./resources/gobierno-vasco-administrativo-c1/tema-13/teoria/tema-13-gobierno-vasco.js";
 import teoriaPresupuestoGastos from "./resources/gobierno-vasco-administrativo-c1/tema-15/teoria/tema-15-presupuesto-gastos.js";
 import teoriaPresupuestoIngresos from "./resources/gobierno-vasco-administrativo-c1/tema-16/teoria/tema-16-presupuesto-ingresos.js";
 import teoriaEmpleoPublicoVasco from "./resources/gobierno-vasco-administrativo-c1/tema-17/teoria/tema-17-empleo-publico-vasco.js";
@@ -333,6 +340,41 @@ const relatedTheoryByTestId = new Map([
   [testPrevencionRiesgosNumero2.id, {
     resourceId: teoriaPrevencionRiesgosLaborales.id,
     selection: { articles: { from: 14, to: 25 } },
+  }],
+  [testPantallasVisualizacionDatos1.id, {
+    resourceId: teoriaPantallasVisualizacionDatos.id,
+    selection: {
+      blockIds: [
+        "1-presentacion",
+        "2-definiciones",
+        "3-responsabilidades-del-empresariado-la-evaluacion-de-riesgos",
+        "4-medidas-correctoras-tecnicas-u-organizativas",
+        "5-vigilancia-de-la-salud",
+      ],
+    },
+  }],
+  [testPantallasVisualizacionDatos2.id, {
+    resourceId: teoriaPantallasVisualizacionDatos.id,
+    selection: {
+      blockIds: [
+        "6-efectos-sobre-la-salud",
+        "8-ergonomia-del-puesto-de-trabajo-pvd-y-su-entorno",
+        "9-postura-de-trabajo",
+      ],
+    },
+  }],
+  [testNocionesBasicasPrimerosAuxilios.id, {
+    resourceId: teoriaPrimerosAuxilios.id,
+    selection: {
+      blockIds: [
+        "1-introduccion",
+        "3-reanimacion-cardio-pulmonar-r-c-p",
+        "4-hemorragias",
+        "5-quemaduras",
+        "6-fracturas",
+        "8-obstruccion-de-las-vias-aereas",
+      ],
+    },
   }],
   [testPresupuestoGastosEjecucion1.id, {
     resourceId: teoriaPresupuestoGastos.id,
@@ -654,6 +696,8 @@ const answerExplanationsByTestId = new Map([
   ...explicacionesTema09.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema10.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema11.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema12.map((explanations) => [explanations.testId, explanations]),
+  ...explicacionesTema13.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema15.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema16.map((explanations) => [explanations.testId, explanations]),
   ...explicacionesTema17.map((explanations) => [explanations.testId, explanations]),
@@ -748,6 +792,11 @@ export const gobiernoVascoAdministrativoC1Resources = Object.freeze([
   testResource(testPrevencionRiesgosNumero2),
   testResource(testPrevencionRiesgosConsultaParticipacion),
   testResource(testPrevencionRiesgosComiteSeguridadSalud),
+  theoryResource(teoriaPantallasVisualizacionDatos),
+  testResource(testPantallasVisualizacionDatos1),
+  testResource(testPantallasVisualizacionDatos2),
+  theoryResource(teoriaPrimerosAuxilios),
+  testResource(testNocionesBasicasPrimerosAuxilios),
   theoryResource(teoriaPresupuestoGastos),
   testResource(testPresupuestoGastosEjecucion1),
   testResource(testPresupuestoGastosEjecucion2),

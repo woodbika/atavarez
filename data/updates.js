@@ -1,5 +1,13 @@
 export const updates = Object.freeze([
   Object.freeze({
+    id: "teoria-tests-pvd-primeros-auxilios-temas-12-13",
+    category: "Nuevos recursos",
+    publishedAt: "2026-11-22T15:12:25+01:00",
+    title: "Teoría y tests de PVD y primeros auxilios",
+    description:
+      "Los Temas 12 y 13 incorporan sus lecturas estructuradas con acceso a los PDF, tres tests IVOT y dos tests completos con 35 preguntas. Todas las respuestas incluyen explicaciones vinculadas directamente a los bloques correspondientes de la teoría.",
+  }),
+  Object.freeze({
     id: "teoria-tests-prevencion-riesgos-laborales-tema-11",
     category: "Nuevos recursos",
     publishedAt: "2026-11-18T16:12:14+01:00",

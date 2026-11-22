@@ -310,7 +310,7 @@ test("todos los tests IVOT del Tema 2 explican sus respuestas", () => {
   });
 });
 
-test("los tests IVOT de los Temas 3 a 11, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
+test("los tests IVOT de los Temas 3 a 13, 15 a 18 y 28 a 34 explican todas sus respuestas", () => {
   const expectedByTheme = new Map([
     ["03", { tests: 5, questions: 121 }],
     ["04", { tests: 5, questions: 169 }],
@@ -321,6 +321,8 @@ test("los tests IVOT de los Temas 3 a 11, 15 a 18 y 28 a 34 explican todas sus r
     ["09", { tests: 7, questions: 165 }],
     ["10", { tests: 3, questions: 47 }],
     ["11", { tests: 4, questions: 96 }],
+    ["12", { tests: 2, questions: 20 }],
+    ["13", { tests: 1, questions: 15 }],
     ["15", { tests: 2, questions: 32 }],
     ["16", { tests: 2, questions: 52 }],
     ["17", { tests: 4, questions: 97 }],
@@ -436,9 +438,9 @@ test("todas las explicaciones superan la auditoría pedagógica", () => {
   assert.deepEqual(errors, []);
   assert.deepEqual(warnings, []);
   assert.deepEqual(stats, {
-    tests: 112,
-    questions: 2273,
-    directReferences: 2139,
+    tests: 115,
+    questions: 2308,
+    directReferences: 2174,
     contextualReferences: 134,
     theoryDiscrepancies: 28,
   });
@@ -528,7 +530,7 @@ test("el test completo del Tema 2 conserva todas las explicaciones", () => {
   });
 });
 
-test("los tests completos de los Temas 3 a 11, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
+test("los tests completos de los Temas 3 a 13, 15 a 18 y 28 a 34 conservan sus explicaciones", () => {
   const repository = new ResourceRepository(resources, oppositions, questionBanks);
   const expectedByTheme = new Map([
     ["03", 121],
@@ -540,6 +542,8 @@ test("los tests completos de los Temas 3 a 11, 15 a 18 y 28 a 34 conservan sus e
     ["09", 165],
     ["10", 47],
     ["11", 96],
+    ["12", 20],
+    ["13", 15],
     ["15", 32],
     ["16", 52],
     ["17", 97],
@@ -1332,6 +1336,108 @@ test("el tema 11 incorpora teoría, cuatro tests y un test completo", () => {
   assert.equal(completeTest.preguntas.length, 96);
   assert.equal(completeTest.explicaciones.preguntas.length, 96);
   assert.deepEqual(completeTest.fuente.tests, sourceTestIds);
+  assert.deepEqual(validateResources(resources), []);
+});
+
+test("el tema 12 incorpora teoría, dos tests vinculados y un test completo", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const theory = repository.getById("tema-12-gobierno-vasco");
+  const expectedSelections = new Map([
+    [
+      "test-prevencion-riesgos-laborales-pantallas-visualizacion-datos-numero-1",
+      [
+        "1-presentacion",
+        "2-definiciones",
+        "3-responsabilidades-del-empresariado-la-evaluacion-de-riesgos",
+        "4-medidas-correctoras-tecnicas-u-organizativas",
+        "5-vigilancia-de-la-salud",
+      ],
+    ],
+    [
+      "test-prevencion-riesgos-laborales-pantallas-visualizacion-datos-numero-2",
+      [
+        "6-efectos-sobre-la-salud",
+        "8-ergonomia-del-puesto-de-trabajo-pvd-y-su-entorno",
+        "9-postura-de-trabajo",
+      ],
+    ],
+  ]);
+  const sourceTests = [...expectedSelections.keys()].map((testId) =>
+    repository.getById(testId));
+  const completeTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-12",
+  );
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "12");
+  assert.equal(theory.data.fuente.archivo, "tema-12-gobierno-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 15);
+  assert.equal(theory.data.bloques.length, 9);
+
+  expectedSelections.forEach((blockIds, testId) => {
+    const sourceTest = repository.getById(testId);
+    assert.equal(sourceTest.relatedTheory.resourceId, theory.id);
+    assert.deepEqual(sourceTest.relatedTheory.selection, { blockIds });
+    assert.equal(sourceTest.theoryNotice, undefined);
+    assert.equal(sourceTest.author.id, "ivot");
+    assert.equal(sourceTest.data.preguntas.length, 10);
+    assert.equal(sourceTest.data.explicaciones.preguntas.length, 10);
+    assert.ok(
+      sourceTest.data.explicaciones.preguntas.every(
+        (explanation) => explanation.referencia.alcance === "directa",
+      ),
+    );
+    assert.equal(sourceTest.data.fuente.archivo.endsWith(".pdf.pdf"), false);
+  });
+
+  assert.equal(completeTest.preguntas.length, 20);
+  assert.equal(completeTest.explicaciones.preguntas.length, 20);
+  assert.deepEqual(completeTest.fuente.tests, [...expectedSelections.keys()]);
+  assert.deepEqual(validateResources(resources), []);
+});
+
+test("el tema 13 incorpora teoría, un test vinculado y un test completo", () => {
+  const repository = new ResourceRepository(resources, oppositions, questionBanks);
+  const theory = repository.getById("tema-13-gobierno-vasco");
+  const sourceTest = repository.getById("test-nociones-basicas-primeros-auxilios");
+  const expectedBlockIds = [
+    "1-introduccion",
+    "3-reanimacion-cardio-pulmonar-r-c-p",
+    "4-hemorragias",
+    "5-quemaduras",
+    "6-fracturas",
+    "8-obstruccion-de-las-vias-aereas",
+  ];
+  const completeTest = repository.getTestById(
+    "test-completo-gobierno-vasco-administrativo-c1-tema-13",
+  );
+
+  assert.ok(theory);
+  assert.equal(theory.type, "teoria");
+  assert.equal(theory.classification.tema.numero, "13");
+  assert.equal(theory.data.fuente.archivo, "tema-13-gobierno-vasco.pdf");
+  assert.equal(theory.data.fuente.paginas, 21);
+  assert.equal(theory.data.bloques.length, 11);
+
+  assert.equal(sourceTest.relatedTheory.resourceId, theory.id);
+  assert.deepEqual(sourceTest.relatedTheory.selection, {
+    blockIds: expectedBlockIds,
+  });
+  assert.equal(sourceTest.theoryNotice, undefined);
+  assert.equal(sourceTest.author.id, "ivot");
+  assert.equal(sourceTest.data.preguntas.length, 15);
+  assert.equal(sourceTest.data.explicaciones.preguntas.length, 15);
+  assert.ok(
+    sourceTest.data.explicaciones.preguntas.every(
+      (explanation) => explanation.referencia.alcance === "directa",
+    ),
+  );
+  assert.equal(sourceTest.data.fuente.archivo.endsWith(".pdf.pdf"), false);
+
+  assert.equal(completeTest.preguntas.length, 15);
+  assert.equal(completeTest.explicaciones.preguntas.length, 15);
+  assert.deepEqual(completeTest.fuente.tests, [sourceTest.id]);
   assert.deepEqual(validateResources(resources), []);
 });
 
